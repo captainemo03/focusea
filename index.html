@@ -3,188 +3,2411 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BridgeOS Maritime Command Center</title>
-    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="styles.css" />
+    <title>Focusea Maritime Platform</title>
+    <link rel="icon" href="favicon.svg?v=focusea-badge2" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css?v=decision-lab-suite" />
   </head>
   <body>
     <div class="app-shell">
       <aside class="sidebar" aria-label="Ana navigasyon">
-        <div class="brand">
-          <span class="brand-mark">B</span>
-          <div>
-            <strong>BridgeOS</strong>
-            <span>Maritime Command</span>
-          </div>
+        <div class="brand brand-logo-only">
+          <span class="brand-mark">
+            <img src="assets/brand/focusea-mark.svg?v=focusea-badge2" alt="Focusea logo" />
+          </span>
+          <strong class="brand-name">Focusea</strong>
         </div>
 
-        <nav class="nav-list">
-          <a href="#command" class="active">Command Center</a>
-          <a href="#simulator">Gemi Simülatörü</a>
-          <a href="#calculator">Hesaplayıcılar</a>
-          <a href="#academy">Eğitim & Oyunlar</a>
-          <a href="#ports">Liman Rehberi</a>
+        <nav class="nav-list" data-page-nav>
+          <a href="#dashboard" class="active" data-page-link="dashboard">Dashboard</a>
+          <a href="#broker" data-page-link="broker">Broker Desk</a>
+          <a href="#terminal" data-page-link="terminal">Command Terminal</a>
+          <a href="#edge" data-page-link="edge">Edge Suite</a>
+          <a href="#commercial" data-page-link="commercial">Commercial Suite</a>
+          <a href="#brokerOS" data-page-link="brokerOS">Broker OS</a>
+          <a href="#autopilot" data-page-link="autopilot">Autopilot Pro</a>
+          <a href="#dealIQ" data-page-link="dealIQ">Deal IQ</a>
+          <a href="#decisionLab" data-page-link="decisionLab">Decision Lab</a>
+          <a href="#market" data-page-link="market">Market & News</a>
+          <a href="#tools" data-page-link="tools">Tools</a>
+          <a class="side-site-link" href="stability.html" target="_blank" rel="noopener">Yan Site: Yuk-Stabilite Lab</a>
+          <a href="#academyPage" data-page-link="academyPage">Academy & Account</a>
+          <a href="#portsPage" data-page-link="portsPage">Ports & Wiki</a>
         </nav>
 
         <div class="mission-card">
           <span>Aktif Görev</span>
           <strong>Istanbul → Singapore</strong>
-          <p>Yakıt, hava ve rota kararlarını optimize et.</p>
+          <p>Yakıt, hava, korsan riski ve liman yoğunluğunu tek operasyonda değerlendir.</p>
         </div>
       </aside>
 
       <main>
         <section class="hero" id="command">
           <div>
-            <p class="eyebrow">Live Maritime Operations</p>
-            <h1>Denizcilik öğren, hesapla, simüle et ve rotaları tek panelden yönet.</h1>
+            <p class="eyebrow">Maritime Command Center</p>
+            <h1>Focusea ile denizcilik operasyonlarını öğren, hesapla ve yönet.</h1>
             <p>
-              BridgeOS; gemi simülatörü, dünya haritası, hesaplayıcılar, liman
-              rehberi ve AI denizcilik asistanını tek komuta ekranında birleştirir.
+              Broker ve charter hesapları, AI rota optimizasyonu, demurrage/dispatch,
+              laytime, TCE, voyage estimate, liman rehberi ve canlı haberler tek platformda.
             </p>
           </div>
 
           <div class="hero-actions">
-            <a href="#simulator" class="primary-button">Simülasyonu Başlat</a>
-            <a href="#calculator" class="ghost-button">Hesaplayıcıları Aç</a>
+            <a href="#broker" class="primary-button" data-page-link="broker">Broker Desk'i Aç</a>
+            <a href="#tools" class="ghost-button" data-page-link="tools">Hesaplayıcıları Aç</a>
           </div>
         </section>
 
-        <section class="command-grid">
-          <article class="map-panel">
-            <div class="panel-heading">
-              <div>
-                <p class="eyebrow">World Map</p>
-                <h2>Canlı Deniz Haritası</h2>
-              </div>
-              <div class="status-pill">AIS Simulated</div>
-            </div>
+        <section class="dashboard-strip" aria-label="Denizcilik göstergeleri">
+          <article>
+            <span>Tracked Vessels</span>
+            <strong data-live="vessels">84,219</strong>
+            <small data-live-note="vessels">simulated live traffic</small>
+          </article>
+          <article>
+            <span>Port Congestion</span>
+            <strong data-live="congestion">37%</strong>
+            <small data-live-note="congestion">Singapore watch</small>
+          </article>
+          <article>
+            <span>Bunker Index</span>
+            <strong data-live="bunker">$620/t</strong>
+            <small data-live-note="bunker">VLSFO simulated</small>
+          </article>
+          <article>
+            <span>Weather Alerts</span>
+            <strong data-live="weather">9</strong>
+            <small data-live-note="weather">Indian Ocean watch</small>
+          </article>
+        </section>
 
-            <div class="ocean-map" aria-label="Simüle edilmiş dünya deniz haritası">
-              <div class="storm storm-one">Storm</div>
-              <div class="storm storm-two">High Risk</div>
-              <button class="ship ship-a selected" data-ship="orion" aria-label="MV Orion gemisi"></button>
-              <button class="ship ship-b" data-ship="atlas" aria-label="MT Atlas gemisi"></button>
-              <button class="ship ship-c" data-ship="nova" aria-label="LNG Nova gemisi"></button>
-              <button class="port port-a" data-port="istanbul" aria-label="Istanbul limanı"></button>
-              <button class="port port-b" data-port="singapore" aria-label="Singapore limanı"></button>
-              <button class="port port-c" data-port="rotterdam" aria-label="Rotterdam limanı"></button>
-              <svg viewBox="0 0 100 55" preserveAspectRatio="none" aria-hidden="true">
-                <path d="M8 18 C24 10, 35 18, 48 24 S72 36, 92 24" />
-                <path d="M12 38 C25 29, 44 30, 58 20 S76 7, 91 12" />
-                <path d="M22 12 C32 24, 52 36, 83 42" />
-              </svg>
+        <section class="ops-board" aria-label="Canlı operasyon panosu">
+          <article>
+            <p class="eyebrow">Live Ops Board</p>
+            <h2>Operasyon Uyarıları</h2>
+            <div class="ops-list">
+              <div><strong>Weather Routing</strong><span data-live-note="weatherRouting">Bay of Bengal squall line · reroute advised</span></div>
+              <div><strong>Port Congestion</strong><span data-live-note="anchorageDelay">Singapore anchorage delay estimated 18-24h</span></div>
+              <div><strong>Bunker Watch</strong><span data-live-note="bunkerSpread">VLSFO spread: Singapore +$34/t vs Fujairah</span></div>
             </div>
           </article>
-
-          <article class="info-panel" id="vesselInfo">
-            <p class="eyebrow">Selected Vessel</p>
-            <h2>MV Orion</h2>
-            <div class="metric-list">
-              <div><span>Speed</span><strong>17.8 kn</strong></div>
-              <div><span>Flag</span><strong>Panama</strong></div>
-              <div><span>IMO</span><strong>9387421</strong></div>
-              <div><span>Destination</span><strong>Singapore</strong></div>
-              <div><span>ETA</span><strong>14 days</strong></div>
+          <article>
+            <p class="eyebrow">Commercial Snapshot</p>
+            <h2>Sefer Ekonomisi</h2>
+            <div class="ops-metrics">
+              <div><span>Voyage P&L</span><strong data-live="pnl">$148K</strong></div>
+              <div><span>CO2 Estimate</span><strong data-live="co2">1,420 t</strong></div>
+              <div><span>Schedule Risk</span><strong data-live="scheduleRisk">Medium</strong></div>
             </div>
           </article>
         </section>
 
-        <section class="simulator-section" id="simulator">
+        <section class="smart-ops-panel" id="smartOps">
           <div class="panel-heading">
             <div>
-              <p class="eyebrow">Captain Decision Engine</p>
-              <h2>Gemi Simülatörü</h2>
+              <p class="eyebrow">Focusea Smart Ops</p>
+              <h2>Kullanıcıya İş Yaptıran Operasyon Merkezi</h2>
             </div>
-            <button class="ghost-button small" id="resetSimulation">Sıfırla</button>
+            <div class="status-pill">Actionable Workspace</div>
           </div>
 
-          <div class="simulator-layout">
-            <article class="scenario-card">
-              <span id="scenarioStep">Senaryo 1 / 4</span>
-              <h3 id="scenarioTitle">Fırtına rotanın üzerinde.</h3>
-              <p id="scenarioText">
-                Bengal Körfezi'nde fırtına hattı oluştu. Kısa rota riskli, güvenli rota
-                ise 18 saat uzatıyor.
-              </p>
-              <div class="decision-buttons" id="decisionButtons"></div>
+          <div class="smart-ops-grid">
+            <article class="smart-search-card">
+              <div class="mini-heading">
+                <span>Global Search</span>
+                <strong>Gemi, liman, terim veya hesap arayın</strong>
+              </div>
+              <form class="smart-search-form" id="smartSearchForm">
+                <input id="smartSearchInput" name="smartSearch" placeholder="Singapore, demurrage, bunker, MV Orion..." value="Singapore" />
+                <button type="submit">Ara</button>
+              </form>
+              <div class="smart-results" id="smartSearchResults"></div>
             </article>
 
-            <article class="score-card">
-              <h3>Operasyon Skoru</h3>
-              <div class="score-grid">
-                <div><span>Kâr</span><strong id="profitScore">$82K</strong></div>
-                <div><span>Güvenlik</span><strong id="safetyScore">78</strong></div>
-                <div><span>Gecikme</span><strong id="delayScore">6 saat</strong></div>
-                <div><span>Yakıt</span><strong id="fuelScore">410 t</strong></div>
+            <article class="readiness-card">
+              <div class="mini-heading">
+                <span>Voyage Readiness</span>
+                <strong id="readinessScore">0% ready</strong>
               </div>
-              <div class="score-bar">
-                <span id="scoreBar"></span>
+              <div class="readiness-progress"><span id="readinessBar"></span></div>
+              <div class="readiness-list" id="readinessChecklist">
+                <label><input type="checkbox" data-readiness="passage" /> Passage plan reviewed</label>
+                <label><input type="checkbox" data-readiness="weather" /> Weather route checked</label>
+                <label><input type="checkbox" data-readiness="bunker" /> Bunker plan confirmed</label>
+                <label><input type="checkbox" data-readiness="cargo" /> Cargo / stability checked</label>
+                <label><input type="checkbox" data-readiness="port" /> Port documents ready</label>
+                <label><input type="checkbox" data-readiness="safety" /> Safety briefing completed</label>
               </div>
+            </article>
+
+            <article class="ops-report-card">
+              <div class="mini-heading">
+                <span>Ops Report</span>
+                <strong id="opsRiskLevel">Risk calculating...</strong>
+              </div>
+              <div class="ops-report" id="opsReport"></div>
+              <button class="download-button" id="downloadOpsReport" type="button">Operasyon Raporu İndir</button>
             </article>
           </div>
         </section>
 
-        <section class="tool-grid">
+        <section class="broker-panel" id="brokerDesk">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Broker & Charter Desk</p>
+              <h2>Fixture, Laytime, TCE ve Voyage Estimate Masası</h2>
+            </div>
+            <div class="status-pill">Commercial Tools</div>
+          </div>
+
+          <div class="broker-grid">
+            <article>
+              <div class="mini-heading">
+                <span>Fixture Recap</span>
+                <strong>Broker hızlı özet</strong>
+              </div>
+              <form class="broker-form" id="fixtureForm">
+                <label><span>Vessel</span><input name="vessel" value="MV Orion" /></label>
+                <label><span>Cargo</span><input name="cargo" value="52,000 mt wheat" /></label>
+                <label><span>Cargo type</span><select name="cargoType" data-cargo-select><option value="grain">Tahıl / Grain</option><option value="coal">Kömür / Coal</option><option value="container">Konteyner / Container</option><option value="ironOre">Demir Cevheri</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option><option value="chemicals">Chemicals</option><option value="projectCargo">Project Cargo</option></select></label>
+                <label><span>Load port</span><input name="loadPort" value="Santos" /></label>
+                <label><span>Discharge port</span><input name="dischargePort" value="Singapore" /></label>
+                <label><span>Laycan</span><input name="laycan" value="10-15 July" /></label>
+                <label><span>Freight ($/mt)</span><input name="freightRate" type="number" value="18.5" min="0" step="0.1" /></label>
+                <label><span>Quantity (mt)</span><input name="quantity" type="number" value="52000" min="0" step="100" /></label>
+                <label><span>Demurrage ($/day)</span><input name="demurrageRate" type="number" value="15000" min="0" step="100" /></label>
+                <label><span>Commission (%)</span><input name="commission" type="number" value="2.5" min="0" step="0.1" /></label>
+                <button type="submit">Fixture Özeti Oluştur</button>
+              </form>
+              <div class="broker-output" id="fixtureResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading">
+                <span>Voyage Estimate</span>
+                <strong>P&L ve TCE</strong>
+              </div>
+              <form class="broker-form" id="voyageEstimateForm">
+                <label><span>Cargo type</span><select name="cargoType" data-cargo-select><option value="grain">Tahıl / Grain</option><option value="coal">Kömür / Coal</option><option value="container">Konteyner / Container</option><option value="ironOre">Demir Cevheri</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option><option value="chemicals">Chemicals</option><option value="projectCargo">Project Cargo</option></select></label>
+                <label><span>Distance (nm)</span><input name="distance" type="number" value="5820" min="0" step="10" /></label>
+                <label><span>Speed (kn)</span><input name="speed" type="number" value="13.5" min="1" step="0.1" /></label>
+                <label><span>Cargo qty (mt)</span><input name="cargoQty" type="number" value="52000" min="0" step="100" /></label>
+                <label><span>Freight ($/mt)</span><input name="freightRate" type="number" value="18.5" min="0" step="0.1" /></label>
+                <label><span>Sea cons (mt/day)</span><input name="seaCons" type="number" value="28" min="0" step="0.1" /></label>
+                <label><span>Port cons (mt/day)</span><input name="portCons" type="number" value="4" min="0" step="0.1" /></label>
+                <label><span>Port days</span><input name="portDays" type="number" value="4.5" min="0" step="0.1" /></label>
+                <label><span>Bunker ($/mt)</span><input name="bunkerPrice" type="number" value="620" min="0" step="1" /></label>
+                <label><span>Port costs ($)</span><input name="portCosts" type="number" value="68000" min="0" step="100" /></label>
+                <label><span>Canal costs ($)</span><input name="canalCosts" type="number" value="0" min="0" step="100" /></label>
+                <label><span>Daily hire ($)</span><input name="dailyHire" type="number" value="14500" min="0" step="100" /></label>
+                <label><span>Commission (%)</span><input name="commission" type="number" value="2.5" min="0" step="0.1" /></label>
+                <button type="submit">Voyage Estimate Hesapla</button>
+              </form>
+              <div class="broker-output" id="voyageEstimateResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading">
+                <span>Laytime Statement</span>
+                <strong>Demurrage / Dispatch</strong>
+              </div>
+              <form class="broker-form" id="laytimeStatementForm">
+                <label><span>Allowed laytime (h)</span><input name="allowedHours" type="number" value="72" min="0" step="0.5" /></label>
+                <label><span>Load used (h)</span><input name="loadHours" type="number" value="44" min="0" step="0.5" /></label>
+                <label><span>Discharge used (h)</span><input name="dischargeHours" type="number" value="38" min="0" step="0.5" /></label>
+                <label><span>Deductions (h)</span><input name="deductions" type="number" value="6" min="0" step="0.5" /></label>
+                <label><span>Demurrage ($/day)</span><input name="demurrageRate" type="number" value="15000" min="0" step="100" /></label>
+                <label><span>Dispatch ($/day)</span><input name="dispatchRate" type="number" value="7500" min="0" step="100" /></label>
+                <button type="submit">Statement Hesapla</button>
+              </form>
+              <div class="broker-output" id="laytimeStatementResult"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="broker-pro-panel" id="brokerPro">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Broker Pro Suite</p>
+              <h2>Pazarlık, Clause, Laytime, Cargo Pricing ve Risk Terminali</h2>
+            </div>
+            <div class="status-pill">Cargo-Aware</div>
+          </div>
+
+          <div class="broker-pro-grid">
+            <article>
+              <div class="mini-heading">
+                <span>Negotiation Simulator</span>
+                <strong>Owner vs Charterer</strong>
+              </div>
+              <form class="broker-form" id="negotiationForm">
+                <label><span>Cargo type</span><select name="cargoType" data-cargo-select><option value="coal">Kömür / Coal</option><option value="grain">Tahıl / Grain</option><option value="container">Konteyner / Container</option><option value="ironOre">Demir Cevheri</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option><option value="chemicals">Chemicals</option><option value="projectCargo">Project Cargo</option></select></label>
+                <label><span>Quantity</span><input name="quantity" type="number" value="55000" min="0" step="100" /></label>
+                <label><span>Owner offer ($/unit)</span><input name="ownerRate" type="number" value="21" min="0" step="0.1" /></label>
+                <label><span>Charterer counter ($/unit)</span><input name="chartererRate" type="number" value="18.8" min="0" step="0.1" /></label>
+                <label><span>Demurrage ($/day)</span><input name="demurrageRate" type="number" value="16500" min="0" step="100" /></label>
+                <label><span>Commission (%)</span><input name="commission" type="number" value="2.5" min="0" step="0.1" /></label>
+                <button type="submit">Pazarlığı Hesapla</button>
+              </form>
+              <div class="broker-output" id="negotiationResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading">
+                <span>Clause Analyzer</span>
+                <strong>Risk kimde?</strong>
+              </div>
+              <form class="broker-form single-column" id="clauseForm">
+                <label><span>Charter party clause</span><textarea name="clauseText">NOR to be tendered whether in berth or not. Time lost waiting for berth to count as laytime. Weather delays excepted.</textarea></label>
+                <button type="submit">Clause Analiz Et</button>
+              </form>
+              <div class="broker-output" id="clauseResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading">
+                <span>Laytime Generator</span>
+                <strong>Statement + çıktı</strong>
+              </div>
+              <form class="broker-form" id="laytimeGeneratorForm">
+                <label><span>NOR tendered</span><input name="norTime" type="datetime-local" value="2026-07-10T08:00" /></label>
+                <label><span>Berthing</span><input name="berthingTime" type="datetime-local" value="2026-07-10T18:00" /></label>
+                <label><span>Loading start</span><input name="loadStart" type="datetime-local" value="2026-07-11T06:00" /></label>
+                <label><span>Loading complete</span><input name="loadComplete" type="datetime-local" value="2026-07-13T02:00" /></label>
+                <label><span>Discharge start</span><input name="dischargeStart" type="datetime-local" value="2026-07-19T08:00" /></label>
+                <label><span>Discharge complete</span><input name="dischargeComplete" type="datetime-local" value="2026-07-21T00:00" /></label>
+                <label><span>Rain / stop (h)</span><input name="rainHours" type="number" value="8" min="0" step="0.5" /></label>
+                <label><span>Shifting (h)</span><input name="shiftingHours" type="number" value="3" min="0" step="0.5" /></label>
+                <label><span>Allowed (h)</span><input name="allowedHours" type="number" value="84" min="0" step="0.5" /></label>
+                <label><span>Demurrage ($/day)</span><input name="demurrageRate" type="number" value="15000" min="0" step="100" /></label>
+                <label><span>Dispatch ($/day)</span><input name="dispatchRate" type="number" value="7500" min="0" step="100" /></label>
+                <button type="submit">Statement Üret</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" id="printLaytime">PDF / Print</button>
+                <button type="button" class="ghost-button small" id="downloadBrokerMail">Mail Taslağı İndir</button>
+              </div>
+              <div class="broker-output" id="laytimeGeneratorResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading">
+                <span>Voyage Estimate Pro</span>
+                <strong>Ballast + laden</strong>
+              </div>
+              <form class="broker-form" id="voyageProForm">
+                <label><span>Cargo type</span><select name="cargoType" data-cargo-select><option value="coal">Kömür / Coal</option><option value="grain">Tahıl / Grain</option><option value="container">Konteyner / Container</option><option value="ironOre">Demir Cevheri</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option><option value="chemicals">Chemicals</option><option value="projectCargo">Project Cargo</option></select></label>
+                <label><span>Quantity</span><input name="cargoQty" type="number" value="55000" min="0" step="100" /></label>
+                <label><span>Freight rate ($/unit)</span><input name="freightRate" type="number" value="18.5" min="0" step="0.1" /></label>
+                <label><span>Ballast distance (nm)</span><input name="ballastDistance" type="number" value="780" min="0" step="10" /></label>
+                <label><span>Laden distance (nm)</span><input name="ladenDistance" type="number" value="5820" min="0" step="10" /></label>
+                <label><span>Speed (kn)</span><input name="speed" type="number" value="13.2" min="1" step="0.1" /></label>
+                <label><span>Sea cons (mt/day)</span><input name="seaCons" type="number" value="29" min="0" step="0.1" /></label>
+                <label><span>Port days</span><input name="portDays" type="number" value="5" min="0" step="0.1" /></label>
+                <label><span>Weather delay (h)</span><input name="weatherDelay" type="number" value="14" min="0" step="1" /></label>
+                <label><span>ROB bunker (mt)</span><input name="rob" type="number" value="180" min="0" step="1" /></label>
+                <label><span>Bunker price ($/mt)</span><input name="bunkerPrice" type="number" value="620" min="0" step="1" /></label>
+                <label><span>Canal / extra ($)</span><input name="canalCosts" type="number" value="0" min="0" step="100" /></label>
+                <label><span>Daily hire ($)</span><input name="dailyHire" type="number" value="14500" min="0" step="100" /></label>
+                <button type="submit">Pro Estimate Hesapla</button>
+              </form>
+              <div class="broker-output" id="voyageProResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading">
+                <span>Cargo Matching Board</span>
+                <strong>Yük - gemi uyumu</strong>
+              </div>
+              <form class="broker-form" id="cargoMatchForm">
+                <label><span>Cargo type</span><select name="cargoType" data-cargo-select><option value="container">Konteyner / Container</option><option value="coal">Kömür / Coal</option><option value="grain">Tahıl / Grain</option><option value="ironOre">Demir Cevheri</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option><option value="chemicals">Chemicals</option><option value="projectCargo">Project Cargo</option></select></label>
+                <label><span>Quantity</span><input name="quantity" type="number" value="42000" min="0" step="100" /></label>
+                <label><span>Laycan urgency (1-10)</span><input name="urgency" type="number" value="6" min="1" max="10" step="1" /></label>
+                <label><span>Max draft (m)</span><input name="draft" type="number" value="13.5" min="0" step="0.1" /></label>
+                <button type="submit">En Uygun Gemileri Bul</button>
+              </form>
+              <div class="broker-output" id="cargoMatchResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading">
+                <span>Port Cost + Risk</span>
+                <strong>Broker daily dashboard</strong>
+              </div>
+              <form class="broker-form" id="portCostForm">
+                <label><span>Port</span><select name="portId"><option value="singapore">Singapore</option><option value="istanbul">Istanbul</option><option value="rotterdam">Rotterdam</option><option value="shanghai">Shanghai</option><option value="busan">Busan</option><option value="jebelali">Jebel Ali</option><option value="losangeles">Los Angeles</option><option value="antwerp">Antwerp-Bruges</option></select></label>
+                <label><span>Cargo type</span><select name="cargoType" data-cargo-select><option value="container">Konteyner / Container</option><option value="coal">Kömür / Coal</option><option value="grain">Tahıl / Grain</option><option value="ironOre">Demir Cevheri</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option><option value="chemicals">Chemicals</option><option value="projectCargo">Project Cargo</option></select></label>
+                <label><span>Vessel type</span><select name="vesselType"><option value="handymax">Handymax</option><option value="panamax">Panamax</option><option value="cape">Capesize</option><option value="tanker">Tanker</option><option value="container">Container</option><option value="lng">LNG Carrier</option></select></label>
+                <label><span>Waiting days</span><input name="waitingDays" type="number" value="1.5" min="0" step="0.1" /></label>
+                <label><span>Daily hire ($)</span><input name="dailyHire" type="number" value="14500" min="0" step="100" /></label>
+                <button type="submit">Cost & Risk Hesapla</button>
+              </form>
+              <div class="broker-output" id="portCostResult"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="operations-panel" id="brokerOps">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Broker Operations Suite</p>
+              <h2>Offer, Matrix, Sensitivity, Compliance, ETS, CRM ve Doküman Merkezi</h2>
+            </div>
+            <div class="status-pill">Daily Broker Tools</div>
+          </div>
+
+          <div class="ops-suite-grid">
+            <article>
+              <div class="mini-heading"><span>Offer Tracker</span><strong>Teklif durumu</strong></div>
+              <form class="broker-form" id="offerTrackerForm">
+                <label><span>Owner</span><input name="owner" value="BlueSea Owners" /></label>
+                <label><span>Charterer</span><input name="charterer" value="Atlas Commodities" /></label>
+                <label><span>Cargo type</span><select name="cargoType" data-cargo-select><option value="coal">Komur / Coal</option><option value="grain">Tahıl / Grain</option><option value="container">Konteyner / Container</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option></select></label>
+                <label><span>Route</span><input name="route" value="Santos / Singapore" /></label>
+                <label><span>Owner offer</span><input name="ownerRate" type="number" value="21" min="0" step="0.1" /></label>
+                <label><span>Counter</span><input name="counterRate" type="number" value="19" min="0" step="0.1" /></label>
+                <label><span>Laycan</span><input name="laycan" value="10-15 July" /></label>
+                <label><span>Status</span><select name="status"><option>On subjects</option><option>Counter sent</option><option>Firm offer</option><option>Failed</option><option>Fixed</option></select></label>
+                <button type="submit">Offer Kaydet / Güncelle</button>
+              </form>
+              <div class="broker-output" id="offerTrackerResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Cargo Rate Matrix</span><strong>Low / mid / high</strong></div>
+              <form class="broker-form" id="rateMatrixForm">
+                <label><span>Cargo type</span><select name="cargoType" data-cargo-select><option value="coal">Komur / Coal</option><option value="grain">Tahıl / Grain</option><option value="container">Konteyner / Container</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option><option value="chemicals">Chemicals</option></select></label>
+                <label><span>Market mood</span><select name="marketMood"><option value="soft">Soft</option><option value="neutral" selected>Neutral</option><option value="firm">Firm</option><option value="hot">Hot</option></select></label>
+                <label><span>Quantity</span><input name="quantity" type="number" value="52000" min="0" step="100" /></label>
+                <button type="submit">Matrix Oluştur</button>
+              </form>
+              <div class="broker-output" id="rateMatrixResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Sensitivity Table</span><strong>TCE neye hassas?</strong></div>
+              <form class="broker-form" id="sensitivityForm">
+                <label><span>Cargo type</span><select name="cargoType" data-cargo-select><option value="coal">Komur / Coal</option><option value="grain">Tahıl / Grain</option><option value="container">Konteyner / Container</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option></select></label>
+                <label><span>Quantity</span><input name="cargoQty" type="number" value="52000" min="0" step="100" /></label>
+                <label><span>Freight rate</span><input name="freightRate" type="number" value="18.5" min="0" step="0.1" /></label>
+                <label><span>Speed</span><input name="speed" type="number" value="13.5" min="1" step="0.1" /></label>
+                <label><span>Bunker price</span><input name="bunkerPrice" type="number" value="620" min="0" step="1" /></label>
+                <label><span>Distance</span><input name="distance" type="number" value="5820" min="0" step="10" /></label>
+                <button type="submit">Sensitivity Hesapla</button>
+              </form>
+              <div class="broker-output" id="sensitivityResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Bunker ROB Planner</span><strong>Arrival ROB</strong></div>
+              <form class="broker-form" id="robPlannerForm">
+                <label><span>Starting ROB (mt)</span><input name="startRob" type="number" value="180" min="0" step="1" /></label>
+                <label><span>Stem / buy (mt)</span><input name="stem" type="number" value="420" min="0" step="1" /></label>
+                <label><span>Sea days</span><input name="seaDays" type="number" value="18" min="0" step="0.1" /></label>
+                <label><span>Sea cons</span><input name="seaCons" type="number" value="28" min="0" step="0.1" /></label>
+                <label><span>Port days</span><input name="portDays" type="number" value="4" min="0" step="0.1" /></label>
+                <label><span>Safety margin (%)</span><input name="margin" type="number" value="7" min="0" step="0.5" /></label>
+                <button type="submit">ROB Planla</button>
+              </form>
+              <div class="broker-output" id="robPlannerResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Port Restriction Checker</span><strong>Uygun mu?</strong></div>
+              <form class="broker-form" id="restrictionForm">
+                <label><span>Port</span><select name="portId"><option value="singapore">Singapore</option><option value="istanbul">Istanbul</option><option value="rotterdam">Rotterdam</option><option value="shanghai">Shanghai</option><option value="jebelali">Jebel Ali</option></select></label>
+                <label><span>Cargo type</span><select name="cargoType" data-cargo-select><option value="coal">Komur / Coal</option><option value="container">Konteyner / Container</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option></select></label>
+                <label><span>Draft (m)</span><input name="draft" type="number" value="13.2" min="0" step="0.1" /></label>
+                <label><span>LOA (m)</span><input name="loa" type="number" value="225" min="0" step="1" /></label>
+                <label><span>Beam (m)</span><input name="beam" type="number" value="32" min="0" step="0.1" /></label>
+                <button type="submit">Restriction Kontrol Et</button>
+              </form>
+              <div class="broker-output" id="restrictionResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Sanctions & Compliance</span><strong>Checklist skoru</strong></div>
+              <form class="broker-form" id="complianceForm">
+                <label><span>Flag risk</span><select name="flagRisk"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></label>
+                <label><span>Owner country risk</span><select name="ownerRisk"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></label>
+                <label><span>Cargo origin risk</span><select name="originRisk"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></label>
+                <label><span>Sanction hit?</span><select name="sanctionHit"><option value="no">No</option><option value="watch">Watchlist</option><option value="yes">Yes</option></select></label>
+                <label><span>Cargo type</span><select name="cargoType" data-cargo-select><option value="coal">Komur / Coal</option><option value="grain">Tahıl / Grain</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option></select></label>
+                <button type="submit">Compliance Kontrol Et</button>
+              </form>
+              <div class="broker-output" id="complianceResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>EU ETS / CO2</span><strong>Karbon maliyeti</strong></div>
+              <form class="broker-form" id="etsForm">
+                <label><span>Fuel used (mt)</span><input name="fuelTons" type="number" value="520" min="0" step="1" /></label>
+                <label><span>EU exposure (%)</span><input name="euPercent" type="number" value="50" min="0" max="100" step="1" /></label>
+                <label><span>ETS price ($/tCO2)</span><input name="etsPrice" type="number" value="72" min="0" step="1" /></label>
+                <label><span>Cargo mt</span><input name="cargoQty" type="number" value="52000" min="1" step="100" /></label>
+                <button type="submit">CO2 / ETS Hesapla</button>
+              </form>
+              <div class="broker-output" id="etsResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>CP Template Builder</span><strong>GENCON / NYPE</strong></div>
+              <form class="broker-form" id="cpTemplateForm">
+                <label><span>Template</span><select name="templateType"><option value="GENCON">GENCON</option><option value="NYPE">NYPE</option><option value="SHELLVOY">Shellvoyage</option></select></label>
+                <label><span>Vessel</span><input name="vessel" value="MV Orion" /></label>
+                <label><span>Owner</span><input name="owner" value="BlueSea Owners" /></label>
+                <label><span>Charterer</span><input name="charterer" value="Atlas Commodities" /></label>
+                <label><span>Cargo type</span><select name="cargoType" data-cargo-select><option value="coal">Komur / Coal</option><option value="grain">Tahıl / Grain</option><option value="container">Konteyner / Container</option><option value="crudeOil">Crude Oil</option></select></label>
+                <label><span>Freight</span><input name="freight" value="USD 18.50 pmt FIOST" /></label>
+                <button type="submit">CP Taslağı Oluştur</button>
+              </form>
+              <div class="broker-output" id="cpTemplateResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Broker CRM</span><strong>Takip notu</strong></div>
+              <form class="broker-form" id="crmForm">
+                <label><span>Company</span><input name="company" value="Atlas Commodities" /></label>
+                <label><span>Contact</span><input name="contact" value="M. Charterer" /></label>
+                <label><span>Role</span><select name="role"><option>Charterer</option><option>Owner</option><option>Operator</option><option>Agent</option></select></label>
+                <label><span>Follow-up</span><input name="followDate" type="date" value="2026-07-01" /></label>
+                <label><span>Note</span><input name="note" value="Needs Panamax coal options this week" /></label>
+                <button type="submit">CRM Kartı Oluştur</button>
+              </form>
+              <div class="broker-output" id="crmResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Daily Broker Brief</span><strong>Bugünün özeti</strong></div>
+              <form class="broker-form" id="dailyBriefForm">
+                <label><span>Focus market</span><select name="focusMarket"><option>Dry Bulk</option><option>Tanker</option><option>Container</option><option>LNG</option></select></label>
+                <label><span>Open offers</span><input name="openOffers" type="number" value="4" min="0" step="1" /></label>
+                <button type="submit">Brief Yenile</button>
+              </form>
+              <div class="broker-output" id="dailyBriefResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Email Generator</span><strong>Broker mail</strong></div>
+              <form class="broker-form" id="emailGeneratorForm">
+                <label><span>Type</span><select name="emailType"><option value="firm">Firm offer</option><option value="counter">Counter offer</option><option value="recap">Recap</option><option value="subjects">Subjects lifted</option></select></label>
+                <label><span>Recipient</span><input name="recipient" value="Dear Capt. Smith" /></label>
+                <label><span>Route</span><input name="route" value="Santos / Singapore" /></label>
+                <label><span>Rate</span><input name="rate" value="USD 18.50 pmt" /></label>
+                <button type="submit">Mail Üret</button>
+              </form>
+              <div class="button-row"><button type="button" class="ghost-button small" id="downloadOpsEmail">Mail İndir</button></div>
+              <div class="broker-output" id="emailGeneratorResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Document Vault</span><strong>Dosya takibi</strong></div>
+              <form class="broker-form" id="documentVaultForm">
+                <label><span>Document</span><select name="docType"><option>Fixture recap</option><option>CP</option><option>SOF</option><option>NOR</option><option>LOI</option><option>Invoice</option></select></label>
+                <label><span>Reference</span><input name="reference" value="MV Orion / Santos" /></label>
+                <label><span>Due date</span><input name="dueDate" type="date" value="2026-07-02" /></label>
+                <label><span>Status</span><select name="docStatus"><option>Missing</option><option>Received</option><option>Needs review</option><option>Approved</option></select></label>
+                <button type="submit">Vault Kartı Oluştur</button>
+              </form>
+              <div class="broker-output" id="documentVaultResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>SOF Analyzer</span><strong>Events to laytime</strong></div>
+              <form class="broker-form single-column" id="sofAnalyzerForm">
+                <label><span>Statement of Facts</span><textarea name="sofText">10 Jul 0800 NOR tendered
+10 Jul 1800 Berthed
+11 Jul 0600 Loading commenced
+12 Jul 1400 Rain stopped 6h
+13 Jul 0200 Loading completed</textarea></label>
+                <label><span>Allowed laytime (h)</span><input name="allowedHours" type="number" value="72" min="0" step="0.5" /></label>
+                <label><span>Demurrage ($/day)</span><input name="demurrageRate" type="number" value="15000" min="0" step="100" /></label>
+                <button type="submit">SOF Analiz Et</button>
+              </form>
+              <div class="broker-output" id="sofAnalyzerResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Dispute Risk Score</span><strong>Demurrage ihtilafı</strong></div>
+              <form class="broker-form" id="disputeRiskForm">
+                <label><span>Clause risk</span><select name="clauseRisk"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select></label>
+                <label><span>SOF delay (h)</span><input name="sofDelay" type="number" value="18" min="0" step="0.5" /></label>
+                <label><span>Deductions disputed (h)</span><input name="deductionDispute" type="number" value="6" min="0" step="0.5" /></label>
+                <label><span>Docs complete?</span><select name="docsReady"><option value="yes">Yes</option><option value="partial">Partial</option><option value="no">No</option></select></label>
+                <label><span>Demurrage amount</span><input name="amount" type="number" value="11250" min="0" step="100" /></label>
+                <button type="submit">Dispute Skoru Hesapla</button>
+              </form>
+              <div class="broker-output" id="disputeRiskResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Cargo Compatibility</span><strong>Yük uygunluğu</strong></div>
+              <form class="broker-form" id="compatibilityForm">
+                <label><span>Cargo type</span><select name="cargoType" data-cargo-select><option value="coal">Komur / Coal</option><option value="grain">Tahıl / Grain</option><option value="container">Konteyner / Container</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option><option value="chemicals">Chemicals</option><option value="projectCargo">Project Cargo</option></select></label>
+                <label><span>Vessel type</span><select name="vesselType"><option value="bulk">Bulk carrier</option><option value="container">Container</option><option value="tanker">Tanker</option><option value="lng">LNG Carrier</option><option value="mpp">MPP / Heavy-lift</option></select></label>
+                <label><span>Hold/tank condition</span><select name="condition"><option value="clean">Clean / ready</option><option value="minor">Minor cleaning needed</option><option value="poor">Not ready</option></select></label>
+                <button type="submit">Compatibility Kontrol Et</button>
+              </form>
+              <div class="broker-output" id="compatibilityResult"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="platform-core-panel" id="platformCore">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Focusea Platform Core</p>
+              <h2>Kayıt, PDF Export, Kanban, Bildirim, Database, Analytics ve Admin</h2>
+            </div>
+            <div class="status-pill">Persistent Workspace</div>
+          </div>
+
+          <div class="platform-grid">
+            <article>
+              <div class="mini-heading"><span>User Account</span><strong>Local kayıt sistemi</strong></div>
+              <form class="broker-form" id="profileForm">
+                <label><span>Name</span><input name="profileName" value="Focusea Broker" /></label>
+                <label><span>Company</span><input name="profileCompany" value="Focus Maritime" /></label>
+                <label><span>Role</span><select name="profileRole"><option>Broker</option><option>Charterer</option><option>Owner</option><option>Operator</option></select></label>
+                <label><span>Default market</span><select name="defaultMarket"><option>Dry Bulk</option><option>Tanker</option><option>Container</option><option>LNG</option></select></label>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" id="saveWorkspace">Kaydet</button>
+                <button type="button" class="ghost-button small" id="loadWorkspace">Yükle</button>
+                <button type="button" class="ghost-button small" id="clearWorkspace">Sıfırla</button>
+              </div>
+              <div class="broker-output" id="workspaceStatus"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>PDF Export Center</span><strong>Real file download</strong></div>
+              <div class="export-actions">
+                <button type="button" data-export-report="fixture">Fixture Recap</button>
+                <button type="button" data-export-report="voyage">Voyage Estimate</button>
+                <button type="button" data-export-report="laytime">Laytime Statement</button>
+                <button type="button" data-export-report="demurrage">Demurrage Claim</button>
+                <button type="button" data-export-report="cp">CP Draft</button>
+                <button type="button" data-export-report="daily">Broker Daily Report</button>
+              </div>
+              <div class="broker-output" id="exportResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Broker Workspace</span><strong>Kanban</strong></div>
+              <div class="kanban-board" id="kanbanBoard"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Notifications</span><strong>Uyarı merkezi</strong></div>
+              <div class="notification-list" id="notificationCenter"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Company / Vessel / Cargo DB</span><strong>Mini database</strong></div>
+              <form class="broker-form" id="databaseForm">
+                <label><span>New company</span><input name="newCompany" value="Nova Chartering" /></label>
+                <label><span>Type</span><select name="newCompanyType"><option>Charterer</option><option>Owner</option><option>Broker</option><option>Agent</option></select></label>
+                <button type="submit">Database'e Ekle</button>
+              </form>
+              <div class="broker-output" id="databaseResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Fixture History & Analytics</span><strong>Geçmiş performans</strong></div>
+              <div class="broker-output" id="analyticsResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Admin Panel</span><strong>Site sahibi ayarları</strong></div>
+              <form class="broker-form" id="adminForm">
+                <label><span>Cargo type</span><select name="adminCargoType"><option value="coal">Coal</option><option value="grain">Grain</option><option value="container">Container</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option></select></label>
+                <label><span>Freight multiplier</span><input name="freightMultiplier" type="number" value="1" min="0.1" step="0.01" /></label>
+                <label><span>Default bunker</span><input name="defaultBunker" type="number" value="620" min="0" step="1" /></label>
+                <label><span>News query</span><input name="newsQuery" value="maritime shipping" /></label>
+                <button type="submit">Ayarları Uygula</button>
+              </form>
+              <div class="broker-output" id="adminResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Real Data Sources</span><strong>API readiness</strong></div>
+              <button type="button" class="ghost-button small" id="refreshDataSources">Kaynakları Kontrol Et</button>
+              <div class="broker-output" id="dataSourcesResult"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="broker-intel-panel" id="brokerIntelligence">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Broker Intelligence Suite</p>
+              <h2>Copilot, offer parser, TCE optimizer, risk radar ve gercek indirilebilir raporlar</h2>
+            </div>
+            <div class="status-pill">Download Ready</div>
+          </div>
+
+          <div class="broker-intel-grid">
+            <article class="wide-card">
+              <div class="mini-heading"><span>Broker Copilot</span><strong>Mailden deal ozeti</strong></div>
+              <form class="broker-form single-column" id="brokerCopilotForm">
+                <label><span>Fixture mail / WhatsApp text</span><textarea name="fixtureText">Firm indication: 50k coal Indonesia to India, laycan 10/15 Jul, freight USD 18.50 pmt FIOST, demurrage USD 18,000/day, Supramax tonnage preferred. Charterer asks 2.5 pct total commission. Subject stem and receiver approval.</textarea></label>
+                <button type="submit">Copilot Analiz Et</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" id="applyCopilotToOffer">Offer Tracker'a Isle</button>
+                <button type="button" class="ghost-button small" data-download-intel="copilot-pdf">PDF Indir</button>
+                <button type="button" class="ghost-button small" data-download-intel="copilot-json">JSON Indir</button>
+              </div>
+              <div class="broker-output" id="brokerCopilotResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Smart Offer Parser</span><strong>Offer karti uret</strong></div>
+              <form class="broker-form single-column" id="offerParserForm">
+                <label><span>Short offer text</span><textarea name="offerText">50k grain Black Sea to Egypt laycan 5-10 Aug rate 17.25 pmt dem 14500 pdpr Panamax</textarea></label>
+                <button type="submit">Offer Parse Et</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" id="applyParsedOffer">Tracker'a Aktar</button>
+                <button type="button" class="ghost-button small" data-download-intel="offer-json">JSON Indir</button>
+                <button type="button" class="ghost-button small" data-download-intel="offer-csv">CSV Indir</button>
+              </div>
+              <div class="broker-output" id="offerParserResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>TCE & Profit Optimizer</span><strong>Speed / bunker onerisi</strong></div>
+              <form class="broker-form" id="tceOptimizerForm">
+                <label><span>Cargo type</span><select name="cargoType" data-cargo-select><option value="coal">Coal</option><option value="grain">Grain</option><option value="container">Container</option><option value="ironOre">Iron Ore</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option><option value="chemicals">Chemicals</option><option value="projectCargo">Project Cargo</option></select></label>
+                <label><span>Quantity</span><input name="cargoQty" type="number" value="52000" min="0" step="100" /></label>
+                <label><span>Distance nm</span><input name="distance" type="number" value="5800" min="0" step="10" /></label>
+                <label><span>Freight rate</span><input name="freightRate" type="number" value="18.5" min="0" step="0.1" /></label>
+                <label><span>Daily hire</span><input name="dailyHire" type="number" value="14500" min="0" step="100" /></label>
+                <label><span>Bunker $/t</span><input name="bunkerPrice" type="number" value="620" min="0" step="1" /></label>
+                <label><span>Sea cons mt/day</span><input name="seaCons" type="number" value="28" min="0" step="0.1" /></label>
+                <label><span>Port days</span><input name="portDays" type="number" value="5" min="0" step="0.1" /></label>
+                <button type="submit">Optimize Et</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-intel="tce-pdf">PDF Indir</button>
+                <button type="button" class="ghost-button small" data-download-intel="tce-csv">CSV Indir</button>
+              </div>
+              <div class="broker-output" id="tceOptimizerResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Fixture Risk Radar 2.0</span><strong>Fix / Watch / Avoid</strong></div>
+              <form class="broker-form" id="riskRadarForm">
+                <label><span>Cargo type</span><select name="cargoType" data-cargo-select><option value="coal">Coal</option><option value="grain">Grain</option><option value="container">Container</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option><option value="chemicals">Chemicals</option></select></label>
+                <label><span>Laycan window days</span><input name="laycanDays" type="number" value="5" min="1" step="1" /></label>
+                <label><span>Clause risk</span><select name="clauseRisk"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select></label>
+                <label><span>Port congestion %</span><input name="portCongestion" type="number" value="46" min="0" max="100" step="1" /></label>
+                <label><span>Sanctions risk</span><select name="sanctionsRisk"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></label>
+                <label><span>TCE $/day</span><input name="tce" type="number" value="22000" step="100" /></label>
+                <button type="submit">Risk Radar Calistir</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-intel="risk-pdf">PDF Indir</button>
+                <button type="button" class="ghost-button small" data-download-intel="risk-json">JSON Indir</button>
+              </div>
+              <div class="broker-output" id="riskRadarResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Live Market Brief</span><strong>Broker daily pulse</strong></div>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" id="refreshMarketBrief">Brief Yenile</button>
+                <button type="button" class="ghost-button small" data-download-intel="market-pdf">PDF Indir</button>
+                <button type="button" class="ghost-button small" data-download-intel="market-txt">TXT Indir</button>
+              </div>
+              <div class="broker-output" id="marketBriefResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Clause Red Flag System</span><strong>Owner / charterer lehine</strong></div>
+              <form class="broker-form single-column" id="redFlagForm">
+                <label><span>Clause</span><textarea name="clauseText">NOR valid whether in berth or not. Time lost waiting for berth shall count as laytime, weather delays excepted unless used.</textarea></label>
+                <button type="submit">Red Flag Analiz Et</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-intel="clause-pdf">PDF Indir</button>
+                <button type="button" class="ghost-button small" data-download-intel="clause-json">JSON Indir</button>
+              </div>
+              <div class="broker-output" id="redFlagResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Fixture Recap Builder</span><strong>Professional recap</strong></div>
+              <form class="broker-form" id="recapBuilderForm">
+                <label><span>Vessel</span><input name="vessel" value="MV Baltic Trader" /></label>
+                <label><span>Cargo</span><input name="cargo" value="50,000 mt coal" /></label>
+                <label><span>Load / Disport</span><input name="route" value="Indonesia / India" /></label>
+                <label><span>Laycan</span><input name="laycan" value="10-15 July" /></label>
+                <label><span>Freight</span><input name="freight" value="USD 18.50 pmt FIOST" /></label>
+                <label><span>Demurrage</span><input name="demurrage" value="USD 18,000 pdpr" /></label>
+                <label><span>Commission</span><input name="commission" value="2.5 pct total" /></label>
+                <label><span>Subjects</span><input name="subjects" value="Stem, receiver approval, CP details" /></label>
+                <button type="submit">Recap Olustur</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-intel="recap-pdf">PDF Indir</button>
+                <button type="button" class="ghost-button small" data-download-intel="recap-txt">TXT Indir</button>
+              </div>
+              <div class="broker-output" id="recapBuilderResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Evidence Pack Generator</span><strong>Demurrage dosyasi</strong></div>
+              <form class="broker-form single-column" id="evidencePackForm">
+                <label><span>NOR / SOF / stoppage notes</span><textarea name="evidenceText">NOR tendered 10 Jul 0800. Berthed 10 Jul 1800. Loading started 11 Jul 0600. Rain stop 12 Jul 0300-0900. Completed 14 Jul 2200. Docs: NOR signed, SOF signed, rain log partial, pumping/loading logs available.</textarea></label>
+                <button type="submit">Evidence Pack Olustur</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-intel="evidence-pdf">PDF Indir</button>
+                <button type="button" class="ghost-button small" data-download-intel="evidence-json">JSON Indir</button>
+              </div>
+              <div class="broker-output" id="evidencePackResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Company Intelligence</span><strong>Counterparty score</strong></div>
+              <form class="broker-form" id="companyIntelForm">
+                <label><span>Company</span><select name="companyName"><option>Atlas Commodities</option><option>BlueSea Owners</option><option>Focus Maritime</option><option>Nova Chartering</option></select></label>
+                <label><span>Role</span><select name="role"><option>Charterer</option><option>Owner</option><option>Broker</option><option>Operator</option></select></label>
+                <label><span>Payment history</span><select name="payment"><option value="good">Good</option><option value="watch">Watch</option><option value="poor">Poor</option></select></label>
+                <label><span>Last contact</span><input name="lastContact" value="Today 14:20" /></label>
+                <button type="submit">Company Analiz Et</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-intel="company-pdf">PDF Indir</button>
+                <button type="button" class="ghost-button small" data-download-intel="company-json">JSON Indir</button>
+              </div>
+              <div class="broker-output" id="companyIntelResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Cargo Intelligence</span><strong>Yuke gore broker notu</strong></div>
+              <form class="broker-form" id="cargoIntelForm">
+                <label><span>Cargo type</span><select name="cargoType" data-cargo-select><option value="coal">Coal</option><option value="grain">Grain</option><option value="container">Container</option><option value="ironOre">Iron Ore</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option><option value="chemicals">Chemicals</option><option value="projectCargo">Project Cargo</option></select></label>
+                <label><span>Route market</span><select name="market"><option>Pacific</option><option>Atlantic</option><option>Mediterranean</option><option>Middle East</option></select></label>
+                <button type="submit">Cargo Intelligence Olustur</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-intel="cargo-pdf">PDF Indir</button>
+                <button type="button" class="ghost-button small" data-download-intel="cargo-json">JSON Indir</button>
+              </div>
+              <div class="broker-output" id="cargoIntelResult"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="command-terminal-panel" id="commandTerminal">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Broker Command Terminal</p>
+              <h2>Deal room, inbox, recap checker, claim builder, port/cargo pro ve admin kontrol</h2>
+            </div>
+            <div class="status-pill">Workspace Pro</div>
+          </div>
+
+          <div class="terminal-grid">
+            <article class="wide-card">
+              <div class="mini-heading"><span>Deal Room</span><strong>Fixture dosyasi</strong></div>
+              <form class="broker-form" id="dealRoomForm">
+                <label><span>Fixture</span><select name="dealId"><option value="coal-india">Coal Indonesia / India</option><option value="grain-egypt">Grain Black Sea / Egypt</option><option value="container-la">Container Shanghai / LA</option></select></label>
+                <label><span>Active tab</span><select name="dealTab"><option>Offer</option><option>Counter</option><option>Recap</option><option>CP</option><option>SOF</option><option>Laytime</option><option>Claim</option><option>Invoice</option><option>Mail History</option><option>Notes</option></select></label>
+                <label class="wide-label"><span>Broker note</span><textarea name="dealNote">Owner firm at USD 18.50 pmt, charterer wants stem subject lifted today. Check NOR wording and receiver approval before final recap.</textarea></label>
+                <button type="submit">Deal Room Guncelle</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-terminal="deal-pdf">Deal PDF Indir</button>
+                <button type="button" class="ghost-button small" data-download-terminal="deal-json">Deal JSON Indir</button>
+              </div>
+              <div class="broker-output" id="dealRoomResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Email / WhatsApp Import</span><strong>Metinden offer karti</strong></div>
+              <form class="broker-form single-column" id="importForm">
+                <label><span>Incoming message</span><textarea name="importText">Owner msg: 50k coal Indonesia to India, laycan 10/15 Jul, freight 18.50 pmt, dem 18000 pdpr, Supramax, subs stem/receiver approval.</textarea></label>
+                <button type="submit">Import Analiz Et</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" id="pushImportToInbox">Inbox'a Aktar</button>
+                <button type="button" class="ghost-button small" data-download-terminal="import-json">JSON Indir</button>
+              </div>
+              <div class="broker-output" id="importResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Broker Inbox</span><strong>Teklif akisi</strong></div>
+              <form class="broker-form" id="brokerInboxForm">
+                <label><span>Status filter</span><select name="statusFilter"><option>All</option><option>New offer</option><option>Counter needed</option><option>Subjects deadline</option><option>Fixed</option><option>Failed</option></select></label>
+                <label><span>Priority</span><select name="priorityFilter"><option>All</option><option>High</option><option>Medium</option><option>Low</option></select></label>
+                <button type="submit">Inbox Filtrele</button>
+              </form>
+              <div class="broker-output" id="brokerInboxResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>AI Recap Checker</span><strong>Eksik / risk kontrolu</strong></div>
+              <form class="broker-form single-column" id="recapCheckerForm">
+                <label><span>Recap text</span><textarea name="recapText">Vessel MV Baltic Trader. Cargo 50,000 mt coal. Indonesia to India. Laycan 10-15 July. Freight USD 18.50 pmt FIOST. NOR WIPON WIBON. Subjects stem and receiver approval.</textarea></label>
+                <button type="submit">Recap Kontrol Et</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-terminal="recap-check-pdf">PDF Indir</button>
+              </div>
+              <div class="broker-output" id="recapCheckerResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>CP Clause Library</span><strong>Risk / alternatif wording</strong></div>
+              <form class="broker-form" id="clauseLibraryForm">
+                <label><span>Template</span><select name="template"><option>GENCON</option><option>NYPE</option><option>SHELLVOY</option></select></label>
+                <label><span>Clause topic</span><select name="topic"><option>NOR</option><option>Laytime</option><option>Demurrage</option><option>Weather</option><option>Sanctions</option></select></label>
+                <button type="submit">Clause Getir</button>
+              </form>
+              <div class="broker-output" id="clauseLibraryResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Demurrage Claim Builder</span><strong>Claim letter + invoice</strong></div>
+              <form class="broker-form single-column" id="claimBuilderForm">
+                <label><span>SOF / NOR / rain log</span><textarea name="claimFacts">NOR tendered 10 Jul 0800. Berthed 10 Jul 1800. Loading started 11 Jul 0600. Rain stop 12 Jul 0300-0900. Completed 14 Jul 2200. Allowed laytime 72h. Demurrage USD 18,000/day.</textarea></label>
+                <button type="submit">Claim Olustur</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-terminal="claim-pdf">Claim PDF Indir</button>
+                <button type="button" class="ghost-button small" data-download-terminal="claim-txt">TXT Indir</button>
+              </div>
+              <div class="broker-output" id="claimBuilderResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Port Intelligence Pro</span><strong>Liman risk ve masraf</strong></div>
+              <form class="broker-form" id="portIntelProForm">
+                <label><span>Port</span><select name="portId"><option value="singapore">Singapore</option><option value="istanbul">Istanbul</option><option value="rotterdam">Rotterdam</option><option value="shanghai">Shanghai</option><option value="jebelali">Jebel Ali</option><option value="hamburg">Hamburg</option></select></label>
+                <label><span>Draft (m)</span><input name="draft" type="number" value="13.2" min="0" step="0.1" /></label>
+                <label><span>Waiting days</span><input name="waitingDays" type="number" value="2.5" min="0" step="0.1" /></label>
+                <label><span>Daily hire</span><input name="dailyHire" type="number" value="14500" min="0" step="100" /></label>
+                <button type="submit">Port Pro Analiz Et</button>
+              </form>
+              <div class="broker-output" id="portIntelProResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Cargo Playbook</span><strong>Yuk rehberi</strong></div>
+              <form class="broker-form" id="cargoPlaybookForm">
+                <label><span>Cargo</span><select name="cargoType" data-cargo-select><option value="coal">Coal</option><option value="grain">Grain</option><option value="container">Container</option><option value="ironOre">Iron Ore</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option><option value="chemicals">Chemicals</option><option value="projectCargo">Project Cargo</option></select></label>
+                <label><span>Trade</span><select name="trade"><option>Pacific</option><option>Atlantic</option><option>Med / Black Sea</option><option>Middle East</option></select></label>
+                <button type="submit">Playbook Ac</button>
+              </form>
+              <div class="broker-output" id="cargoPlaybookResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>TCE Optimizer 2.0</span><strong>Scenario sweep</strong></div>
+              <form class="broker-form" id="tceOptimizer2Form">
+                <label><span>Cargo</span><select name="cargoType" data-cargo-select><option value="coal">Coal</option><option value="grain">Grain</option><option value="container">Container</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option></select></label>
+                <label><span>Quantity</span><input name="cargoQty" type="number" value="52000" min="0" step="100" /></label>
+                <label><span>Distance nm</span><input name="distance" type="number" value="5800" min="0" step="10" /></label>
+                <label><span>Freight rate</span><input name="freightRate" type="number" value="18.5" min="0" step="0.1" /></label>
+                <label><span>Bunker $/t</span><input name="bunkerPrice" type="number" value="620" min="0" step="1" /></label>
+                <label><span>Canal dues</span><input name="canalDues" type="number" value="0" min="0" step="1000" /></label>
+                <label><span>Weather delay h</span><input name="weatherDelay" type="number" value="18" min="0" step="1" /></label>
+                <label><span>Port cost</span><input name="portCost" type="number" value="68000" min="0" step="1000" /></label>
+                <button type="submit">Scenario Optimize Et</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-terminal="tce2-csv">CSV Indir</button>
+                <button type="button" class="ghost-button small" data-download-terminal="tce2-pdf">PDF Indir</button>
+              </div>
+              <div class="broker-output" id="tceOptimizer2Result"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Dashboard Alarm System</span><strong>Risk uyarilari</strong></div>
+              <button type="button" class="ghost-button small" id="refreshTerminalAlarms">Alarmlari Yenile</button>
+              <div class="broker-output" id="terminalAlarmResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Backend Workspace</span><strong>Login / API hazirligi</strong></div>
+              <form class="broker-form" id="backendWorkspaceForm">
+                <label><span>User</span><input name="userName" value="eyup@focusea.local" /></label>
+                <label><span>Mode</span><select name="mode"><option>Local demo</option><option>API ready</option><option>Cloud backend</option></select></label>
+                <label><span>Save scope</span><select name="scope"><option>Fixtures + CRM + Vault</option><option>Fixtures only</option><option>Admin defaults</option></select></label>
+                <label><span>API endpoint</span><input name="endpoint" value="/api/focusea/workspace" /></label>
+                <button type="submit">Workspace Kaydet</button>
+              </form>
+              <div class="broker-output" id="backendWorkspaceResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Admin Control Pro</span><strong>Parametre yonetimi</strong></div>
+              <form class="broker-form" id="adminProForm">
+                <label><span>Cargo</span><select name="cargoType" data-cargo-select><option value="coal">Coal</option><option value="grain">Grain</option><option value="container">Container</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option></select></label>
+                <label><span>Rate multiplier</span><input name="rateMultiplier" type="number" value="1.04" min="0.1" step="0.01" /></label>
+                <label><span>Port</span><select name="portId"><option value="singapore">Singapore</option><option value="istanbul">Istanbul</option><option value="rotterdam">Rotterdam</option><option value="shanghai">Shanghai</option></select></label>
+                <label><span>Waiting index</span><input name="waitingIndex" type="number" value="46" min="0" max="100" step="1" /></label>
+                <button type="submit">Admin Parametre Uygula</button>
+              </form>
+              <div class="broker-output" id="adminProResult"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="edge-suite-panel" id="edgeSuite">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Focusea Edge Suite</p>
+              <h2>Timeline, negotiation, document AI, profit radar ve broker daily brief</h2>
+            </div>
+            <div class="status-pill">Differentiator Layer</div>
+          </div>
+
+          <div class="edge-grid">
+            <article class="wide-card">
+              <div class="mini-heading"><span>Broker Copilot Timeline</span><strong>Deal stage map</strong></div>
+              <form class="broker-form" id="timelineForm">
+                <label><span>Fixture</span><select name="dealId"><option value="coal-india">Coal Indonesia / India</option><option value="grain-egypt">Grain Black Sea / Egypt</option><option value="container-la">Container Shanghai / LA</option></select></label>
+                <label><span>Current stage</span><select name="stage"><option>Offer</option><option>Counter</option><option>Subjects</option><option>Recap</option><option>CP</option><option>SOF</option><option>Laytime</option><option>Claim</option></select></label>
+                <label><span>Subject deadline hours</span><input name="deadlineHours" type="number" value="18" min="0" step="1" /></label>
+                <button type="submit">Timeline Build Et</button>
+              </form>
+              <div class="broker-output" id="timelineResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Mail / WhatsApp to Fixture</span><strong>Offer + recap + inbox</strong></div>
+              <form class="broker-form single-column" id="fixtureImportProForm">
+                <label><span>Message</span><textarea name="fixtureText">Firm: 50k coal Indonesia to India laycan 10/15 Jul freight 18.50 pmt dem 18000 pdpr Supramax. Subjects stem/receiver approval. Commission 2.5 pct total.</textarea></label>
+                <button type="submit">Fixture'a Cevir</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" id="pushFixtureProToInbox">Inbox'a Ekle</button>
+                <button type="button" class="ghost-button small" data-download-edge="fixture-json">JSON Indir</button>
+                <button type="button" class="ghost-button small" data-download-edge="fixture-recap">Recap TXT</button>
+              </div>
+              <div class="broker-output" id="fixtureImportProResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Clause Negotiation Assistant</span><strong>Counter wording</strong></div>
+              <form class="broker-form single-column" id="clauseNegotiationForm">
+                <label><span>Clause</span><textarea name="clauseText">NOR valid whether in berth or not. Time lost waiting for berth shall count as laytime. Weather delays excepted unless used.</textarea></label>
+                <label><span>Acting for</span><select name="side"><option>Charterer</option><option>Owner</option><option>Balanced broker note</option></select></label>
+                <button type="submit">Negotiation Oner</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-edge="clause-txt">TXT Indir</button>
+              </div>
+              <div class="broker-output" id="clauseNegotiationResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Fixture Profit Radar</span><strong>Fix / Watch / Avoid</strong></div>
+              <form class="broker-form" id="profitRadarForm">
+                <label><span>Cargo</span><select name="cargoType" data-cargo-select><option value="coal">Coal</option><option value="grain">Grain</option><option value="container">Container</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option><option value="chemicals">Chemicals</option></select></label>
+                <label><span>Quantity</span><input name="quantity" type="number" value="52000" min="0" step="100" /></label>
+                <label><span>Freight rate</span><input name="freightRate" type="number" value="18.5" min="0" step="0.1" /></label>
+                <label><span>Distance nm</span><input name="distance" type="number" value="5800" min="0" step="10" /></label>
+                <label><span>Port delay days</span><input name="portDelay" type="number" value="2" min="0" step="0.1" /></label>
+                <label><span>Compliance risk</span><select name="complianceRisk"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select></label>
+                <button type="submit">Radar Calistir</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-edge="profit-pdf">PDF Indir</button>
+                <button type="button" class="ghost-button small" data-download-edge="profit-json">JSON Indir</button>
+              </div>
+              <div class="broker-output" id="profitRadarResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Real Market Confidence Badge</span><strong>Verified / simulated / input</strong></div>
+              <button type="button" class="ghost-button small" id="refreshMarketConfidence">Confidence Yenile</button>
+              <div class="broker-output" id="marketConfidenceResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Document AI</span><strong>CP / SOF / NOR parser</strong></div>
+              <form class="broker-form single-column" id="documentAiForm">
+                <label><span>Paste CP / SOF / NOR text</span><textarea name="documentText">NOR tendered 10 Jul 0800. Vessel berthed 10 Jul 1800. Loading started 11 Jul 0600. Rain stopped operations 12 Jul 0300-0900. Loading completed 14 Jul 2200. Demurrage USD 18,000/day. Clause: time lost waiting for berth to count as laytime.</textarea></label>
+                <button type="submit">Document AI Analiz Et</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-edge="document-pdf">PDF Indir</button>
+                <button type="button" class="ghost-button small" data-download-edge="document-txt">TXT Indir</button>
+              </div>
+              <div class="broker-output" id="documentAiResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Counterparty Intelligence</span><strong>Trust + dispute profile</strong></div>
+              <form class="broker-form" id="counterpartyIntelForm">
+                <label><span>Company</span><select name="companyName"><option>Atlas Commodities</option><option>BlueSea Owners</option><option>Nova Chartering</option><option>Focus Maritime</option></select></label>
+                <label><span>Role</span><select name="role"><option>Charterer</option><option>Owner</option><option>Broker</option><option>Operator</option></select></label>
+                <label><span>Payment risk</span><select name="paymentRisk"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></label>
+                <label><span>Dispute history</span><select name="disputeHistory"><option value="clean">Clean</option><option value="watch">Watch</option><option value="bad">Bad</option></select></label>
+                <button type="submit">Counterparty Analiz Et</button>
+              </form>
+              <div class="broker-output" id="counterpartyIntelResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Cargo-Specific Pricing Engine</span><strong>Rate + multiplier</strong></div>
+              <form class="broker-form" id="pricingEngineForm">
+                <label><span>Cargo</span><select name="cargoType" data-cargo-select><option value="coal">Coal</option><option value="grain">Grain</option><option value="container">Container</option><option value="ironOre">Iron Ore</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option><option value="chemicals">Chemicals</option><option value="projectCargo">Project Cargo</option></select></label>
+                <label><span>Market</span><select name="marketState"><option value="soft">Soft</option><option value="neutral" selected>Neutral</option><option value="firm">Firm</option></select></label>
+                <label><span>Quantity</span><input name="quantity" type="number" value="52000" min="0" step="100" /></label>
+                <button type="submit">Pricing Hesapla</button>
+              </form>
+              <div class="broker-output" id="pricingEngineResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Broker Email Generator Pro</span><strong>One-click English mail</strong></div>
+              <form class="broker-form" id="emailGeneratorProForm">
+                <label><span>Email type</span><select name="emailType"><option>Firm offer</option><option>Counter offer</option><option>Recap</option><option>Subjects lifted</option><option>Demurrage claim</option><option>Claim reminder</option><option>CP comment</option></select></label>
+                <label><span>Fixture ref</span><input name="fixtureRef" value="FX-COAL-0726" /></label>
+                <label><span>Main point</span><input name="mainPoint" value="Please confirm receiver approval and clean NOR wording today." /></label>
+                <button type="submit">Mail Uret</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-edge="email-txt">Mail TXT</button>
+              </div>
+              <div class="broker-output" id="emailGeneratorProResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Deal Comparison</span><strong>3 fixture karsilastir</strong></div>
+              <form class="broker-form" id="dealComparisonForm">
+                <label><span>Deal A</span><select name="dealA"><option value="coal-india">Coal Indonesia / India</option><option value="grain-egypt">Grain Black Sea / Egypt</option><option value="container-la">Container Shanghai / LA</option></select></label>
+                <label><span>Deal B</span><select name="dealB"><option value="grain-egypt">Grain Black Sea / Egypt</option><option value="coal-india">Coal Indonesia / India</option><option value="container-la">Container Shanghai / LA</option></select></label>
+                <label><span>Deal C</span><select name="dealC"><option value="container-la">Container Shanghai / LA</option><option value="coal-india">Coal Indonesia / India</option><option value="grain-egypt">Grain Black Sea / Egypt</option></select></label>
+                <button type="submit">Karsilastir</button>
+              </form>
+              <div class="broker-output" id="dealComparisonResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Alarm Center Pro</span><strong>Laycan / bunker / time bar</strong></div>
+              <button type="button" class="ghost-button small" id="refreshEdgeAlarms">Alarmlari Yenile</button>
+              <div class="broker-output" id="edgeAlarmResult"></div>
+            </article>
+
+            <article class="wide-card">
+              <div class="mini-heading"><span>Broker Daily Brief</span><strong>Bugun dikkat etmen gereken 7 sey</strong></div>
+              <button type="button" class="ghost-button small" id="refreshDailyBriefPro">Daily Brief Yenile</button>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-edge="brief-pdf">Brief PDF</button>
+                <button type="button" class="ghost-button small" data-download-edge="brief-txt">Brief TXT</button>
+              </div>
+              <div class="broker-output" id="dailyBriefProResult"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="commercial-suite-panel" id="commercialWorkspace">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Commercial Suite</p>
+              <h2>Broker, charterer ve operasyon ekipleri için gerçek iş araçları</h2>
+            </div>
+            <div class="status-pill">Workflow Ready</div>
+          </div>
+
+          <div class="commercial-grid">
+            <article>
+              <div class="mini-heading"><span>Chartering CRM</span><strong>Takip ve açık teklif</strong></div>
+              <form class="broker-form" id="charteringCrmProForm">
+                <label><span>Company</span><input name="company" value="Atlas Commodities" /></label>
+                <label><span>Role</span><select name="role"><option>Charterer</option><option>Owner</option><option>Broker</option><option>Operator</option></select></label>
+                <label><span>Open offer</span><input name="openOffer" value="52k grain Santos / Singapore" /></label>
+                <label><span>Last contact</span><input name="lastContact" type="date" value="2026-07-08" /></label>
+                <label><span>Follow-up date</span><input name="followDate" type="date" value="2026-07-10" /></label>
+                <label><span>Priority</span><select name="priority"><option>Normal</option><option selected>High</option><option>Critical</option></select></label>
+                <button type="submit">CRM Kartı Oluştur</button>
+              </form>
+              <div class="broker-output" id="charteringCrmProResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Claim & Dispute Center</span><strong>Time bar ve claim gücü</strong></div>
+              <form class="broker-form" id="claimDisputeCenterForm">
+                <label><span>Claim type</span><select name="claimType"><option>Demurrage</option><option>Off-hire</option><option>Cargo damage</option><option>Deadfreight</option></select></label>
+                <label><span>Claim amount ($)</span><input name="claimAmount" type="number" value="38500" min="0" step="100" /></label>
+                <label><span>Time bar date</span><input name="timeBarDate" type="date" value="2026-08-15" /></label>
+                <label><span>Documents</span><select name="docsReady"><option value="ready">NOR + SOF + logs ready</option><option value="partial" selected>Partial documents</option><option value="missing">Missing key docs</option></select></label>
+                <label><span>Counterparty position</span><select name="counterPosition"><option>Cooperative</option><option selected>Disputing deductions</option><option>Rejecting claim</option></select></label>
+                <button type="submit">Claim Analiz Et</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-commercial="claim-report">Claim TXT</button>
+              </div>
+              <div class="broker-output" id="claimDisputeCenterResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Port Agency Workspace</span><strong>Evrak, pilot, tug, timeline</strong></div>
+              <form class="broker-form" id="portAgencyWorkspaceForm">
+                <label><span>Port</span><select name="portId"><option value="singapore">Singapore</option><option value="istanbul">Istanbul</option><option value="rotterdam">Rotterdam</option><option value="shanghai">Shanghai</option><option value="santos">Santos</option></select></label>
+                <label><span>Vessel</span><input name="vessel" value="MV Orion" /></label>
+                <label><span>ETA</span><input name="eta" type="datetime-local" value="2026-07-14T06:00" /></label>
+                <label><span>Docs status</span><select name="docsStatus"><option>Ready</option><option selected>Partial</option><option>Missing</option></select></label>
+                <label><span>Pilot window</span><input name="pilotWindow" value="14 Jul 0800-1200 LT" /></label>
+                <label><span>Tug plan</span><select name="tugPlan"><option>1 tug</option><option selected>2 tugs</option><option>3 tugs</option></select></label>
+                <button type="submit">Port Call Planla</button>
+              </form>
+              <div class="broker-output" id="portAgencyWorkspaceResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Compliance Terminal</span><strong>OFAC / EU / UN akışı</strong></div>
+              <form class="broker-form" id="complianceTerminalForm">
+                <label><span>Counterparty</span><select name="counterpartyRisk"><option value="low">Known / low risk</option><option value="medium" selected>New / medium risk</option><option value="high">Adverse media</option></select></label>
+                <label><span>Flag / ownership</span><select name="flagRisk"><option value="low">Clear</option><option value="medium">Complex ownership</option><option value="high">High risk flag</option></select></label>
+                <label><span>Cargo origin</span><select name="originRisk"><option value="low">Clear</option><option value="medium" selected>Watch list area</option><option value="high">Restricted region</option></select></label>
+                <label><span>Payment route</span><select name="paymentRisk"><option value="low">Standard bank</option><option value="medium">Intermediary bank</option><option value="high">Unclear payment route</option></select></label>
+                <label><span>Sanctions hit</span><select name="sanctionHit"><option value="no">No hit</option><option value="watch" selected>Potential match</option><option value="yes">Confirmed hit</option></select></label>
+                <button type="submit">Compliance Akışı Çalıştır</button>
+              </form>
+              <div class="broker-output" id="complianceTerminalResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Finance Desk</span><strong>Invoice, commission, cashflow</strong></div>
+              <form class="broker-form" id="financeDeskForm">
+                <label><span>Freight income ($)</span><input name="freightIncome" type="number" value="962000" min="0" step="1000" /></label>
+                <label><span>Hire cost ($)</span><input name="hireCost" type="number" value="326000" min="0" step="1000" /></label>
+                <label><span>Bunker cost ($)</span><input name="bunkerCost" type="number" value="298000" min="0" step="1000" /></label>
+                <label><span>Port/canal cost ($)</span><input name="portCost" type="number" value="68000" min="0" step="1000" /></label>
+                <label><span>Commission (%)</span><input name="commission" type="number" value="2.5" min="0" step="0.1" /></label>
+                <label><span>Open claim ($)</span><input name="claimAmount" type="number" value="18500" min="0" step="100" /></label>
+                <button type="submit">Finance Hesapla</button>
+              </form>
+              <div class="broker-output" id="financeDeskResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Document AI Hub</span><strong>CP / SOF / NOR / LOI aksiyon</strong></div>
+              <form class="broker-form single-column" id="documentHubForm">
+                <label><span>Document type</span><select name="docType"><option>Charter Party</option><option>SOF</option><option>NOR</option><option>LOI</option><option>Fixture Recap</option></select></label>
+                <label><span>Paste document text</span><textarea name="documentText">NOR tendered 10 Jul 0800. Time lost waiting for berth shall count as laytime. Weather delays excepted. Demurrage USD 18,000/day. LOI to be provided before discharge.</textarea></label>
+                <button type="submit">Dokümanı Oku</button>
+              </form>
+              <div class="broker-output" id="documentHubResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Training & Certificate Mode</span><strong>Seviye, rozet, sertifika</strong></div>
+              <form class="broker-form" id="certificateModeForm">
+                <label><span>Learner</span><input name="learner" value="Eyüp Maritime" /></label>
+                <label><span>Module</span><select name="module"><option>Laytime</option><option>Charter Party</option><option>COLREGS</option><option>Cargo Planning</option><option>Port Operations</option></select></label>
+                <label><span>Quiz score (%)</span><input name="quizScore" type="number" value="86" min="0" max="100" step="1" /></label>
+                <label><span>Completed lessons</span><input name="completedLessons" type="number" value="18" min="0" step="1" /></label>
+                <label><span>Sea / desk experience months</span><input name="experienceMonths" type="number" value="8" min="0" step="1" /></label>
+                <button type="submit">Sertifika Hazırla</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-commercial="certificate-pdf">Sertifika PDF</button>
+              </div>
+              <div class="broker-output" id="certificateModeResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Cargo Intelligence Pro</span><strong>Yük, gemi, risk, market</strong></div>
+              <form class="broker-form" id="cargoIntelligenceProForm">
+                <label><span>Cargo</span><select name="cargoType" data-cargo-select><option value="coal">Coal</option><option value="grain">Grain</option><option value="container">Container</option><option value="ironOre">Iron Ore</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option><option value="chemicals">Chemicals</option><option value="projectCargo">Project Cargo</option></select></label>
+                <label><span>Quantity</span><input name="quantity" type="number" value="52000" min="0" step="100" /></label>
+                <label><span>Route</span><input name="route" value="Indonesia / India" /></label>
+                <label><span>Market tone</span><select name="marketTone"><option>Soft</option><option selected>Neutral</option><option>Firm</option></select></label>
+                <button type="submit">Cargo Intel Oluştur</button>
+              </form>
+              <div class="broker-output" id="cargoIntelligenceProResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Sustainability / ETS</span><strong>CO2, FuelEU, CII, yeşil maliyet</strong></div>
+              <form class="broker-form" id="sustainabilityDeskForm">
+                <label><span>Fuel tons</span><input name="fuelTons" type="number" value="480" min="0" step="1" /></label>
+                <label><span>EU voyage share (%)</span><input name="euShare" type="number" value="50" min="0" max="100" step="1" /></label>
+                <label><span>EUA price (EUR/t)</span><input name="euaPrice" type="number" value="72" min="0" step="1" /></label>
+                <label><span>Cargo quantity</span><input name="cargoQty" type="number" value="52000" min="1" step="100" /></label>
+                <label><span>Distance nm</span><input name="distance" type="number" value="5800" min="0" step="10" /></label>
+                <button type="submit">Green Cost Hesapla</button>
+              </form>
+              <div class="broker-output" id="sustainabilityDeskResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Client Portal</span><strong>Fixture status ve indirilebilir rapor</strong></div>
+              <form class="broker-form" id="clientPortalForm">
+                <label><span>Client</span><input name="client" value="Atlas Commodities" /></label>
+                <label><span>Fixture ref</span><input name="fixtureRef" value="FX-2026-001" /></label>
+                <label><span>Status</span><select name="status"><option>Offer stage</option><option>On subjects</option><option selected>Fixed clean</option><option>At load port</option><option>Claim stage</option></select></label>
+                <label><span>ETA</span><input name="eta" value="14 Jul 0600 LT" /></label>
+                <label><span>Voyage P&L ($)</span><input name="pnl" type="number" value="148000" step="1000" /></label>
+                <label><span>Claim status</span><select name="claimStatus"><option>No claim</option><option selected>Potential demurrage</option><option>Claim submitted</option></select></label>
+                <button type="submit">Client Portal Özeti</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-commercial="client-report-pdf">Client PDF</button>
+                <button type="button" class="ghost-button small" data-download-commercial="client-report-txt">Client TXT</button>
+              </div>
+              <div class="broker-output" id="clientPortalResult"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="broker-os-panel" id="brokerOsSuite">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Focusea Broker OS</p>
+              <h2>Deal Room, parser, SOF motoru, kanban, risk, export, admin ve client portal</h2>
+            </div>
+            <div class="status-pill">Commercial Operating System</div>
+          </div>
+
+          <div class="broker-os-hero">
+            <div>
+              <span>Live deal file</span>
+              <strong id="brokerOsHeadline">FX-2026-001 / Coal Indonesia - India</strong>
+              <p id="brokerOsSummary">Run the workspace to generate a broker-ready deal pack with risk, laytime, claim and client portal output.</p>
+            </div>
+            <button type="button" class="primary-button" id="runBrokerOs">Run Full Broker OS</button>
+          </div>
+
+          <div class="broker-os-grid">
+            <article class="wide-card">
+              <div class="mini-heading"><span>1. Deal Room 2.0</span><strong>Tek fixture dosyasi</strong></div>
+              <form class="broker-form" id="osDealRoomForm">
+                <label><span>Fixture ref</span><input name="fixtureRef" value="FX-2026-001" /></label>
+                <label><span>Stage</span><select name="stage"><option>Offer</option><option>Counter</option><option selected>On subjects</option><option>Fixed</option><option>SOF</option><option>Laytime</option><option>Claim</option></select></label>
+                <label><span>Cargo</span><select name="cargoType" data-cargo-select><option value="coal">Coal</option><option value="grain">Grain</option><option value="container">Container</option><option value="ironOre">Iron Ore</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option><option value="chemicals">Chemicals</option><option value="projectCargo">Project Cargo</option></select></label>
+                <label><span>Route</span><input name="route" value="Indonesia / India" /></label>
+                <label><span>Laycan</span><input name="laycan" value="10-15 Jul" /></label>
+                <label><span>Freight</span><input name="freight" type="number" value="18.5" min="0" step="0.1" /></label>
+                <label class="wide-label"><span>Broker note</span><textarea name="note">Check receiver approval, NOR wording, demurrage evidence and subject deadline before fixing clean.</textarea></label>
+                <button type="submit">Deal Room Build Et</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-os="deal-room-pdf">Deal PDF</button>
+                <button type="button" class="ghost-button small" data-download-os="deal-room-json">Deal JSON</button>
+              </div>
+              <div class="broker-output" id="osDealRoomResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>2. Mail / WhatsApp Parser</span><strong>Offer karti uret</strong></div>
+              <form class="broker-form single-column" id="osParserForm">
+                <label><span>Incoming text</span><textarea name="message">Firm: 50k coal Indonesia to India laycan 10/15 Jul freight 18.50 pmt dem 18000 pdpr Supramax. Subjects stem/receiver approval. Commission 2.5 pct total.</textarea></label>
+                <button type="submit">Metni Offer'a Cevir</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" id="osPushParserToKanban">Kanban'a Aktar</button>
+                <button type="button" class="ghost-button small" data-download-os="parsed-offer-json">JSON</button>
+              </div>
+              <div class="broker-output" id="osParserResult"></div>
+            </article>
+
+            <article class="wide-card">
+              <div class="mini-heading"><span>3. SOF to Laytime to Claim</span><strong>Otomatik demurrage motoru</strong></div>
+              <form class="broker-form" id="osSofEngineForm">
+                <label class="wide-label"><span>SOF text</span><textarea name="sofText">NOR tendered 10 Jul 0800. Berthed 10 Jul 1800. Loading started 11 Jul 0600. Rain stop 12 Jul 0300-0900. Completed 14 Jul 2200. Allowed laytime 72h. Demurrage USD 18,000/day. Dispatch USD 9,000/day.</textarea></label>
+                <label><span>Allowed laytime h</span><input name="allowedHours" type="number" value="72" min="0" step="0.5" /></label>
+                <label><span>Demurrage $/day</span><input name="demurrageRate" type="number" value="18000" min="0" step="100" /></label>
+                <label><span>Dispatch $/day</span><input name="dispatchRate" type="number" value="9000" min="0" step="100" /></label>
+                <label><span>Time bar days</span><input name="timeBarDays" type="number" value="90" min="0" step="1" /></label>
+                <button type="submit">SOF Motorunu Calistir</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-os="sof-claim-pdf">Claim PDF</button>
+                <button type="button" class="ghost-button small" data-download-os="laytime-csv">Laytime CSV</button>
+              </div>
+              <div class="broker-output" id="osSofEngineResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>4. Broker Inbox / Kanban</span><strong>Deal akisi</strong></div>
+              <form class="broker-form" id="osKanbanForm">
+                <label><span>Status filter</span><select name="status"><option>All</option><option>New offer</option><option>Counter sent</option><option>On subjects</option><option>Fixed</option><option>Failed</option><option>Claim stage</option></select></label>
+                <label><span>Priority</span><select name="priority"><option>All</option><option>High</option><option>Medium</option><option>Low</option></select></label>
+                <button type="submit">Kanban Yenile</button>
+              </form>
+              <div class="broker-output" id="osKanbanResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>5. Counterparty Intelligence</span><strong>Guven ve dispute profili</strong></div>
+              <form class="broker-form" id="osCounterpartyForm">
+                <label><span>Company</span><input name="company" value="Atlas Commodities" /></label>
+                <label><span>Role</span><select name="role"><option>Charterer</option><option>Owner</option><option>Broker</option><option>Operator</option></select></label>
+                <label><span>Payment risk</span><select name="paymentRisk"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select></label>
+                <label><span>Dispute history</span><select name="disputeHistory"><option value="clean">Clean</option><option value="watch" selected>Watch</option><option value="bad">Bad</option></select></label>
+                <label><span>Past fixtures</span><input name="pastFixtures" type="number" value="12" min="0" step="1" /></label>
+                <button type="submit">Counterparty Skorla</button>
+              </form>
+              <div class="broker-output" id="osCounterpartyResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>6. Cargo Playbook Pro</span><strong>Yuk bazli operasyon notu</strong></div>
+              <form class="broker-form" id="osCargoPlaybookForm">
+                <label><span>Cargo</span><select name="cargoType" data-cargo-select><option value="coal">Coal</option><option value="grain">Grain</option><option value="container">Container</option><option value="ironOre">Iron Ore</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option><option value="chemicals">Chemicals</option><option value="projectCargo">Project Cargo</option></select></label>
+                <label><span>Trade</span><select name="trade"><option>Pacific</option><option>Atlantic</option><option>Med / Black Sea</option><option>Middle East</option></select></label>
+                <label><span>Quantity</span><input name="quantity" type="number" value="50000" min="0" step="100" /></label>
+                <button type="submit">Playbook Uret</button>
+              </form>
+              <div class="broker-output" id="osCargoPlaybookResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>7. Fixture Risk Radar</span><strong>Fix / Watch / Avoid</strong></div>
+              <form class="broker-form" id="osRiskRadarForm">
+                <label><span>TCE $/day</span><input name="tce" type="number" value="21500" step="500" /></label>
+                <label><span>Bunker $/t</span><input name="bunker" type="number" value="620" min="0" step="1" /></label>
+                <label><span>Laycan width days</span><input name="laycanDays" type="number" value="5" min="0" step="1" /></label>
+                <label><span>Port delay days</span><input name="portDelay" type="number" value="2.5" min="0" step="0.1" /></label>
+                <label><span>Clause risk</span><select name="clauseRisk"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select></label>
+                <label><span>Compliance risk</span><select name="complianceRisk"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select></label>
+                <button type="submit">Risk Radar Calistir</button>
+              </form>
+              <div class="broker-output" id="osRiskRadarResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>8. PDF / Document Center</span><strong>Gercek indirilebilir paketler</strong></div>
+              <div class="export-actions broker-os-export">
+                <button type="button" data-download-os="fixture-recap-pdf">Fixture Recap</button>
+                <button type="button" data-download-os="voyage-estimate-pdf">Voyage Estimate</button>
+                <button type="button" data-download-os="laytime-statement-pdf">Laytime Statement</button>
+                <button type="button" data-download-os="demurrage-claim-pdf">Demurrage Claim</button>
+                <button type="button" data-download-os="invoice-pdf">Invoice</button>
+                <button type="button" data-download-os="full-pack-json">Full Pack JSON</button>
+              </div>
+              <div class="broker-output" id="osExportCenterResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>9. Admin Panel</span><strong>Market ve default parametre</strong></div>
+              <form class="broker-form" id="osAdminPanelForm">
+                <label><span>Cargo rate multiplier</span><input name="cargoMultiplier" type="number" value="1.04" min="0.2" step="0.01" /></label>
+                <label><span>Port delay index</span><input name="portDelayIndex" type="number" value="46" min="0" max="100" step="1" /></label>
+                <label><span>Bunker default</span><input name="bunkerDefault" type="number" value="620" min="0" step="1" /></label>
+                <label><span>Data mode</span><select name="dataMode"><option>Demo + source badges</option><option>API-ready</option><option>Licensed source required</option></select></label>
+                <button type="submit">Admin Ayarlarini Uygula</button>
+              </form>
+              <div class="broker-output" id="osAdminPanelResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>10. Client Portal</span><strong>Musteriye hazir rapor</strong></div>
+              <form class="broker-form" id="osClientPortalForm">
+                <label><span>Client</span><input name="client" value="Atlas Commodities" /></label>
+                <label><span>Status</span><select name="status"><option>Offer stage</option><option selected>On subjects</option><option>Fixed clean</option><option>At load port</option><option>Claim stage</option></select></label>
+                <label><span>ETA</span><input name="eta" value="14 Jul 0600 LT" /></label>
+                <label><span>Claim status</span><select name="claimStatus"><option>No claim</option><option selected>Potential demurrage</option><option>Claim submitted</option></select></label>
+                <button type="submit">Portal Raporu Uret</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-os="client-portal-pdf">Client PDF</button>
+                <button type="button" class="ghost-button small" data-download-os="client-portal-txt">Client TXT</button>
+              </div>
+              <div class="broker-output" id="osClientPortalResult"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="autopilot-panel" id="autopilotSuite">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Broker Autopilot Pro</p>
+              <h2>Mailden deal room'a, belgeden claim'e, piyasadan karara tek akilli masa</h2>
+            </div>
+            <div class="status-pill">End-to-End Workflow</div>
+          </div>
+
+          <div class="autopilot-hero">
+            <div>
+              <span>Autopilot status</span>
+              <strong id="autopilotHeadline">Paste a fixture message and Focusea builds the desk.</strong>
+              <p id="autopilotSummary">Inbox classification, timeline, document contradiction check, voyage optimization, ETS, weather, port restriction, counterparty memory and client portal run together.</p>
+            </div>
+            <button type="button" class="primary-button" id="runAutopilot">Run Autopilot</button>
+          </div>
+
+          <div class="autopilot-grid">
+            <article class="wide-card">
+              <div class="mini-heading"><span>1. Broker Inbox Autopilot</span><strong>Mail / WhatsApp metninden klasor + deal room</strong></div>
+              <form class="broker-form single-column" id="autopilotInboxForm">
+                <label><span>Incoming broker message</span><textarea name="message">Firm offer: 50k coal Indonesia to India laycan 10/15 Jul freight USD 18.50 pmt demurrage USD 18,000/day Supramax. Subjects stem and receiver approval by 1700 LT. NOR WIBON/WIPON, time lost waiting berth to count. Please counter quickly.</textarea></label>
+                <div class="auto-deal-controls">
+                  <label><span>Default owner</span><input name="owner" value="BlueSea Owners" /></label>
+                  <label><span>Default charterer</span><input name="charterer" value="Atlas Commodities" /></label>
+                  <label><span>Subject deadline h</span><input name="deadlineHours" type="number" value="18" min="0" step="1" /></label>
+                </div>
+                <button type="submit">Autopilot Analiz Et</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" id="autopilotPushInbox">Inbox + Deal Room'a Aktar</button>
+                <button type="button" class="ghost-button small" data-download-autopilot="inbox-json">Inbox JSON</button>
+              </div>
+              <div class="broker-output" id="autopilotInboxResult"></div>
+            </article>
+
+            <article class="wide-card">
+              <div class="mini-heading"><span>2. Deal Room Timeline 2.0</span><strong>Tek fixture dosyasi ve asama haritasi</strong></div>
+              <form class="broker-form" id="autopilotDealRoomForm">
+                <label><span>Fixture ref</span><input name="fixtureRef" value="AP-COAL-2026-001" /></label>
+                <label><span>Current stage</span><select name="stage"><option>Offer</option><option>Counter</option><option selected>Subjects</option><option>Fixed</option><option>SOF</option><option>Laytime</option><option>Invoice</option><option>Claim</option></select></label>
+                <label><span>Claim exposure ($)</span><input name="claimExposure" type="number" value="36000" min="0" step="1000" /></label>
+                <label><span>Subject deadline h</span><input name="deadlineHours" type="number" value="18" min="0" step="1" /></label>
+                <label class="wide-label"><span>Deal note</span><textarea name="note">Offer received, counter needed, subject deadline close. CP/NOR/weather wording must be tightened before subjects lifted.</textarea></label>
+                <button type="submit">Timeline Olustur</button>
+              </form>
+              <div class="broker-output" id="autopilotDealRoomResult"></div>
+            </article>
+
+            <article class="wide-card">
+              <div class="mini-heading"><span>3. Multi-Document AI Pack</span><strong>CP + SOF + NOR + invoice celiski yakalama</strong></div>
+              <form class="broker-form single-column" id="autopilotDocumentPackForm">
+                <label><span>Paste documents together</span><textarea name="documentPack">RECAP: demurrage USD 18,000/day, laycan 10/15 Jul, NOR 10 Jul 0800. CP: NOR valid whether in berth or not, weather delays excepted. SOF: NOR tendered 10 Jul 1000, berthed 10 Jul 1800, loading started 11 Jul 0600, rain stop 12 Jul 0300-0900, completed 14 Jul 2200. INVOICE: demurrage USD 20,000/day, amount USD 45,000.</textarea></label>
+                <button type="submit">Dokuman Pack Analiz Et</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-autopilot="document-pdf">Document PDF</button>
+                <button type="button" class="ghost-button small" data-download-autopilot="document-txt">Findings TXT</button>
+              </div>
+              <div class="broker-output" id="autopilotDocumentPackResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>4. Voyage Optimizer Pro</span><strong>Speed, bunker, delay, counter ve canal karari</strong></div>
+              <form class="broker-form" id="autopilotVoyageOptimizerForm">
+                <label><span>Cargo</span><select name="cargoType" data-cargo-select><option value="coal">Coal</option><option value="grain">Grain</option><option value="ironOre">Iron Ore</option><option value="container">Container</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option><option value="chemicals">Chemicals</option></select></label>
+                <label><span>Quantity</span><input name="cargoQty" type="number" value="50000" min="0" step="100" /></label>
+                <label><span>Distance nm</span><input name="distance" type="number" value="3150" min="0" step="10" /></label>
+                <label><span>Freight rate</span><input name="freightRate" type="number" value="18.5" min="0" step="0.1" /></label>
+                <label><span>Bunker $/t</span><input name="bunkerPrice" type="number" value="620" min="0" step="1" /></label>
+                <label><span>Daily hire</span><input name="dailyHire" type="number" value="14500" min="0" step="100" /></label>
+                <label><span>Port delay days</span><input name="portDelay" type="number" value="2" min="0" step="0.1" /></label>
+                <label><span>Canal route</span><select name="canalRoute"><option value="none">No canal</option><option value="suez">Suez / faster</option><option value="panama">Panama / faster</option><option value="cape">Cape route / slower</option></select></label>
+                <button type="submit">Optimize Et</button>
+              </form>
+              <div class="broker-output" id="autopilotVoyageOptimizerResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>5. EU ETS / Carbon Desk</span><strong>2026 phase-in maliyeti</strong></div>
+              <form class="broker-form" id="autopilotCarbonForm">
+                <label><span>Gross tonnage</span><input name="gt" type="number" value="38000" min="0" step="100" /></label>
+                <label><span>Fuel tons</span><input name="fuelTons" type="number" value="420" min="0" step="1" /></label>
+                <label><span>EU scope share (%)</span><input name="euShare" type="number" value="50" min="0" max="100" step="1" /></label>
+                <label><span>EUA price EUR/t</span><input name="euaPrice" type="number" value="72" min="0" step="1" /></label>
+                <label><span>Year</span><select name="year"><option>2025</option><option selected>2026</option><option>2027</option></select></label>
+                <button type="submit">ETS Hesapla</button>
+              </form>
+              <div class="broker-output" id="autopilotCarbonResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>6. Weather Delay & Alert Engine</span><strong>Laytime / claim baglantisi</strong></div>
+              <form class="broker-form" id="autopilotWeatherForm">
+                <label><span>Route / port</span><input name="route" value="US Gulf / Rotterdam" /></label>
+                <label><span>NOAA/NWS area</span><select name="area"><option value="TX">TX Gulf</option><option value="LA">LA Gulf</option><option value="CA">US West Coast</option><option value="NY">US East Coast</option><option value="AK">Alaska</option><option value="HI">Hawaii</option></select></label>
+                <label><span>Forecast delay h</span><input name="delayHours" type="number" value="14" min="0" step="1" /></label>
+                <label><span>Laytime status</span><select name="laytimeStatus"><option>Before NOR</option><option selected>After NOR</option><option>On demurrage</option></select></label>
+                <label><span>Weather clause</span><select name="weatherClause"><option>Weather excepted</option><option selected>Unless used</option><option>No clear exception</option></select></label>
+                <button type="submit">Weather Risk Hesapla</button>
+              </form>
+              <div class="broker-output" id="autopilotWeatherResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>7. Port Restriction + Agency Notes</span><strong>Draft, LOA, beam, docs ve yerel not</strong></div>
+              <form class="broker-form" id="autopilotPortAgencyForm">
+                <label><span>Port</span><select name="portId"><option value="singapore">Singapore</option><option value="rotterdam">Rotterdam</option><option value="santos">Santos</option><option value="istanbul">Istanbul</option><option value="shanghai">Shanghai</option><option value="jebelali">Jebel Ali</option></select></label>
+                <label><span>Draft m</span><input name="draft" type="number" value="13.4" min="0" step="0.1" /></label>
+                <label><span>LOA m</span><input name="loa" type="number" value="229" min="0" step="1" /></label>
+                <label><span>Beam m</span><input name="beam" type="number" value="32.2" min="0" step="0.1" /></label>
+                <label><span>Cargo / IMDG</span><select name="cargoRisk"><option>Bulk non-IMDG</option><option>Container IMDG</option><option>Chemicals / tanker</option><option>Project cargo</option></select></label>
+                <label><span>Holiday / docs</span><select name="docsRisk"><option>All docs ready</option><option selected>Holiday / customs watch</option><option>Docs missing</option></select></label>
+                <label class="wide-label"><span>Agency note</span><textarea name="agencyNote">Rain letter is difficult to obtain; ask agent to preserve weather log and terminal stop/start evidence.</textarea></label>
+                <button type="submit">Port Restriction Kontrol Et</button>
+              </form>
+              <div class="broker-output" id="autopilotPortAgencyResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>8. Counterparty Risk Memory</span><strong>Gecmis odeme, dispute ve guven skoru</strong></div>
+              <form class="broker-form" id="autopilotCounterpartyForm">
+                <label><span>Company</span><input name="company" value="Atlas Commodities" /></label>
+                <label><span>Role</span><select name="role"><option>Charterer</option><option>Owner</option><option>Broker</option><option>Operator</option></select></label>
+                <label><span>Payment delay</span><select name="paymentDelay"><option value="none">No delay</option><option value="minor" selected>Minor delay</option><option value="major">Major delay</option></select></label>
+                <label><span>Dispute history</span><select name="disputeHistory"><option value="clean">Clean</option><option value="watch" selected>Watch</option><option value="bad">Bad</option></select></label>
+                <label><span>Past fixtures</span><input name="pastFixtures" type="number" value="12" min="0" step="1" /></label>
+                <button type="submit">Memory Kaydet / Skorla</button>
+              </form>
+              <div class="broker-output" id="autopilotCounterpartyResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>9. Clause Battle Library</span><strong>Owner/charterer risk + counter wording</strong></div>
+              <form class="broker-form" id="autopilotClauseBattleForm">
+                <label><span>Template</span><select name="template"><option>GENCON</option><option>NYPE</option><option>SHELLVOY</option><option>Tanker rider</option></select></label>
+                <label><span>Topic</span><select name="topic"><option>NOR / waiting time</option><option>Weather exception</option><option>Demurrage time bar</option><option>Sanctions</option><option>Safe berth</option></select></label>
+                <label><span>Acting for</span><select name="side"><option>Charterer</option><option>Owner</option><option selected>Balanced broker</option></select></label>
+                <button type="submit">Battle Wording Uret</button>
+              </form>
+              <div class="broker-output" id="autopilotClauseBattleResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>10. Client Portal Link</span><strong>Musteriye tek linklik durum raporu</strong></div>
+              <form class="broker-form" id="autopilotClientPortalForm">
+                <label><span>Client</span><input name="client" value="Atlas Commodities" /></label>
+                <label><span>Fixture ref</span><input name="fixtureRef" value="AP-COAL-2026-001" /></label>
+                <label><span>Status</span><select name="status"><option>Offer received</option><option selected>On subjects</option><option>Fixed clean</option><option>Loading</option><option>Claim stage</option></select></label>
+                <label><span>ETA</span><input name="eta" value="14 Jul 0600 LT" /></label>
+                <label><span>P&L visibility</span><select name="pnlMode"><option>Hide P&L</option><option selected>Show summary only</option><option>Show full P&L</option></select></label>
+                <button type="submit">Portal Link Uret</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-autopilot="client-pdf">Client PDF</button>
+                <button type="button" class="ghost-button small" data-download-autopilot="full-json">Full Pack JSON</button>
+              </div>
+              <div class="broker-output" id="autopilotClientPortalResult"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="deal-iq-panel" id="dealIqSuite">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Focusea Deal IQ</p>
+              <h2>Fixture War Room, comparables, time bar, CP diff ve profesyonel rapor merkezi</h2>
+            </div>
+            <div class="status-pill">Broker Intelligence</div>
+          </div>
+
+          <div class="deal-iq-hero">
+            <div>
+              <span>Deal command status</span>
+              <strong id="dealIqHeadline">Open a deal war room and let the desk score it.</strong>
+              <p id="dealIqSummary">Commercial risk, market memory, time bars, CP changes, vessel suitability and evidence readiness stay on one page.</p>
+            </div>
+            <button type="button" class="primary-button" id="runDealIq">Run Deal IQ</button>
+          </div>
+
+          <div class="deal-iq-grid">
+            <article class="wide-card">
+              <div class="mini-heading"><span>1. Fixture War Room</span><strong>Acil risk, eksik bilgi, counter ve aksiyon masasi</strong></div>
+              <form class="broker-form single-column" id="warRoomForm">
+                <label><span>Deal text / broker mail</span><textarea name="dealText">50k coal Indonesia to India laycan 10/15 Jul freight USD 18.50 pmt demurrage USD 18,000/day Supramax. Subjects receiver approval by 1700 LT. NOR WIBON/WIPON, time lost waiting berth to count. Port delay risk 2 days.</textarea></label>
+                <div class="auto-deal-controls">
+                  <label><span>Target TCE $/day</span><input name="targetTce" type="number" value="22000" step="500" /></label>
+                  <label><span>Subject deadline h</span><input name="deadlineHours" type="number" value="18" min="0" step="1" /></label>
+                  <label><span>Claim exposure $</span><input name="claimExposure" type="number" value="36000" min="0" step="1000" /></label>
+                </div>
+                <button type="submit">War Room Ac</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-deal-iq="war-room-pdf">War Room PDF</button>
+                <button type="button" class="ghost-button small" data-download-deal-iq="war-room-json">War Room JSON</button>
+              </div>
+              <div class="broker-output" id="warRoomResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>2. Comparable Fixtures</span><strong>Gecmis fixture market hafizasi</strong></div>
+              <form class="broker-form" id="comparableFixtureForm">
+                <label><span>Cargo</span><select name="cargoType" data-cargo-select><option value="coal">Coal</option><option value="grain">Grain</option><option value="ironOre">Iron Ore</option><option value="container">Container</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option><option value="chemicals">Chemicals</option></select></label>
+                <label><span>Route</span><input name="route" value="Indonesia / India" /></label>
+                <label><span>Current freight</span><input name="freightRate" type="number" value="18.5" min="0" step="0.1" /></label>
+                <label><span>Demurrage</span><input name="demurrageRate" type="number" value="18000" min="0" step="100" /></label>
+                <label><span>Status</span><select name="fixtureStatus"><option>Fixed</option><option selected>On subjects</option><option>Failed</option><option>Firm offer</option></select></label>
+                <button type="submit">Comparable Analiz Et</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" id="addComparableFixture">Hafizaya Ekle</button>
+                <button type="button" class="ghost-button small" data-download-deal-iq="comparables-json">Comparables JSON</button>
+              </div>
+              <div class="broker-output" id="comparableFixtureResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>3. Time Bar Calendar</span><strong>Subject, laycan, invoice ve claim takvimi</strong></div>
+              <form class="broker-form" id="timeBarCalendarForm">
+                <label><span>Fixture ref</span><input name="fixtureRef" value="FX-COAL-0726" /></label>
+                <label><span>Subject deadline</span><input name="subjectDate" type="date" value="2026-07-05" /></label>
+                <label><span>Laycan canceling</span><input name="laycanDate" type="date" value="2026-07-15" /></label>
+                <label><span>Invoice due</span><input name="invoiceDate" type="date" value="2026-07-30" /></label>
+                <label><span>Claim time bar</span><input name="claimDate" type="date" value="2026-08-30" /></label>
+                <button type="submit">Takvimi Goster</button>
+              </form>
+              <div class="broker-output" id="timeBarCalendarResult"></div>
+            </article>
+
+            <article class="wide-card">
+              <div class="mini-heading"><span>4. CP Diff Tool</span><strong>Charter party fark ve risk analizi</strong></div>
+              <form class="broker-form" id="cpDiffForm">
+                <label class="wide-label"><span>Original CP / recap clause</span><textarea name="originalText">NOR to be tendered on arrival, laytime to commence after valid NOR and vessel ready in all respects. Weather delays excepted. Demurrage USD 18,000/day.</textarea></label>
+                <label class="wide-label"><span>Revised CP / received wording</span><textarea name="revisedText">NOR valid whether in berth or not. Time lost waiting for berth shall count as laytime. Weather delays excepted unless used. Demurrage USD 20,000/day.</textarea></label>
+                <button type="submit">CP Farklarini Bul</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-deal-iq="cp-diff-pdf">CP Diff PDF</button>
+                <button type="button" class="ghost-button small" data-download-deal-iq="cp-diff-txt">CP Diff TXT</button>
+              </div>
+              <div class="broker-output" id="cpDiffResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>5. Vessel Suitability Engine</span><strong>Yuk + liman + gemi uygunluk skoru</strong></div>
+              <form class="broker-form" id="vesselSuitabilityForm">
+                <label><span>Cargo</span><select name="cargoType" data-cargo-select><option value="coal">Coal</option><option value="grain">Grain</option><option value="ironOre">Iron Ore</option><option value="container">Container</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option><option value="chemicals">Chemicals</option><option value="projectCargo">Project Cargo</option></select></label>
+                <label><span>Vessel type</span><select name="vesselType"><option value="bulk">Bulk carrier</option><option value="container">Container ship</option><option value="tanker">Tanker</option><option value="lng">LNG carrier</option><option value="mpp">MPP / project</option></select></label>
+                <label><span>Port</span><select name="portId"><option value="singapore">Singapore</option><option value="rotterdam">Rotterdam</option><option value="santos">Santos</option><option value="istanbul">Istanbul</option><option value="shanghai">Shanghai</option></select></label>
+                <label><span>Draft m</span><input name="draft" type="number" value="13.2" min="0" step="0.1" /></label>
+                <label><span>Age years</span><input name="age" type="number" value="12" min="0" step="1" /></label>
+                <label><span>Class / vetting</span><select name="classStatus"><option>Clean class</option><option selected>Minor remarks</option><option>Class/vetting concern</option></select></label>
+                <label><span>Hold / tank condition</span><select name="condition"><option>Clean / cargo ready</option><option selected>Needs inspection</option><option>Poor / cleaning required</option></select></label>
+                <button type="submit">Suitability Skorla</button>
+              </form>
+              <div class="broker-output" id="vesselSuitabilityResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>6. Broker Negotiation Score</span><strong>Counter kabul edilir mi?</strong></div>
+              <form class="broker-form" id="negotiationScoreForm">
+                <label><span>Cargo</span><select name="cargoType" data-cargo-select><option value="coal">Coal</option><option value="grain">Grain</option><option value="ironOre">Iron Ore</option><option value="container">Container</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option></select></label>
+                <label><span>Owner offer</span><input name="ownerRate" type="number" value="19.8" min="0" step="0.1" /></label>
+                <label><span>Charterer counter</span><input name="chartererRate" type="number" value="18.5" min="0" step="0.1" /></label>
+                <label><span>Market comparable</span><input name="marketRate" type="number" value="18.9" min="0" step="0.1" /></label>
+                <label><span>Quantity</span><input name="quantity" type="number" value="50000" min="0" step="100" /></label>
+                <label><span>Relationship</span><select name="relationship"><option>Strategic client</option><option selected>Normal</option><option>Weak counterparty</option></select></label>
+                <button type="submit">Negotiation Skorla</button>
+              </form>
+              <div class="broker-output" id="negotiationScoreResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>7. Port Call Timeline</span><strong>ETA'dan sailing'e operasyon akisi</strong></div>
+              <form class="broker-form" id="portCallTimelineForm">
+                <label><span>Port</span><select name="portId"><option value="singapore">Singapore</option><option value="santos">Santos</option><option value="rotterdam">Rotterdam</option><option value="istanbul">Istanbul</option><option value="shanghai">Shanghai</option></select></label>
+                <label><span>ETA</span><input name="eta" type="datetime-local" value="2026-07-10T06:00" /></label>
+                <label><span>Waiting h</span><input name="waitingHours" type="number" value="18" min="0" step="1" /></label>
+                <label><span>Operation h</span><input name="operationHours" type="number" value="58" min="0" step="1" /></label>
+                <label><span>Docs delay h</span><input name="docsDelay" type="number" value="4" min="0" step="1" /></label>
+                <button type="submit">Timeline Uret</button>
+              </form>
+              <div class="broker-output" id="portCallTimelineResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>8. Claim Evidence Checklist</span><strong>Eksik belge ve claim gucu</strong></div>
+              <form class="broker-form single-column" id="claimEvidenceForm">
+                <label><span>Claim type</span><select name="claimType"><option>Demurrage</option><option>Off-hire</option><option>Cargo damage</option><option>Deadfreight</option></select></label>
+                <label><span>Available documents</span><textarea name="docs">NOR, SOF, rain log, cargo operation log, invoice</textarea></label>
+                <label><span>Claim amount $</span><input name="claimAmount" type="number" value="36000" min="0" step="1000" /></label>
+                <button type="submit">Evidence Kontrol Et</button>
+              </form>
+              <div class="broker-output" id="claimEvidenceResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>9. Market Comparable Alert</span><strong>Market hareketini acik deal'e bagla</strong></div>
+              <form class="broker-form" id="marketAlertForm">
+                <label><span>Deal</span><input name="dealName" value="50k coal Indonesia / India" /></label>
+                <label><span>Bunker change $/t</span><input name="bunkerChange" type="number" value="34" step="1" /></label>
+                <label><span>Index move (%)</span><input name="indexMove" type="number" value="-3.5" step="0.1" /></label>
+                <label><span>Port delay change h</span><input name="delayChange" type="number" value="18" step="1" /></label>
+                <label><span>News route hit</span><select name="newsHit"><option>No</option><option selected>Yes</option></select></label>
+                <button type="submit">Alert Uret</button>
+              </form>
+              <div class="broker-output" id="marketAlertResult"></div>
+            </article>
+
+            <article class="wide-card">
+              <div class="mini-heading"><span>10. Professional Report Center</span><strong>Tum deal IQ raporlarini indir</strong></div>
+              <div class="export-actions deal-iq-export">
+                <button type="button" data-download-deal-iq="full-pdf">Full Deal IQ PDF</button>
+                <button type="button" data-download-deal-iq="full-json">Full Pack JSON</button>
+                <button type="button" data-download-deal-iq="client-summary">Client Summary TXT</button>
+                <button type="button" data-download-deal-iq="claim-pack">Claim Pack PDF</button>
+                <button type="button" data-download-deal-iq="market-brief">Market Brief TXT</button>
+              </div>
+              <div class="broker-output" id="reportCenterResult"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="decision-lab-panel" id="decisionLabSuite">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Focusea Decision Lab</p>
+              <h2>Fixture doctor, CP battle, time bar, what-if, dispute ve broker training</h2>
+            </div>
+            <div class="status-pill">Decision Intelligence</div>
+          </div>
+
+          <div class="decision-lab-hero">
+            <div>
+              <span>Next best action</span>
+              <strong id="decisionLabHeadline">Run the lab to stress-test the fixture.</strong>
+              <p id="decisionLabSummary">This layer diagnoses where a broker can lose money, time or legal position before the deal is fixed clean.</p>
+            </div>
+            <button type="button" class="primary-button" id="runDecisionLab">Run Full Decision Lab</button>
+          </div>
+
+          <div class="decision-lab-grid">
+            <article class="wide-card auto-deal-card">
+              <div class="mini-heading"><span>0. Focusea Auto Deal Processor</span><strong>Paste fixture / SOF / clause, tum isi coz</strong></div>
+              <form class="broker-form single-column" id="autoDealProcessorForm">
+                <label><span>Paste fixture, SOF, clause or broker mail</span><textarea name="dealText">50k coal Indonesia to India laycan 10/15 July freight USD 18.50 pmt demurrage USD 18,000/day Supramax. NOR WIBON WIPON and time lost waiting for berth to count as laytime. Subjects receiver approval by 1700 LT. NOR tendered 10 Jul 0800. Berthed 10 Jul 1800. Loading started 11 Jul 0600. Rain stopped operations 12 Jul 0300-0900. Loading completed 14 Jul 2200. Allowed laytime 72h.</textarea></label>
+                <div class="auto-deal-controls">
+                  <label><span>Mode</span><select name="mode"><option value="full">Full workflow</option><option value="fixture">Fixture only</option><option value="document">SOF / clause only</option><option value="market">Market risk focus</option></select></label>
+                  <label><span>Target TCE $/day</span><input name="targetTce" type="number" value="22000" step="500" /></label>
+                  <label><span>Distance override nm</span><input name="distanceOverride" type="number" value="0" min="0" step="10" /></label>
+                  <label><span>Port delay days</span><input name="portDelay" type="number" value="2" min="0" step="0.1" /></label>
+                </div>
+                <button type="submit">Auto Process Et</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" id="applyAutoDealToTracker">Offer Tracker'a Aktar</button>
+                <button type="button" class="ghost-button small" data-download-lab="auto-deal-pdf">Workflow PDF</button>
+                <button type="button" class="ghost-button small" data-download-lab="auto-deal-json">Workflow JSON</button>
+                <button type="button" class="ghost-button small" data-download-lab="auto-deal-txt">Mail / Recap TXT</button>
+              </div>
+              <div class="broker-output auto-deal-output" id="autoDealProcessorResult"></div>
+            </article>
+
+            <article class="wide-card">
+              <div class="mini-heading"><span>1. AI Fixture Doctor</span><strong>Deal kayip noktasi teshisi</strong></div>
+              <form class="broker-form" id="fixtureDoctorForm">
+                <label class="wide-label"><span>Deal text</span><textarea name="dealText">50k coal Indonesia to India, laycan 10/15 Jul, freight USD 18.50 pmt, demurrage USD 18,000/day, NOR WIBON WIPON, subjects receiver approval, commission 2.5 pct.</textarea></label>
+                <label><span>Target TCE $/day</span><input name="targetTce" type="number" value="22000" step="500" /></label>
+                <label><span>Estimated TCE $/day</span><input name="estimatedTce" type="number" value="18500" step="500" /></label>
+                <label><span>Port delay days</span><input name="portDelay" type="number" value="2.5" min="0" step="0.1" /></label>
+                <label><span>Clause posture</span><select name="clausePosture"><option value="balanced">Balanced</option><option value="owner">Owner leaning</option><option value="charterer">Charterer leaning</option><option value="unclear" selected>Unclear</option></select></label>
+                <button type="submit">Fixture Doctor Calistir</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-lab="doctor-pdf">Doctor PDF</button>
+                <button type="button" class="ghost-button small" data-download-lab="doctor-json">Doctor JSON</button>
+              </div>
+              <div class="broker-output" id="fixtureDoctorResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>2. Charter Party Battle Mode</span><strong>Owner / charterer wording</strong></div>
+              <form class="broker-form single-column" id="cpBattleForm">
+                <label><span>Clause</span><textarea name="clauseText">NOR valid whether in berth or not and time lost waiting for berth shall count as laytime. Weather delays excepted unless used.</textarea></label>
+                <label><span>Acting side</span><select name="side"><option>Charterer</option><option>Owner</option><option selected>Balanced broker</option></select></label>
+                <button type="submit">Clause Battle Baslat</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-lab="cp-battle-txt">Battle TXT</button>
+              </div>
+              <div class="broker-output" id="cpBattleResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>3. Time Bar Alarm</span><strong>Claim son tarih takip</strong></div>
+              <form class="broker-form" id="timeBarForm">
+                <label><span>Claim type</span><select name="claimType"><option>Demurrage</option><option>Cargo damage</option><option>Off-hire</option><option>Deadfreight</option></select></label>
+                <label><span>Completion date</span><input name="completionDate" type="date" value="2026-07-14" /></label>
+                <label><span>Time bar days</span><input name="timeBarDays" type="number" value="90" min="0" step="1" /></label>
+                <label><span>Docs status</span><select name="docsStatus"><option value="ready">Ready</option><option value="partial" selected>Partial</option><option value="missing">Missing</option></select></label>
+                <button type="submit">Alarm Hesapla</button>
+              </form>
+              <div class="broker-output" id="timeBarResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>4. Freight Rate Memory</span><strong>Kendi piyasa hafizasi</strong></div>
+              <form class="broker-form" id="rateMemoryForm">
+                <label><span>Cargo</span><select name="cargoType" data-cargo-select><option value="coal">Coal</option><option value="grain">Grain</option><option value="container">Container</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option><option value="chemicals">Chemicals</option></select></label>
+                <label><span>Route</span><input name="route" value="Indonesia / India" /></label>
+                <label><span>Freight rate</span><input name="freightRate" type="number" value="18.5" min="0" step="0.1" /></label>
+                <label><span>Demurrage $/day</span><input name="demurrageRate" type="number" value="18000" min="0" step="100" /></label>
+                <label><span>Fixture result</span><select name="fixtureStatus"><option>Fixed</option><option>Failed</option><option selected>On subjects</option></select></label>
+                <button type="submit">Memory Analiz Et</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" id="addRateMemory">Memory'e Ekle</button>
+              </div>
+              <div class="broker-output" id="rateMemoryResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>5. Broker Performance Dashboard</span><strong>Kisisel fixture performansi</strong></div>
+              <form class="broker-form" id="performanceForm">
+                <label><span>Period</span><select name="period"><option>Last 7 days</option><option selected>Last 30 days</option><option>This quarter</option></select></label>
+                <label><span>Target TCE</span><input name="targetTce" type="number" value="22000" step="500" /></label>
+                <label><span>Target fix rate %</span><input name="targetFixRate" type="number" value="35" min="0" max="100" step="1" /></label>
+                <button type="submit">Performance Goster</button>
+              </form>
+              <div class="broker-output" id="performanceResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>6. AI Email Inbox Simulator</span><strong>Maili klasore ayir</strong></div>
+              <form class="broker-form single-column" id="emailInboxSimulatorForm">
+                <label><span>Incoming mail</span><textarea name="emailText">Owners can counter 50k coal Indonesia/India at USD 19.25 pmt. Laycan 10/15 Jul. Please lift receiver subject by 1700 LT, otherwise vessel may fail.</textarea></label>
+                <button type="submit">Inbox Simule Et</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" id="pushSimulatedEmail">Inbox'a Aktar</button>
+              </div>
+              <div class="broker-output" id="emailInboxSimulatorResult"></div>
+            </article>
+
+            <article class="wide-card">
+              <div class="mini-heading"><span>7. Recap to CP Draft</span><strong>Recap'ten CP taslagi</strong></div>
+              <form class="broker-form" id="recapToCpForm">
+                <label class="wide-label"><span>Fixture recap</span><textarea name="recapText">Vessel MV Baltic Trader. Cargo 50,000 mt coal 10 pct molco. Load Indonesia, discharge India. Laycan 10/15 Jul. Freight USD 18.50 pmt FIOST. Demurrage USD 18,000/day pro rata. Commission 2.5 pct total. Subjects stem and receiver approval.</textarea></label>
+                <label><span>Template</span><select name="template"><option>GENCON style</option><option>NYPE style</option><option>Tanker voyage style</option><option>LNG style</option></select></label>
+                <button type="submit">CP Draft Uret</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-lab="cp-draft-pdf">CP PDF</button>
+                <button type="button" class="ghost-button small" data-download-lab="cp-draft-txt">CP TXT</button>
+              </div>
+              <div class="broker-output" id="recapToCpResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>8. Voyage What-If Lab</span><strong>Karar hassasiyeti</strong></div>
+              <form class="broker-form" id="whatIfForm">
+                <label><span>Base P&L $</span><input name="basePnl" type="number" value="148000" step="1000" /></label>
+                <label><span>Freight change $/unit</span><input name="freightChange" type="number" value="1" step="0.1" /></label>
+                <label><span>Quantity</span><input name="quantity" type="number" value="50000" step="100" /></label>
+                <label><span>Bunker change $/t</span><input name="bunkerChange" type="number" value="45" step="1" /></label>
+                <label><span>Bunker tons</span><input name="bunkerTons" type="number" value="420" step="1" /></label>
+                <label><span>Extra port delay days</span><input name="portDelay" type="number" value="2" step="0.1" /></label>
+                <label><span>Daily hire</span><input name="dailyHire" type="number" value="14500" step="100" /></label>
+                <button type="submit">What-If Hesapla</button>
+              </form>
+              <div class="broker-output" id="whatIfResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>9. Dispute Simulator</span><strong>Owner claim vs charterer defense</strong></div>
+              <form class="broker-form single-column" id="disputeSimulatorForm">
+                <label><span>SOF + clause</span><textarea name="disputeText">NOR tendered at anchorage. Time lost waiting for berth to count as laytime. Rain stopped loading six hours. Charterers deduct rain and berth waiting; owners claim full demurrage.</textarea></label>
+                <label><span>Settlement style</span><select name="style"><option>Commercial settlement</option><option>Owner aggressive</option><option>Charterer defensive</option></select></label>
+                <button type="submit">Dispute Simule Et</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-lab="dispute-pdf">Dispute PDF</button>
+              </div>
+              <div class="broker-output" id="disputeSimulatorResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>10. Company Watchlist</span><strong>Riskli sirket kaydi</strong></div>
+              <form class="broker-form" id="watchlistForm">
+                <label><span>Company</span><input name="company" value="Northern Bulk Receiver" /></label>
+                <label><span>Issue</span><select name="issue"><option>Payment delay</option><option selected>Dispute history</option><option>Sanctions watch</option><option>Poor communication</option><option>High claim risk</option></select></label>
+                <label><span>Severity</span><select name="severity"><option>Low</option><option selected>Medium</option><option>High</option></select></label>
+                <label class="wide-label"><span>Note</span><textarea name="note">Late demurrage response and repeated deduction attempts on past voyage.</textarea></label>
+                <button type="submit">Watchlist Goster</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" id="addWatchlistCompany">Watchlist'e Ekle</button>
+              </div>
+              <div class="broker-output" id="watchlistResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>11. Port Delay Heatmap</span><strong>Tablo terminal</strong></div>
+              <form class="broker-form" id="portHeatmapForm">
+                <label><span>Region</span><select name="region"><option>Global</option><option>Asia</option><option>Europe</option><option>Americas</option><option>Middle East</option></select></label>
+                <label><span>Cargo focus</span><select name="cargoType" data-cargo-select><option value="coal">Coal</option><option value="grain">Grain</option><option value="container">Container</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option></select></label>
+                <button type="submit">Heatmap Yenile</button>
+              </form>
+              <div class="broker-output" id="portHeatmapResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>12. Broker Exam / Training Mode</span><strong>Karar pratigi</strong></div>
+              <form class="broker-form" id="brokerExamForm">
+                <label><span>Scenario</span><select name="scenario"><option value="offer">Fix edilir mi?</option><option value="clause">Clause riskli mi?</option><option value="laytime">Laytime hesabi dogru mu?</option><option value="counter">Counter mail iyi mi?</option></select></label>
+                <label><span>Your answer</span><select name="answer"><option value="watch">Watch / ask more</option><option value="fix">Fix</option><option value="avoid">Avoid</option><option value="counter">Counter first</option></select></label>
+                <button type="submit">Cevabi Kontrol Et</button>
+              </form>
+              <div class="broker-output" id="brokerExamResult"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="intelligence-panel" id="intelligence">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Market Intelligence</p>
+              <h2>Denizcilik Piyasa ve Risk Merkezi</h2>
+            </div>
+            <div class="status-pill">Simulated Live Feed</div>
+          </div>
+          <div class="intelligence-grid">
+            <article>
+              <span>Container Index</span>
+              <strong data-live="containerIndex">2,184</strong>
+              <small data-live-note="containerIndex">Asia-Europe spot rate</small>
+            </article>
+            <article>
+              <span>Dry Bulk Sentiment</span>
+              <strong data-live="dryBulk">Bullish</strong>
+              <small data-live-note="dryBulk">Pacific grain demand</small>
+            </article>
+            <article>
+              <span>LNG Watch</span>
+              <strong data-live="lngWatch">High</strong>
+              <small data-live-note="lngWatch">Terminal queue pressure</small>
+            </article>
+            <article>
+              <span>Security Alert</span>
+              <strong data-live="security">GoA</strong>
+              <small data-live-note="security">Enhanced watch recommended</small>
+            </article>
+          </div>
+          <div class="market-index-terminal">
+            <div class="mini-heading">
+              <span>Market Index Terminal</span>
+              <strong>Dry bulk, tanker, container, bunker, carbon, port risk</strong>
+            </div>
+            <form class="market-index-form" id="marketIndexForm">
+              <label>
+                <span>Sector</span>
+                <select name="sectorFilter" id="marketIndexSectorFilter">
+                  <option value="all">All sectors</option>
+                  <option value="Dry Bulk">Dry Bulk</option>
+                  <option value="Tanker">Tanker</option>
+                  <option value="Container">Container</option>
+                  <option value="Bunker">Bunker</option>
+                  <option value="LNG / Gas">LNG / Gas</option>
+                  <option value="Carbon / Green">Carbon / Green</option>
+                  <option value="Port / Risk">Port / Risk</option>
+                  <option value="Cargo">Cargo</option>
+                  <option value="Finance">Finance</option>
+                </select>
+              </label>
+              <label>
+                <span>Source status</span>
+                <select name="sourceFilter">
+                  <option value="all">All sources</option>
+                  <option value="verified">Verified</option>
+                  <option value="api-ready">API-ready</option>
+                  <option value="licensed">Licensed source required</option>
+                  <option value="simulated">Simulated</option>
+                  <option value="input">User input</option>
+                </select>
+              </label>
+              <label>
+                <span>Search</span>
+                <input name="indexQuery" type="search" placeholder="BDI, SCFI, VLSFO, EUA, port..." />
+              </label>
+              <button type="submit">Indexleri Filtrele</button>
+            </form>
+            <div class="market-index-grid" id="marketIndexGrid"></div>
+            <div class="market-index-detail" id="marketIndexDetail"></div>
+          </div>
+          <div class="data-trust-panel">
+            <div class="mini-heading">
+              <span>Real Data Trust Layer</span>
+              <strong>Source, update time, confidence</strong>
+            </div>
+            <div class="data-trust-grid" id="dataTrustLayer"></div>
+          </div>
+          <div class="live-timestamp" id="liveTimestamp">Simulated market feed initializing...</div>
+        </section>
+
+        <section class="news-panel" id="newsBulletin">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Live Maritime News</p>
+              <h2>Son Dakika Denizcilik Bülteni</h2>
+            </div>
+            <button class="ghost-button small" id="refreshNews" type="button">Yenile</button>
+          </div>
+          <div class="news-toolbar">
+            <button class="active" data-news-query="maritime shipping">Genel</button>
+            <button data-news-query="shipping container market">Container</button>
+            <button data-news-query="tanker shipping market">Tanker</button>
+            <button data-news-query="dry bulk chartering freight market">Dry Bulk</button>
+            <button data-news-query="ship bunker fuel prices VLSFO">Bunker</button>
+            <button data-news-query="ship charter rates freight market">Charter</button>
+            <button data-news-query="port congestion shipping">Liman</button>
+            <button data-news-query="maritime safety incident">Emniyet</button>
+          </div>
+          <div class="news-status" id="newsStatus">Gerçek haber kaynakları yükleniyor...</div>
+          <div class="news-grid" id="newsGrid"></div>
+        </section>
+
+        <section class="tool-grid" id="route">
+          <article class="route-panel">
+            <p class="eyebrow">AI Route Optimizer</p>
+            <h2>Rota Optimizasyonu</h2>
+            <form class="route-form" id="routeForm">
+              <div class="field">
+                <label for="origin">Kalkış</label>
+                <input id="origin" name="origin" value="Istanbul" />
+              </div>
+              <div class="field">
+                <label for="destination">Varış</label>
+                <input id="destination" name="destination" value="Singapore" />
+              </div>
+              <div class="field">
+                <label for="routeSpeed">Hız (knot)</label>
+                <input id="routeSpeed" name="routeSpeed" type="number" value="15" min="1" />
+              </div>
+              <button type="submit">Rota Analiz Et</button>
+            </form>
+            <div class="route-result" id="routeResult">
+              En kısa rota: 5,820 nm · Tahmini süre: 16.2 gün · Risk: Orta
+            </div>
+          </article>
+
           <article class="calculator-panel" id="calculator">
             <p class="eyebrow">Maritime Calculators</p>
             <h2>Denizcilik Hesaplayıcıları</h2>
             <div class="tabs" role="tablist" aria-label="Hesaplayıcı seçimi">
               <button class="active" data-calc="eta">ETA</button>
+              <button data-calc="laytime">Laytime</button>
               <button data-calc="bunker">Bunker</button>
               <button data-calc="demurrage">Demurrage</button>
+              <button data-calc="dispatch">Dispatch</button>
+              <button data-calc="freight">Freight</button>
+              <button data-calc="hire">Hire</button>
+              <button data-calc="tce">TCE</button>
+              <button data-calc="voyage">Voyage P&L</button>
             </div>
             <form id="calculatorForm" class="calculator-form"></form>
             <div class="result-box" id="calculatorResult">Değerleri gir ve hesapla.</div>
           </article>
+        </section>
 
+        <section class="tool-grid" id="assistantCareer">
           <article class="assistant-panel">
             <p class="eyebrow">AI Maritime Assistant</p>
             <h2>Denizcilik Asistanı</h2>
-            <div class="chat-window" id="chatWindow">
-              <div class="bot-message">Merhaba. Laytime, demurrage, COLREGS veya rota sorusu sorabilirsin.</div>
+            <div class="ai-actions" id="aiActions">
+              <button type="button" data-ai-action="laytime">Laytime Hesapla</button>
+              <button type="button" data-ai-action="fixture">Fixture Recap</button>
+              <button type="button" data-ai-action="tce">TCE Yorumu</button>
+              <button type="button" data-ai-action="route">Rota Riski</button>
+              <button type="button" data-ai-action="clause">Clause Açıkla</button>
+              <button type="button" data-ai-action="cv">CV Geliştir</button>
+              <button type="button" data-ai-action="quiz">Quiz Üret</button>
+              <button type="button" data-ai-action="weather">Hava Yorumu</button>
             </div>
+            <form class="ai-mini-form" id="aiMiniForm">
+              <input name="cargo" placeholder="Yük / rota / clause" value="Istanbul to Singapore container voyage" />
+              <input name="value" type="number" placeholder="Saat / hız / oran" value="18" />
+              <button type="submit">AI Analiz</button>
+            </form>
+            <div class="chat-window" id="chatWindow">
+              <div class="bot-message">Merhaba. Laytime, demurrage, COLREGS, ETA, bunker veya charter sorusu sorabilirsin.</div>
+            </div>
+            <div class="ai-result" id="aiResult">Hızlı AI fonksiyonu seç veya mesaj yaz.</div>
             <form class="chat-form" id="chatForm">
-              <input id="chatInput" type="text" placeholder="What is demurrage?" />
+              <input id="chatInput" type="text" placeholder="Laytime nasıl hesaplanır?" />
               <button type="submit">Sor</button>
             </form>
+          </article>
+
+          <article class="career-panel" id="career">
+            <p class="eyebrow">Seafarer Career</p>
+            <h2>Denizci CV Oluşturucu</h2>
+            <form class="cv-form" id="cvForm">
+              <input name="fullName" placeholder="Ad Soyad" value="E. Captain" />
+              <input name="rank" placeholder="Rank" value="Deck Cadet" />
+              <input name="certificates" placeholder="Sertifikalar" value="STCW, GOC, Passport, CDC" />
+              <input name="seaService" placeholder="Sea service" value="8 months bulk carrier" />
+              <button type="submit">CV Önizle</button>
+            </form>
+            <button class="download-button" id="downloadCv" type="button">CV'yi PDF Taslağı Olarak İndir</button>
+            <div class="cv-preview" id="cvPreview">
+              Bilgileri düzenleyip CV önizlemesini oluştur.
+            </div>
+          </article>
+        </section>
+
+        <section class="academy-center" id="academyCenter">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Learning Academy</p>
+              <h2>Denizcilik Akademisi</h2>
+            </div>
+            <div class="status-pill">Progress System</div>
+          </div>
+          <div class="lesson-grid">
+            <button data-lesson="Laytime">Laytime <span>68%</span></button>
+            <button data-lesson="Charter Party">Charter Party <span>42%</span></button>
+            <button data-lesson="COLREGS">COLREGS <span>81%</span></button>
+            <button data-lesson="Stability">Stability <span>54%</span></button>
+            <button data-lesson="Cargo Planning">Cargo Planning <span>73%</span></button>
+            <button data-lesson="Port Operations">Port Operations <span>60%</span></button>
+          </div>
+          <div class="lesson-detail" id="lessonDetail">Bir ders seç; konu, quiz ve progress bilgisi burada açılır.</div>
+        </section>
+
+        <section class="academic-library" id="academicLibrary">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Academic Resource Library</p>
+              <h2>İşe Yarayan Akademik ve Resmi Kaynaklar</h2>
+            </div>
+            <div class="status-pill">Verified Links</div>
+          </div>
+          <div class="resource-grid">
+            <a class="resource-card" href="https://www.imo.org/en/About/Conventions/Pages/Default.aspx" target="_blank" rel="noopener noreferrer">
+              <span>Regülasyon</span>
+              <strong>IMO Conventions</strong>
+              <p>SOLAS, MARPOL, STCW ve deniz hukuku temel sözleşmeleri için resmi başlangıç noktası.</p>
+              <small>Official IMO source</small>
+            </a>
+            <a class="resource-card" href="https://www.imo.org/en/KnowledgeCentre/Pages/Default.aspx" target="_blank" rel="noopener noreferrer">
+              <span>IMO Library</span>
+              <strong>IMO Knowledge Centre</strong>
+              <p>IMO yayınları, circular, karar ve araştırma araması için kullanışlı kaynak merkezi.</p>
+              <small>Official IMO knowledge hub</small>
+            </a>
+            <a class="resource-card" href="https://commons.wmu.se/" target="_blank" rel="noopener noreferrer">
+              <span>Akademik</span>
+              <strong>WMU Maritime Commons</strong>
+              <p>World Maritime University tez, makale ve denizcilik araştırmaları için açık arşiv.</p>
+              <small>World Maritime University repository</small>
+            </a>
+            <a class="resource-card" href="https://link.springer.com/journal/13437" target="_blank" rel="noopener noreferrer">
+              <span>Journal</span>
+              <strong>WMU Journal of Maritime Affairs</strong>
+              <p>Maritime safety, policy, law, ports ve shipping management konularında akademik makaleler.</p>
+              <small>Springer journal</small>
+            </a>
+            <a class="resource-card" href="https://link.springer.com/journal/41278" target="_blank" rel="noopener noreferrer">
+              <span>Journal</span>
+              <strong>Maritime Economics & Logistics</strong>
+              <p>Freight market, port economics, shipping finance ve lojistik araştırmaları için güçlü dergi.</p>
+              <small>Springer journal</small>
+            </a>
+            <a class="resource-card" href="https://unctad.org/topic/transport-and-trade-logistics/review-of-maritime-transport" target="_blank" rel="noopener noreferrer">
+              <span>Market Raporu</span>
+              <strong>UNCTAD Review of Maritime Transport</strong>
+              <p>Küresel deniz ticareti, navlun, filo, liman ve konteyner piyasası için yıllık referans rapor.</p>
+              <small>UN trade and transport research</small>
+            </a>
+            <a class="resource-card" href="https://www.itf-oecd.org/publications" target="_blank" rel="noopener noreferrer">
+              <span>Policy</span>
+              <strong>ITF-OECD Transport Publications</strong>
+              <p>Maritime transport, decarbonisation, port policy ve freight corridor raporları için araştırma arşivi.</p>
+              <small>International Transport Forum</small>
+            </a>
+            <a class="resource-card" href="https://msi.nga.mil/Publications/WPI" target="_blank" rel="noopener noreferrer">
+              <span>Port Data</span>
+              <strong>NGA World Port Index</strong>
+              <p>Liman lokasyonu, tesis tipi ve temel port bilgileri için global veri kaynağı.</p>
+              <small>National Geospatial-Intelligence Agency</small>
+            </a>
+            <a class="resource-card" href="https://www.weather.gov/marine/" target="_blank" rel="noopener noreferrer">
+              <span>Weather</span>
+              <strong>NOAA Marine Forecasts</strong>
+              <p>Deniz hava tahmini, uyarılar ve rota risk değerlendirmesi için resmi marine weather kaynağı.</p>
+              <small>NOAA / National Weather Service</small>
+            </a>
+            <a class="resource-card" href="https://www.parismou.org/inspection-search" target="_blank" rel="noopener noreferrer">
+              <span>PSC</span>
+              <strong>Paris MoU Inspection Search</strong>
+              <p>Port State Control inspection ve detention geçmişi için compliance kontrolünde işe yarar.</p>
+              <small>Paris MoU database</small>
+            </a>
+            <a class="resource-card" href="https://www.equasis.org/EquasisWeb/public/HomePage" target="_blank" rel="noopener noreferrer">
+              <span>Vessel Data</span>
+              <strong>Equasis</strong>
+              <p>Gemi, company, class, inspection ve safety bilgileri için sektörel gemi veri portalı.</p>
+              <small>Public maritime database</small>
+            </a>
+            <a class="resource-card" href="https://climate.ec.europa.eu/eu-action/transport/reducing-emissions-shipping-sector/monitoring-reporting-and-verification-maritime-transport-emissions_en" target="_blank" rel="noopener noreferrer">
+              <span>Emissions</span>
+              <strong>EU MRV Maritime Emissions</strong>
+              <p>CO2, MRV, ETS ve yeşil rota maliyeti çalışmaları için resmi Avrupa Komisyonu kaynağı.</p>
+              <small>European Commission</small>
+            </a>
+            <a class="resource-card" href="https://www.imo.org/en/ourwork/safety/pages/shipdesignandstability-default.aspx" target="_blank" rel="noopener noreferrer">
+              <span>Stability</span>
+              <strong>IMO Ship Design & Stability</strong>
+              <p>SOLAS II-1, Load Line Convention, Intact Stability Code ve second generation stability kriterleri icin resmi baslangic.</p>
+              <small>Official IMO source</small>
+            </a>
+            <a class="resource-card" href="https://www.imo.org/en/ourwork/safety/pages/damagestability.aspx" target="_blank" rel="noopener noreferrer">
+              <span>Damage Stability</span>
+              <strong>IMO Damage Stability</strong>
+              <p>Subdivision index, probabilistic damage stability, damage control plan ve SOLAS damage stability arka plani.</p>
+              <small>Official IMO source</small>
+            </a>
+            <a class="resource-card" href="https://www.imo.org/en/ourwork/safety/pages/default.aspx" target="_blank" rel="noopener noreferrer">
+              <span>Safety Framework</span>
+              <strong>IMO Maritime Safety</strong>
+              <p>SOLAS, load lines, cargo codes, navigation safety ve ship design/construction komiteleri icin genel resmi kaynak.</p>
+              <small>Official IMO safety hub</small>
+            </a>
+            <a class="resource-card" href="https://arxiv.org/abs/1410.2240" target="_blank" rel="noopener noreferrer">
+              <span>Research Paper</span>
+              <strong>Free-Surface Hydrodynamics</strong>
+              <p>Ship hull etrafinda free-surface, breaking wave ve VOF temelli sayisal hidrodinamik simulasyon okumasi.</p>
+              <small>Open academic paper / arXiv</small>
+            </a>
+            <a class="resource-card" href="https://arxiv.org/abs/2407.11601" target="_blank" rel="noopener noreferrer">
+              <span>SGISC</span>
+              <strong>Surf-Riding Threshold</strong>
+              <p>IMO Second Generation Intact Stability Criteria icinde surf-riding ve broaching esigi uzerine ileri seviye makale.</p>
+              <small>Open academic paper / arXiv</small>
+            </a>
+            <a class="resource-card" href="https://arxiv.org/abs/2406.12853" target="_blank" rel="noopener noreferrer">
+              <span>SGISC Review</span>
+              <strong>Following Sea Stability Review</strong>
+              <p>Following sea, broaching riski ve surf-riding prediction methodunun IMO SGISC ile iliskisini anlatan teknik inceleme.</p>
+              <small>Open academic paper / arXiv</small>
+            </a>
+          </div>
+        </section>
+
+        <section class="account-center" id="accountCenter">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">User Account</p>
+              <h2>Kullanıcı Hesabı ve Rozetler</h2>
+            </div>
+            <div class="status-pill">Profile Mock</div>
+          </div>
+          <div class="account-grid">
+            <article><span>Saved CV</span><strong>1 draft</strong><small>Deck Cadet profile</small></article>
+            <article><span>Simulation History</span><strong>12 runs</strong><small>Best score 91</small></article>
+            <article><span>Badges</span><strong>6 earned</strong><small>COLREG, Cargo, Port Ops</small></article>
+            <article><span>Favorites</span><strong>8 items</strong><small>3 ports · 5 vessels</small></article>
+          </div>
+        </section>
+
+        <section class="tool-grid" id="vesselFinder">
+          <article class="finder-panel">
+            <p class="eyebrow">Vessel Finder</p>
+            <h2>IMO ile Gemi Bulucu</h2>
+            <form class="finder-form" id="finderForm">
+              <input id="imoSearch" name="imoSearch" placeholder="IMO yaz: 9387421" value="9387421" />
+              <button type="submit">Gemiyi Bul</button>
+            </form>
+            <div class="vessel-card" id="finderResult">IMO numarası gir ve gemi kartını oluştur.</div>
+          </article>
+
+          <article class="wiki-panel">
+            <p class="eyebrow">Maritime Wiki</p>
+            <h2>Denizcilik Wiki</h2>
+            <form class="wiki-form" id="wikiForm">
+              <input id="wikiSearch" name="wikiSearch" placeholder="Demurrage, Laytime, INCOTERMS..." value="Demurrage" />
+              <button type="submit">Ara</button>
+            </form>
+            <div class="wiki-result" id="wikiResult">Bir terim ara ve kısa açıklamayı gör.</div>
           </article>
         </section>
 
         <section class="academy-grid" id="academy">
-          <article>
-            <p class="eyebrow">Training Games</p>
-            <h2>Denizcilik Oyunları</h2>
-            <div class="feature-list">
-              <button>Cargo Planner <span>Containerları dengeli diz</span></button>
-              <button>Mooring Game <span>Halatları doğru bağla</span></button>
-              <button>COLREG Quiz <span>Doğru manevrayı seç</span></button>
-              <button>Navigation Challenge <span>Radar ve rota oku</span></button>
-            </div>
-          </article>
-
           <article id="ports">
             <p class="eyebrow">Port Guide</p>
             <h2>Liman Rehberi</h2>
-            <div class="port-guide">
-              <div>
+            <div class="port-guide" id="portGuide">
+              <button data-port-card="istanbul">
                 <strong>Istanbul Port</strong>
-                <span>Derinlik 14m · Pilotaj var · Yakıt hizmeti var</span>
-              </div>
-              <div>
+                <span>Container · Ro-Ro · Bosphorus traffic</span>
+              </button>
+              <button data-port-card="singapore">
                 <strong>Singapore</strong>
-                <span>Derinlik 16m · 24/7 operasyon · 34 rıhtım</span>
-              </div>
-              <div>
+                <span>Bunkering hub · 24/7 operation · LNG</span>
+              </button>
+              <button data-port-card="rotterdam">
                 <strong>Rotterdam</strong>
-                <span>Derinlik 23m · Konteyner & tanker terminali</span>
+                <span>Deep sea · Tanker · Dry bulk</span>
+              </button>
+              <button data-port-card="shanghai">
+                <strong>Shanghai Yangshan</strong>
+                <span>Ultra large container · automated terminal</span>
+              </button>
+              <button data-port-card="busan">
+                <strong>Busan New Port</strong>
+                <span>Transshipment · North Asia · reefer</span>
+              </button>
+              <button data-port-card="jebelali">
+                <strong>Jebel Ali</strong>
+                <span>Middle East hub · free zone · project cargo</span>
+              </button>
+              <button data-port-card="losangeles">
+                <strong>Los Angeles / Long Beach</strong>
+                <span>US West Coast · rail · shore power</span>
+              </button>
+              <button data-port-card="antwerp">
+                <strong>Antwerp-Bruges</strong>
+                <span>Chemical · container · barge network</span>
+              </button>
+              <button data-port-card="hamburg">
+                <strong>Hamburg</strong>
+                <span>Elbe river · rail hub · project cargo</span>
+              </button>
+              <button data-port-card="piraeus">
+                <strong>Piraeus</strong>
+                <span>East Med · ferry · container</span>
+              </button>
+              <button data-port-card="santos">
+                <strong>Santos</strong>
+                <span>Brazil export · sugar · coffee · bulk</span>
+              </button>
+              <button data-port-card="capetown">
+                <strong>Cape Town</strong>
+                <span>Reefer · offshore support · South Atlantic</span>
+              </button>
+            </div>
+            <div class="port-detail" id="portDetail">Haritadaki veya listedeki bir limana tıkla.</div>
+
+            <div class="global-port-atlas" id="globalPortAtlas">
+              <div class="mini-heading">
+                <span>Global Port Atlas</span>
+                <strong>Dünya liman arama ve import sistemi</strong>
               </div>
+              <form class="global-port-form" id="globalPortSearchForm">
+                <input name="portQuery" placeholder="Liman, ülke, UN/LOCODE ara: Shanghai, Brazil, SGSIN..." value="" />
+                <select name="regionFilter" id="globalPortRegionFilter">
+                  <option value="All">All regions</option>
+                </select>
+                <select name="typeFilter">
+                  <option value="All">All types</option>
+                  <option>Container</option>
+                  <option>Bulk</option>
+                  <option>Tanker</option>
+                  <option>LNG</option>
+                  <option>Ro-Ro</option>
+                  <option>Multipurpose</option>
+                </select>
+                <button type="submit">Limanları Ara</button>
+              </form>
+              <div class="global-port-stats" id="globalPortStats"></div>
+              <div class="global-port-list" id="globalPortList"></div>
+              <div class="global-port-detail" id="globalPortDetail"></div>
+
+              <form class="global-port-import" id="globalPortImportForm">
+                <label>
+                  <span>Official CSV / UNLOCODE import</span>
+                  <textarea name="portCsv" placeholder="UNLOCODE,Name,Country,Region,Type,Depth&#10;TRIST,Istanbul Port,Turkiye,Europe,Container / Ro-Ro,14"></textarea>
+                </label>
+                <button type="submit">CSV Import Et</button>
+              </form>
+              <div class="global-port-import-result" id="globalPortImportResult"></div>
             </div>
           </article>
         </section>
       </main>
     </div>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=decision-lab-suite"></script>
   </body>
 </html>

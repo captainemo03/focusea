@@ -1,0 +1,933 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Focusea Cargo & Stability Lab</title>
+    <link rel="icon" href="favicon.svg?v=focusea-badge2" type="image/svg+xml" />
+    <link rel="stylesheet" href="stability.css?v=stability-lab-26" />
+  </head>
+  <body>
+    <header class="lab-header">
+      <a class="lab-brand" href="index.html" aria-label="Focusea ana site">
+        <img src="assets/brand/focusea-mark.svg?v=focusea-badge2" alt="Focusea logo" />
+        <span>
+          <strong>Focusea</strong>
+          <small>Cargo & Stability Lab</small>
+        </span>
+      </a>
+      <nav class="lab-nav" aria-label="Stability tools">
+        <a href="#gmLab">GM</a>
+        <a href="#loadicator3d">3D Loadicator</a>
+        <a href="#trimLab">Trim</a>
+        <a href="#draftLab">Draft Survey</a>
+        <a href="#holdLab">Hold Plan</a>
+        <a href="#stabilityResources">Kaynaklar</a>
+        <a href="index.html">Ana Site</a>
+      </nav>
+    </header>
+
+    <main class="lab-shell">
+      <section class="lab-hero">
+        <div>
+          <p class="eyebrow">Side Window / Technical Desk</p>
+          <h1>Yuk, draft, trim ve stabilite hesaplarini tek teknik pencerede topla.</h1>
+          <p>
+            Bu alan broker panelinden ayri calisir. Cargo intake, corrected GM, trim effect,
+            draft survey cargo estimate, hold distribution, stowage factor ve heel angle
+            hesaplarini hizli operasyon kontrolu olarak verir.
+          </p>
+          <div class="hero-actions">
+            <a href="#loadicator3d" class="primary-button">3D Loadicator</a>
+            <a href="#gmLab" class="primary-button">Stability Check</a>
+            <button type="button" class="ghost-button" id="downloadStabilityReport">Rapor Indir</button>
+          </div>
+        </div>
+        <aside class="safety-note">
+          <strong>Operational warning</strong>
+          <p>
+            These are planning estimates only. Final loading, stability and stress decisions
+            must use the vessel stability booklet, approved loading computer and class/master approval.
+          </p>
+        </aside>
+      </section>
+
+      <section class="status-grid" aria-label="Lab status">
+        <article>
+          <span>Corrected GM</span>
+          <strong id="gmStatusValue">-- m</strong>
+          <small id="gmStatusNote">Run stability check</small>
+        </article>
+        <article>
+          <span>Estimated Cargo</span>
+          <strong id="draftStatusValue">-- mt</strong>
+          <small id="draftStatusNote">Draft survey pending</small>
+        </article>
+        <article>
+          <span>Hold Utilization</span>
+          <strong id="holdStatusValue">--%</strong>
+          <small id="holdStatusNote">Hold plan pending</small>
+        </article>
+        <article>
+          <span>Heel Angle</span>
+          <strong id="heelStatusValue">-- deg</strong>
+          <small id="heelStatusNote">Heel model pending</small>
+        </article>
+      </section>
+
+      <section class="loadicator-panel" id="loadicator3d">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Interactive 3D Loadicator</p>
+            <h2>Gemi tipini ve yuku sec, stabiliteyi canli gor.</h2>
+            <p>
+              Bulker, tanker, container veya LNG presetini sec; komur, tahil, konteyner,
+              crude oil, LNG ve proje yukleri icin trim, GM, heel ve compatibility anlik degissin.
+            </p>
+          </div>
+          <div class="scene-status" id="loadicatorRisk">Initializing</div>
+        </div>
+
+        <div class="loadicator-intel">
+          <article>
+            <span>Vessel preset</span>
+            <strong id="vesselProfileName">Panamax Bulker</strong>
+            <small id="vesselProfileNote">5 hold dry bulk loading plan</small>
+          </article>
+          <article>
+            <span>Cargo intelligence</span>
+            <strong id="cargoProfileName">Coal / bulk</strong>
+            <small id="cargoProfileNote">Moderate SF, hold cleanliness required</small>
+          </article>
+          <article>
+            <span>Compatibility</span>
+            <strong id="compatibilityValue">Matched</strong>
+            <small id="compatibilityNote">Cargo and vessel type are aligned</small>
+          </article>
+        </div>
+
+        <div class="loadicator-layout">
+          <div class="loadicator-scene">
+            <div class="loadicator-fallback" id="loadicatorFallback" aria-hidden="true">
+              <div class="fallback-grid"></div>
+              <div class="fallback-water">
+                <span class="sea-photo-layer"></span>
+                <span class="sea-horizon-glow"></span>
+                <span class="sea-long-swell"></span>
+                <span class="sea-foam-ribbons"></span>
+              </div>
+              <div class="fallback-ship" id="fallbackShip">
+                <img class="fallback-real-ship" src="assets/ships/focusea-real-bulker-tight.png" alt="" />
+                <svg class="fallback-vessel-art" viewBox="0 0 660 210" preserveAspectRatio="none" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="fallbackHullGradient" x1="0" x2="0" y1="0" y2="1">
+                      <stop offset="0%" style="stop-color: color-mix(in srgb, var(--vessel-hull, #4269e8) 78%, #ffffff 22%)" />
+                      <stop offset="56%" style="stop-color: var(--vessel-hull, #4269e8)" />
+                      <stop offset="100%" style="stop-color: #132763" />
+                    </linearGradient>
+                    <linearGradient id="fallbackLowerGradient" x1="0" x2="1" y1="0" y2="0">
+                      <stop offset="0%" style="stop-color: color-mix(in srgb, var(--vessel-lower, #9d386e) 76%, #ffffff 8%)" />
+                      <stop offset="100%" style="stop-color: #4b195d" />
+                    </linearGradient>
+                    <linearGradient id="fallbackDeckGradient" x1="0" x2="1" y1="0" y2="0">
+                      <stop offset="0%" stop-color="#e4ecff" />
+                      <stop offset="58%" style="stop-color: var(--vessel-deck, #7d8cf1)" />
+                      <stop offset="100%" stop-color="#5871db" />
+                    </linearGradient>
+                  </defs>
+                  <ellipse class="ship-shadow" cx="332" cy="188" rx="288" ry="15" />
+                  <path class="ship-bulb" d="M548 159 C579 153 615 159 638 172 C615 181 578 183 544 176 C532 173 531 164 548 159 Z" />
+                  <path class="ship-lower" d="M62 151 L492 151 C536 151 577 159 612 174 C579 192 536 198 468 198 L70 198 C55 190 48 171 62 151 Z" />
+                  <path class="ship-hull" d="M36 72 C57 69 95 68 144 69 L489 69 C537 69 582 91 630 116 C599 135 563 148 514 153 L70 153 C47 142 34 113 36 72 Z" />
+                  <path class="ship-deck" d="M58 61 L480 61 C534 62 577 79 610 102 L554 110 L57 87 Z" />
+                  <path class="ship-forecastle" d="M483 55 C526 56 565 72 590 91 L548 96 L476 83 Z" />
+                  <path class="ship-highlight" d="M67 87 C170 95 340 93 518 91 C553 93 582 103 604 115" />
+                  <path class="ship-waterline" d="M61 132 C203 137 365 138 520 133 C555 131 586 124 616 116" />
+                  <g class="ship-plating">
+                    <path d="M94 82 L92 145" />
+                    <path d="M190 76 L186 149" />
+                    <path d="M286 74 L281 151" />
+                    <path d="M384 73 L378 151" />
+                    <path d="M482 74 L473 151" />
+                  </g>
+                  <g class="ship-rail">
+                    <path d="M73 55 L478 55 C520 56 552 65 581 82" />
+                    <path d="M501 55 L501 68 M532 61 L532 75 M560 73 L560 88" />
+                  </g>
+                  <path class="ship-stem" d="M590 84 C609 98 623 109 635 116" />
+                  <circle class="ship-anchor" cx="586" cy="119" r="5" />
+                  <path class="ship-anchor-chain" d="M586 124 C583 133 578 140 571 147" />
+                </svg>
+                <div class="fallback-hull-shadow"></div>
+                <div class="fallback-bulb"></div>
+                <div class="fallback-hull-bottom"></div>
+                <div class="fallback-hull-main"></div>
+                <div class="fallback-deck"></div>
+                <div class="fallback-bow"></div>
+                <div class="fallback-bow-rail"></div>
+                <div class="fallback-anchor anchor-port"></div>
+                <div class="fallback-anchor anchor-stbd"></div>
+                <div class="fallback-bridge">
+                  <span></span>
+                  <span></span>
+                </div>
+                <div class="fallback-funnel"></div>
+                <div class="fallback-hold hold-1"></div>
+                <div class="fallback-hold hold-2"></div>
+                <div class="fallback-hold hold-3 active"></div>
+                <div class="fallback-hold hold-4"></div>
+                <div class="fallback-hold hold-5"></div>
+                <div class="fallback-cargo" id="fallbackCargo"></div>
+                <div class="ship-stowage-layer" id="shipStowageLayer" aria-hidden="true"></div>
+              </div>
+              <div class="sea-ship-interaction" aria-hidden="true">
+                <span class="sea-contact-shadow"></span>
+                <span class="sea-bow-foam"></span>
+                <span class="sea-stern-wake"></span>
+                <span class="sea-foreground-wash"></span>
+              </div>
+              <div class="ship-axis-overlay" id="shipAxisOverlay"></div>
+              <div class="sea-draft-readout" id="seaDraftReadout">Draft F/A -- / -- m</div>
+              <div class="fallback-callout">Live 3D load plan preview</div>
+            </div>
+            <canvas id="loadicatorCanvas" aria-label="3D cargo stability loadicator scene"></canvas>
+            <div class="ship-view-switcher" aria-label="Ship view axis selector">
+              <span>View axis</span>
+              <button type="button" data-ship-view="side" class="active">Side</button>
+              <button type="button" data-ship-view="top">Top</button>
+              <button type="button" data-ship-view="cross">Cross</button>
+              <button type="button" data-ship-view="iso">Iso</button>
+            </div>
+            <div class="cargo-palette" id="cargoPalette" aria-label="Cargo sample selector">
+              <div class="cargo-palette-header">
+                <span>Cargo sample deck</span>
+                <strong id="cargoPaletteStatus">Coal / bulk selected</strong>
+              </div>
+              <div class="cargo-example-grid" id="cargoExampleGrid">
+                <button type="button" data-cargo-preset="containers" data-vessel-preset="feederContainer" data-weight="1800">
+                  <span class="cargo-icon cargo-icon-container"></span>
+                  <strong>Container</strong>
+                  <small>Bay stack / high KG</small>
+                </button>
+                <button type="button" data-cargo-preset="coal" data-vessel-preset="panamaxBulker" data-weight="4200" class="active">
+                  <span class="cargo-icon cargo-icon-bulk"></span>
+                  <strong>Coal</strong>
+                  <small>Bulk hold loading</small>
+                </button>
+                <button type="button" data-cargo-preset="grain" data-vessel-preset="panamaxBulker" data-weight="3600">
+                  <span class="cargo-icon cargo-icon-grain"></span>
+                  <strong>Grain</strong>
+                  <small>Shift / volume watch</small>
+                </button>
+                <button type="button" data-cargo-preset="ironOre" data-vessel-preset="panamaxBulker" data-weight="5200">
+                  <span class="cargo-icon cargo-icon-ore"></span>
+                  <strong>Iron ore</strong>
+                  <small>Dense stress cargo</small>
+                </button>
+                <button type="button" data-cargo-preset="crudeOil" data-vessel-preset="aframaxTanker" data-weight="6200">
+                  <span class="cargo-icon cargo-icon-liquid"></span>
+                  <strong>Crude oil</strong>
+                  <small>Free surface risk</small>
+                </button>
+                <button type="button" data-cargo-preset="lng" data-vessel-preset="lngCarrier" data-weight="5000">
+                  <span class="cargo-icon cargo-icon-lng"></span>
+                  <strong>LNG</strong>
+                  <small>Tank filling limit</small>
+                </button>
+                <button type="button" data-cargo-preset="chemicals" data-vessel-preset="aframaxTanker" data-weight="3200">
+                  <span class="cargo-icon cargo-icon-chemical"></span>
+                  <strong>Chemicals</strong>
+                  <small>Coating / heating</small>
+                </button>
+                <button type="button" data-cargo-preset="projectCargo" data-vessel-preset="mpv" data-weight="850">
+                  <span class="cargo-icon cargo-icon-project"></span>
+                  <strong>Project</strong>
+                  <small>Point load / lashing</small>
+                </button>
+              </div>
+              <div class="cargo-placement-summary ok" id="cargoPlacementSummary">
+                <span>Pick a cargo, choose H1-H5, then move port / stbd.</span>
+                <strong>GM -- / Trim -- / Heel --</strong>
+              </div>
+            </div>
+            <div class="scene-hud">
+              <span id="loadicatorHoldLabel">Hold 3 / midship</span>
+              <strong id="loadicatorLiveTrim">Trim 0.00 m</strong>
+            </div>
+          </div>
+
+          <form class="loadicator-controls" id="loadicatorForm">
+            <div class="loadicator-select-row">
+              <label>
+                <span>Vessel type <b id="vesselTypeReadout">Panamax Bulker</b></span>
+                <select name="vesselType">
+                  <option value="handyBulker">Handy / Supramax Bulker</option>
+                  <option value="panamaxBulker" selected>Panamax Bulker</option>
+                  <option value="aframaxTanker">Aframax Tanker</option>
+                  <option value="feederContainer">Feeder Container Ship</option>
+                  <option value="lngCarrier">LNG Carrier</option>
+                  <option value="mpv">MPV / Project Carrier</option>
+                </select>
+              </label>
+              <label>
+                <span>Cargo type <b id="cargoTypeReadout">Coal</b></span>
+                <select name="cargoType">
+                  <option value="coal" selected>Komur / Coal</option>
+                  <option value="grain">Tahil / Grain</option>
+                  <option value="ironOre">Demir cevheri / Iron ore</option>
+                  <option value="containers">Konteyner / Containers</option>
+                  <option value="crudeOil">Crude oil</option>
+                  <option value="lng">LNG</option>
+                  <option value="chemicals">Chemicals</option>
+                  <option value="projectCargo">Project cargo</option>
+                </select>
+              </label>
+            </div>
+            <label>
+              <span>Cargo weight <b id="cargoWeightReadout">4,200 mt</b></span>
+              <input name="cargoWeight" type="range" min="0" max="12000" step="100" value="4200" />
+            </label>
+            <div class="quick-load-panel" aria-label="Quick cargo loading panel">
+              <div class="quick-load-header">
+                <span>Quick loading</span>
+                <strong id="quickLoadTarget">Hold 3 / midship / 4,200 mt</strong>
+              </div>
+              <div class="quick-hold-buttons" id="quickHoldButtons">
+                <button type="button" data-hold="-72">H1 <small>FWD</small></button>
+                <button type="button" data-hold="-36">H2 <small>FWD-MID</small></button>
+                <button type="button" data-hold="0" class="active">H3 <small>MID</small></button>
+                <button type="button" data-hold="36">H4 <small>AFT-MID</small></button>
+                <button type="button" data-hold="72">H5 <small>AFT</small></button>
+              </div>
+              <div class="quick-load-actions">
+                <button type="button" data-load-step="-500">Discharge 500</button>
+                <button type="button" data-load-step="500">Load 500</button>
+                <button type="button" data-load-step="2000">Load 2,000</button>
+                <button type="button" data-load-clear>Clear hold</button>
+              </div>
+            </div>
+            <label>
+              <span>Hold / bay</span>
+              <select name="hold">
+                <option value="-72">Hold 1 / forward</option>
+                <option value="-36">Hold 2</option>
+                <option value="0" selected>Hold 3 / midship</option>
+                <option value="36">Hold 4</option>
+                <option value="72">Hold 5 / aft</option>
+                <option value="custom">Custom position</option>
+              </select>
+            </label>
+            <label>
+              <span>Longitudinal position <b id="longReadout">0 m</b></span>
+              <input name="longitudinal" type="range" min="-90" max="90" step="1" value="0" />
+            </label>
+            <label>
+              <span>Transverse offset <b id="transReadout">0 m</b></span>
+              <input name="transverse" type="range" min="-16" max="16" step="0.5" value="0" />
+            </label>
+            <label>
+              <span>Cargo KG <b id="cargoKgReadout">8.5 m</b></span>
+              <input name="cargoKg" type="range" min="1" max="18" step="0.1" value="8.5" />
+            </label>
+            <label>
+              <span>Stowage factor <b id="cargoSfReadout">1.35 m3/mt</b></span>
+              <input name="cargoSf" type="range" min="0.35" max="3.2" step="0.05" value="1.35" />
+            </label>
+            <div class="loadicator-input-grid">
+              <label><span>Base disp. mt</span><input name="baseDisplacement" type="number" value="65000" step="100" /></label>
+              <label><span>Base KG m</span><input name="baseKg" type="number" value="8.4" step="0.1" /></label>
+              <label><span>KM m</span><input name="km" type="number" value="10.9" step="0.1" /></label>
+              <label><span>FSC m</span><input name="fsc" type="number" value="0.22" step="0.01" /></label>
+              <label><span>MCTC mt-m/cm</span><input name="mctc" type="number" value="820" step="10" /></label>
+              <label><span>LBP m</span><input name="lbp" type="number" value="225" step="1" /></label>
+            </div>
+            <button type="button" class="ghost-button full" id="resetLoadicator">Reset 3D Loadicator</button>
+          </form>
+        </div>
+
+        <div class="loadicator-metrics" id="loadicatorMetrics">
+          <article><span>Corrected GM</span><strong>-- m</strong><small>waiting</small></article>
+          <article><span>Trim change</span><strong>-- cm</strong><small>waiting</small></article>
+          <article><span>Heel angle</span><strong>-- deg</strong><small>waiting</small></article>
+          <article><span>Draft F / A</span><strong>-- / --</strong><small>waiting</small></article>
+        </div>
+
+        <div class="professional-load-suite" id="professionalLoadSuite">
+          <div class="engineering-heading">
+            <div>
+              <p class="eyebrow">Professional Cargo Plan Editor</p>
+              <h3>Coklu yuk, hold bazli stress, ballast ve otomatik tavsiye.</h3>
+              <p>
+                Yuk kartini sec veya surukleyip ambara birak; sistem hold load, volume,
+                tanktop stress, shear force, bending moment, stability criteria ve ballast
+                etkisini tek panelde degerlendirir.
+              </p>
+            </div>
+            <div class="plan-actions">
+              <div class="scene-status" id="professionalPlanStatus">Plan initializing</div>
+              <button type="button" class="primary-button" id="downloadLoadPlanReport">Load Plan PDF Indir</button>
+            </div>
+          </div>
+
+          <div class="cargo-plan-layout">
+            <section class="cargo-plan-card cargo-toolbox">
+              <div class="mini-heading">
+                <span>01</span>
+                <div>
+                  <h4>Cargo library</h4>
+                  <p>Sec, tikla veya ambara surukle.</p>
+                </div>
+              </div>
+              <div class="parcel-tool-grid" id="parcelToolGrid">
+                <button type="button" draggable="true" data-parcel-template="container20">
+                  <span class="cargo-icon cargo-icon-container"></span>
+                  <strong>20ft container</strong>
+                  <small>24 mt / KG 13.2</small>
+                </button>
+                <button type="button" draggable="true" data-parcel-template="container40">
+                  <span class="cargo-icon cargo-icon-container"></span>
+                  <strong>40ft container</strong>
+                  <small>30 mt / KG 14.1</small>
+                </button>
+                <button type="button" draggable="true" data-parcel-template="coalParcel">
+                  <span class="cargo-icon cargo-icon-bulk"></span>
+                  <strong>Coal parcel</strong>
+                  <small>1,200 mt / bulk</small>
+                </button>
+                <button type="button" draggable="true" data-parcel-template="grainParcel">
+                  <span class="cargo-icon cargo-icon-grain"></span>
+                  <strong>Grain parcel</strong>
+                  <small>950 mt / shifting</small>
+                </button>
+                <button type="button" draggable="true" data-parcel-template="ironOreParcel">
+                  <span class="cargo-icon cargo-icon-ore"></span>
+                  <strong>Iron ore parcel</strong>
+                  <small>1,500 mt / dense</small>
+                </button>
+                <button type="button" draggable="true" data-parcel-template="projectCargoParcel">
+                  <span class="cargo-icon cargo-icon-project"></span>
+                  <strong>Project cargo</strong>
+                  <small>180 mt / point load</small>
+                </button>
+                <button type="button" draggable="true" data-parcel-template="liquidTankParcel">
+                  <span class="cargo-icon cargo-icon-liquid"></span>
+                  <strong>Liquid tank parcel</strong>
+                  <small>900 mt / free surface</small>
+                </button>
+              </div>
+            </section>
+
+            <section class="cargo-plan-card hold-drop-card">
+              <div class="mini-heading">
+                <span>02</span>
+                <div>
+                  <h4>Drag & drop hold plan</h4>
+                  <p>Yuk kartini H1-H5'e birak, sonra tonaj/KG/SF/offset duzenle.</p>
+                </div>
+              </div>
+              <div class="hold-drop-grid" id="holdDropGrid">
+                <div class="hold-drop-zone" data-plan-hold="-72"><strong>H1</strong><span>Forward</span><div></div></div>
+                <div class="hold-drop-zone" data-plan-hold="-36"><strong>H2</strong><span>Fwd-mid</span><div></div></div>
+                <div class="hold-drop-zone" data-plan-hold="0"><strong>H3</strong><span>Midship</span><div></div></div>
+                <div class="hold-drop-zone" data-plan-hold="36"><strong>H4</strong><span>Aft-mid</span><div></div></div>
+                <div class="hold-drop-zone" data-plan-hold="72"><strong>H5</strong><span>Aft</span><div></div></div>
+              </div>
+            </section>
+
+            <section class="cargo-plan-card parcel-editor">
+              <div class="mini-heading">
+                <span>03</span>
+                <div>
+                  <h4>Selected parcel</h4>
+                  <p>Secili yuk kartini operasyonel parametrelerle duzenle.</p>
+                </div>
+              </div>
+              <form class="parcel-editor-form" id="parcelEditorForm">
+                <label><span>Parcel</span><strong id="selectedParcelName">No parcel selected</strong></label>
+                <label><span>Weight mt</span><input name="parcelWeight" type="number" value="1200" step="10" /></label>
+                <label><span>KG m</span><input name="parcelKg" type="number" value="8.5" step="0.1" /></label>
+                <label><span>SF m3/mt</span><input name="parcelSf" type="number" value="1.35" step="0.05" /></label>
+                <label><span>Port / stbd offset m</span><input name="parcelOffset" type="range" min="-16" max="16" value="0" step="0.5" /></label>
+                <div class="parcel-editor-actions">
+                  <button type="button" class="ghost-button" id="duplicateParcel">Duplicate</button>
+                  <button type="button" class="ghost-button" id="deleteParcel">Delete</button>
+                  <button type="button" class="primary-button" id="applyParcelEdit">Apply</button>
+                </div>
+              </form>
+            </section>
+          </div>
+
+          <div class="plan-analysis-grid">
+            <section class="cargo-plan-card cargo-plan-table-card">
+              <div class="mini-heading">
+                <span>04</span>
+                <div>
+                  <h4>Cargo list</h4>
+                  <p>Her yuk icin hold, tonaj, KG, SF ve offset.</p>
+                </div>
+              </div>
+              <div class="cargo-plan-table" id="cargoPlanTable"></div>
+            </section>
+
+            <section class="cargo-plan-card hold-evaluation-card">
+              <div class="mini-heading">
+                <span>05</span>
+                <div>
+                  <h4>Hold evaluation</h4>
+                  <p>Load %, volume %, tanktop stress ve warning.</p>
+                </div>
+              </div>
+              <div class="hold-evaluation-grid" id="holdEvaluationGrid"></div>
+            </section>
+
+            <section class="cargo-plan-card stress-chart-card">
+              <div class="mini-heading">
+                <span>06</span>
+                <div>
+                  <h4>Shear force / bending moment</h4>
+                  <p>Approximate planning curve with limit line.</p>
+                </div>
+              </div>
+              <svg class="stress-chart" id="stressChartSvg" viewBox="0 0 720 260" role="img" aria-label="Shear force and bending moment planning chart">
+                <line x1="48" y1="110" x2="684" y2="110" class="axis"></line>
+                <line x1="48" y1="220" x2="684" y2="220" class="axis"></line>
+                <line x1="48" y1="22" x2="48" y2="230" class="axis"></line>
+                <polyline id="shearCurveLine" points="" class="shear-line"></polyline>
+                <polyline id="bendingCurveLine" points="" class="bending-line"></polyline>
+                <line x1="48" y1="44" x2="684" y2="44" class="limit-line"></line>
+                <line x1="48" y1="176" x2="684" y2="176" class="limit-line"></line>
+              </svg>
+              <div class="stress-legend">
+                <span><i class="shear-dot"></i>Shear force</span>
+                <span><i class="bending-dot"></i>Bending moment</span>
+                <strong id="stressStatusText">Waiting</strong>
+              </div>
+            </section>
+
+            <section class="cargo-plan-card ballast-card">
+              <div class="mini-heading">
+                <span>07</span>
+                <div>
+                  <h4>Ballast tank system</h4>
+                  <p>Fore/aft trim and port/stbd heel correction.</p>
+                </div>
+              </div>
+              <form class="ballast-grid" id="ballastPlanForm">
+                <label><span>Fore peak mt</span><input name="forePeak" type="number" value="450" step="25" /></label>
+                <label><span>Aft peak mt</span><input name="aftPeak" type="number" value="520" step="25" /></label>
+                <label><span>DB port mt</span><input name="dbPort" type="number" value="800" step="25" /></label>
+                <label><span>DB stbd mt</span><input name="dbStbd" type="number" value="800" step="25" /></label>
+                <label><span>Wing port mt</span><input name="wingPort" type="number" value="420" step="25" /></label>
+                <label><span>Wing stbd mt</span><input name="wingStbd" type="number" value="420" step="25" /></label>
+              </form>
+              <div class="ballast-summary" id="ballastSummary">Ballast correction pending.</div>
+            </section>
+
+            <section class="cargo-plan-card criteria-card">
+              <div class="mini-heading">
+                <span>08</span>
+                <div>
+                  <h4>Stability criteria</h4>
+                  <p>IMO-style pass/fail quick screen.</p>
+                </div>
+              </div>
+              <div class="criteria-list" id="criteriaList"></div>
+            </section>
+
+            <section class="cargo-plan-card advice-card">
+              <div class="mini-heading">
+                <span>09</span>
+                <div>
+                  <h4>Auto recommendation engine</h4>
+                  <p>Sistem hesap sonucuna gore operasyonel tavsiye uretir.</p>
+                </div>
+              </div>
+              <div class="advice-list" id="loadAdviceList"></div>
+            </section>
+          </div>
+
+          <div class="pro-decision-grid">
+            <section class="cargo-plan-card auto-balance-card">
+              <div class="mini-heading">
+                <span>10</span>
+                <div>
+                  <h4>Auto Balance Engine</h4>
+                  <p>Trim, heel, GM ve tanktop riskine gore uygulanabilir duzeltme onerisi.</p>
+                </div>
+              </div>
+              <div class="decision-stack" id="autoBalancePanel"></div>
+              <div class="decision-actions">
+                <button type="button" class="primary-button" id="applyAutoBalance">Apply suggestion</button>
+                <button type="button" class="ghost-button" id="refreshAutoBalance">Recalculate</button>
+              </div>
+            </section>
+
+            <section class="cargo-plan-card risk-reason-card">
+              <div class="mini-heading">
+                <span>11</span>
+                <div>
+                  <h4>Risk neden olustu?</h4>
+                  <p>GM, trim, heel, tanktop ve draft sebebini sade aciklar.</p>
+                </div>
+              </div>
+              <div class="risk-reason-list" id="riskReasonList"></div>
+            </section>
+
+            <section class="cargo-plan-card loading-sequence-card">
+              <div class="mini-heading">
+                <span>12</span>
+                <div>
+                  <h4>Loading sequence</h4>
+                  <p>Yukleme sirasi, ballast adimi ve her adimda GM/trim/heel etkisi.</p>
+                </div>
+              </div>
+              <div class="sequence-list" id="loadingSequenceList"></div>
+            </section>
+
+            <section class="cargo-plan-card ballast-map-card">
+              <div class="mini-heading">
+                <span>13</span>
+                <div>
+                  <h4>Ballast tank haritasi</h4>
+                  <p>Fore/aft, double bottom ve wing tank doluluklarini tek planda izle.</p>
+                </div>
+              </div>
+              <div class="ballast-map" id="ballastTankMap"></div>
+            </section>
+
+            <section class="cargo-plan-card compatibility-matrix-card">
+              <div class="mini-heading">
+                <span>14</span>
+                <div>
+                  <h4>Cargo compatibility matrix</h4>
+                  <p>Yuk tipi, gemi tipi, dokuman ve operasyonel risk uyumu.</p>
+                </div>
+              </div>
+              <div class="compatibility-matrix" id="cargoCompatibilityMatrix"></div>
+            </section>
+
+            <section class="cargo-plan-card scenario-mode-card">
+              <div class="mini-heading">
+                <span>15</span>
+                <div>
+                  <h4>Scenario mode</h4>
+                  <p>Egitim ve demo icin hazir operasyon senaryolari.</p>
+                </div>
+              </div>
+              <div class="scenario-grid" id="scenarioModeGrid">
+                <button type="button" data-scenario="coalIndonesia">Coal Indonesia</button>
+                <button type="button" data-scenario="grainBrazil">Grain Brazil</button>
+                <button type="button" data-scenario="ironOreAustralia">Iron ore Australia</button>
+                <button type="button" data-scenario="containerFeeder">Container feeder</button>
+              </div>
+              <div class="scenario-output" id="scenarioModeOutput">Select a scenario to load a professional training case.</div>
+            </section>
+
+            <section class="cargo-plan-card copilot-card">
+              <div class="mini-heading">
+                <span>16</span>
+                <div>
+                  <h4>AI Copilot Panel</h4>
+                  <p>Plan riskini acikla, trim azalt, rapor veya broker notu hazirla.</p>
+                </div>
+              </div>
+              <div class="copilot-quick-actions">
+                <button type="button" data-copilot-action="whyRisk">Bu plan neden riskli?</button>
+                <button type="button" data-copilot-action="reduceTrim">Trim'i azalt</button>
+                <button type="button" data-copilot-action="cargoFit">Bu yuk icin uygun gemi ne?</button>
+                <button type="button" data-copilot-action="report">Load plan raporu hazirla</button>
+                <button type="button" data-copilot-action="brokerMail">Broker maili yaz</button>
+              </div>
+              <div class="copilot-output" id="loadicatorCopilotOutput">Copilot ready.</div>
+            </section>
+
+            <section class="cargo-plan-card report-history-card">
+              <div class="mini-heading">
+                <span>17</span>
+                <div>
+                  <h4>Load Plan Report History</h4>
+                  <p>PDF indirildikce rapor kaydi, risk sonucu ve tekrar indirme.</p>
+                </div>
+              </div>
+              <div class="report-history-list" id="loadPlanReportHistory"></div>
+            </section>
+          </div>
+        </div>
+
+        <div class="transverse-suite" id="transverseEngineering">
+          <div class="engineering-heading">
+            <div>
+              <p class="eyebrow">Port / Starboard Engineering</p>
+              <h3>Sancak-iskele yuk dengesi, GZ curve ve draft farki.</h3>
+              <p>
+                Wing cargo, ballast ve ruzgar momentini gir; sistem heeling moment,
+                equilibrium heel, port/stbd draft difference ve downflooding margin hesaplar.
+              </p>
+            </div>
+            <div class="scene-status" id="transverseStatus">Transverse check pending</div>
+          </div>
+
+          <div class="transverse-layout">
+            <div class="transverse-visual">
+              <div class="cross-section" id="crossSectionView">
+                <div class="water-plane"></div>
+                <div class="section-hull" id="sectionHull">
+                  <div class="section-deck"></div>
+                  <div class="section-keel"></div>
+                  <div class="section-centerline"></div>
+                  <div class="section-cg" id="sectionCg"></div>
+                  <div class="section-load port" id="sectionPortLoad"></div>
+                  <div class="section-load stbd" id="sectionStbdLoad"></div>
+                </div>
+                <div class="heel-readout">
+                  <span id="heelDirectionLabel">Upright</span>
+                  <strong id="heelAngleLabel">0.00 deg</strong>
+                </div>
+              </div>
+
+              <div class="gz-panel">
+                <div class="gz-title">
+                  <span>Approximate GZ curve</span>
+                  <strong id="gzPeakLabel">Peak -- m</strong>
+                </div>
+                <svg id="gzCurveSvg" viewBox="0 0 360 170" role="img" aria-label="Approximate GZ curve">
+                  <line x1="34" y1="132" x2="342" y2="132" class="axis"></line>
+                  <line x1="34" y1="20" x2="34" y2="146" class="axis"></line>
+                  <polyline id="gzCurveLine" points="" class="gz-line"></polyline>
+                  <line id="heelMarkerLine" x1="34" y1="20" x2="34" y2="146" class="heel-marker"></line>
+                </svg>
+              </div>
+            </div>
+
+            <form class="transverse-controls" id="transverseForm">
+              <label><span>Port wing cargo mt</span><input name="portCargo" type="number" value="1800" step="50" /></label>
+              <label><span>Stbd wing cargo mt</span><input name="stbdCargo" type="number" value="1800" step="50" /></label>
+              <label><span>Port ballast mt</span><input name="portBallast" type="number" value="650" step="25" /></label>
+              <label><span>Stbd ballast mt</span><input name="stbdBallast" type="number" value="650" step="25" /></label>
+              <label><span>Port arm m</span><input name="portArm" type="number" value="12.5" step="0.1" /></label>
+              <label><span>Stbd arm m</span><input name="stbdArm" type="number" value="12.5" step="0.1" /></label>
+              <label><span>Beam moulded m</span><input name="beam" type="number" value="32.2" step="0.1" /></label>
+              <label><span>Freeboard to deck edge m</span><input name="freeboard" type="number" value="4.8" step="0.1" /></label>
+              <label><span>Wind/current moment mt-m</span><input name="windMoment" type="number" value="0" step="100" /></label>
+              <label><span>Downflooding angle deg</span><input name="downfloodingAngle" type="number" value="28" step="1" /></label>
+            </form>
+          </div>
+
+          <div class="engineering-metrics" id="transverseMetrics">
+            <article><span>Heeling moment</span><strong>-- mt-m</strong><small>waiting</small></article>
+            <article><span>Equilibrium heel</span><strong>-- deg</strong><small>waiting</small></article>
+            <article><span>Port / stbd draft</span><strong>-- / --</strong><small>waiting</small></article>
+            <article><span>Deck-edge margin</span><strong>-- deg</strong><small>waiting</small></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="lab-grid">
+        <article class="lab-card" id="cargoLab">
+          <div class="card-heading">
+            <span>01</span>
+            <div>
+              <h2>Cargo Intake Planner</h2>
+              <p>DWT, bunkers, stores ve constant ile kalan yuk kapasitesi.</p>
+            </div>
+          </div>
+          <form class="calc-form" id="cargoForm">
+            <label><span>Summer DWT (mt)</span><input name="dwt" type="number" value="82000" step="100" /></label>
+            <label><span>Current displacement (mt)</span><input name="currentDisplacement" type="number" value="32800" step="100" /></label>
+            <label><span>Planned cargo (mt)</span><input name="cargo" type="number" value="52000" step="100" /></label>
+            <label><span>Bunkers ROB (mt)</span><input name="bunkers" type="number" value="1450" step="10" /></label>
+            <label><span>Fresh water / stores (mt)</span><input name="stores" type="number" value="280" step="10" /></label>
+            <label><span>Constants / slops (mt)</span><input name="constants" type="number" value="350" step="10" /></label>
+            <button type="submit">Cargo Intake Hesapla</button>
+          </form>
+          <div class="result-box" id="cargoResult"></div>
+        </article>
+
+        <article class="lab-card" id="gmLab">
+          <div class="card-heading">
+            <span>02</span>
+            <div>
+              <h2>Corrected GM Calculator</h2>
+              <p>KG, KM, free surface correction ve minimum GM kontrolu.</p>
+            </div>
+          </div>
+          <form class="calc-form" id="gmForm">
+            <label><span>Lightship weight (mt)</span><input name="lightship" type="number" value="12800" step="10" /></label>
+            <label><span>Lightship KG (m)</span><input name="lightshipKg" type="number" value="8.2" step="0.01" /></label>
+            <label><span>Cargo weight (mt)</span><input name="cargo" type="number" value="52000" step="100" /></label>
+            <label><span>Cargo KG (m)</span><input name="cargoKg" type="number" value="9.8" step="0.01" /></label>
+            <label><span>Bunkers + stores (mt)</span><input name="bunkers" type="number" value="1730" step="10" /></label>
+            <label><span>Bunkers KG (m)</span><input name="bunkersKg" type="number" value="3.4" step="0.01" /></label>
+            <label><span>Ballast (mt)</span><input name="ballast" type="number" value="3200" step="10" /></label>
+            <label><span>Ballast KG (m)</span><input name="ballastKg" type="number" value="1.8" step="0.01" /></label>
+            <label><span>KM at draft (m)</span><input name="km" type="number" value="11.4" step="0.01" /></label>
+            <label><span>Free surface correction (m)</span><input name="fsc" type="number" value="0.28" step="0.01" /></label>
+            <label><span>Minimum GM required (m)</span><input name="minGm" type="number" value="0.55" step="0.01" /></label>
+            <button type="submit">GM Hesapla</button>
+          </form>
+          <div class="result-box" id="gmResult"></div>
+        </article>
+
+        <article class="lab-card" id="trimLab">
+          <div class="card-heading">
+            <span>03</span>
+            <div>
+              <h2>Trim & Cargo Shift</h2>
+              <p>Draft farki, MCTC ve longitudinal cargo shift etkisi.</p>
+            </div>
+          </div>
+          <form class="calc-form" id="trimForm">
+            <label><span>Forward draft (m)</span><input name="draftFwd" type="number" value="11.7" step="0.01" /></label>
+            <label><span>Aft draft (m)</span><input name="draftAft" type="number" value="12.2" step="0.01" /></label>
+            <label><span>LBP (m)</span><input name="lbp" type="number" value="225" step="0.1" /></label>
+            <label><span>LCF from midship (+aft m)</span><input name="lcf" type="number" value="4.5" step="0.1" /></label>
+            <label><span>MCTC (mt-m / cm)</span><input name="mctc" type="number" value="820" step="1" /></label>
+            <label><span>Shift weight (mt)</span><input name="shiftWeight" type="number" value="1800" step="10" /></label>
+            <label><span>Shift distance (+aft m)</span><input name="shiftDistance" type="number" value="18" step="0.1" /></label>
+            <button type="submit">Trim Etkisini Hesapla</button>
+          </form>
+          <div class="result-box" id="trimResult"></div>
+        </article>
+
+        <article class="lab-card" id="draftLab">
+          <div class="card-heading">
+            <span>04</span>
+            <div>
+              <h2>Draft Survey Cargo Estimate</h2>
+              <p>Mean draft, density correction ve net cargo tahmini.</p>
+            </div>
+          </div>
+          <form class="calc-form" id="draftForm">
+            <label><span>Fwd port draft (m)</span><input name="fwdPort" type="number" value="11.82" step="0.01" /></label>
+            <label><span>Fwd stbd draft (m)</span><input name="fwdStbd" type="number" value="11.78" step="0.01" /></label>
+            <label><span>Mid port draft (m)</span><input name="midPort" type="number" value="12.01" step="0.01" /></label>
+            <label><span>Mid stbd draft (m)</span><input name="midStbd" type="number" value="12.03" step="0.01" /></label>
+            <label><span>Aft port draft (m)</span><input name="aftPort" type="number" value="12.27" step="0.01" /></label>
+            <label><span>Aft stbd draft (m)</span><input name="aftStbd" type="number" value="12.23" step="0.01" /></label>
+            <label><span>Observed water density</span><input name="density" type="number" value="1.018" step="0.001" /></label>
+            <label><span>Reference draft (m)</span><input name="refDraft" type="number" value="12" step="0.01" /></label>
+            <label><span>Reference displacement (mt)</span><input name="refDisplacement" type="number" value="68400" step="100" /></label>
+            <label><span>TPC (mt/cm)</span><input name="tpc" type="number" value="62" step="0.1" /></label>
+            <label><span>Lightship + constants (mt)</span><input name="deductions" type="number" value="13450" step="10" /></label>
+            <label><span>Bunkers / ballast / stores (mt)</span><input name="otherWeights" type="number" value="6380" step="10" /></label>
+            <button type="submit">Draft Survey Hesapla</button>
+          </form>
+          <div class="result-box" id="draftResult"></div>
+        </article>
+
+        <article class="lab-card wide" id="holdLab">
+          <div class="card-heading">
+            <span>05</span>
+            <div>
+              <h2>Hold Distribution & Stowage</h2>
+              <p>Hold bazli yuk dagilimi, izin verilen limitler ve hacim kontrolu.</p>
+            </div>
+          </div>
+          <form class="calc-form hold-form" id="holdForm">
+            <label><span>Hold 1 load / max (mt)</span><input name="hold1" type="number" value="8400" step="100" /><input name="max1" type="number" value="9800" step="100" /></label>
+            <label><span>Hold 2 load / max (mt)</span><input name="hold2" type="number" value="11200" step="100" /><input name="max2" type="number" value="12400" step="100" /></label>
+            <label><span>Hold 3 load / max (mt)</span><input name="hold3" type="number" value="11800" step="100" /><input name="max3" type="number" value="12600" step="100" /></label>
+            <label><span>Hold 4 load / max (mt)</span><input name="hold4" type="number" value="10800" step="100" /><input name="max4" type="number" value="12200" step="100" /></label>
+            <label><span>Hold 5 load / max (mt)</span><input name="hold5" type="number" value="9800" step="100" /><input name="max5" type="number" value="11200" step="100" /></label>
+            <label><span>Stowage factor (m3/mt)</span><input name="sf" type="number" value="1.32" step="0.01" /></label>
+            <label><span>Bale capacity (m3)</span><input name="capacity" type="number" value="72000" step="100" /></label>
+            <label><span>Broken stowage (%)</span><input name="broken" type="number" value="4" step="0.1" /></label>
+            <button type="submit">Hold Plan Analiz Et</button>
+          </form>
+          <div class="result-box" id="holdResult"></div>
+        </article>
+
+        <article class="lab-card" id="heelLab">
+          <div class="card-heading">
+            <span>06</span>
+            <div>
+              <h2>Heel Angle Quick Check</h2>
+              <p>Transverse shift veya wind moment ile yaklasik heel angle.</p>
+            </div>
+          </div>
+          <form class="calc-form" id="heelForm">
+            <label><span>Displacement (mt)</span><input name="displacement" type="number" value="69730" step="100" /></label>
+            <label><span>Corrected GM (m)</span><input name="gm" type="number" value="1.32" step="0.01" /></label>
+            <label><span>Shifted weight (mt)</span><input name="shiftWeight" type="number" value="650" step="10" /></label>
+            <label><span>Transverse shift (m)</span><input name="shiftDistance" type="number" value="7.5" step="0.1" /></label>
+            <label><span>Other heeling moment (mt-m)</span><input name="otherMoment" type="number" value="1800" step="10" /></label>
+            <button type="submit">Heel Hesapla</button>
+          </form>
+          <div class="result-box" id="heelResult"></div>
+        </article>
+
+        <article class="lab-card report-card">
+          <div class="card-heading">
+            <span>07</span>
+            <div>
+              <h2>Load Master Report</h2>
+              <p>Son calistirilan hesaplari tek teknik raporda birlestirir.</p>
+            </div>
+          </div>
+          <div class="report-output" id="stabilityReport">
+            Run calculators to generate a report.
+          </div>
+          <button type="button" class="primary-button full" id="downloadStabilityReportBottom">TXT Rapor Indir</button>
+        </article>
+      </section>
+
+      <section class="stability-resource-panel" id="stabilityResources">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Stability Reading Library</p>
+            <h2>GM, trim, damage stability ve free-surface icin kaynak kutuphanesi.</h2>
+            <p>
+              Loadicator sonucunu yorumlarken elinin altinda resmi IMO sayfalari ve ileri seviye
+              acik akademik okumalar dursun. Hesap motoru sahada pratik verir; bu bolum kavramlari
+              dogru kaynaktan calismak icin.
+            </p>
+          </div>
+          <div class="scene-status">Official + open research</div>
+        </div>
+
+        <div class="stability-resource-grid">
+          <a class="stability-resource-card" href="https://www.imo.org/en/ourwork/safety/pages/shipdesignandstability-default.aspx" target="_blank" rel="noopener noreferrer">
+            <span>Official / IMO</span>
+            <strong>Ship Design & Stability</strong>
+            <p>SOLAS II-1, 2008 Intact Stability Code, Load Line Convention ve second generation intact stability kriterlerine resmi giris.</p>
+            <small>Use for: GM, GZ, intact stability, load line context</small>
+          </a>
+          <a class="stability-resource-card" href="https://www.imo.org/en/ourwork/safety/pages/damagestability.aspx" target="_blank" rel="noopener noreferrer">
+            <span>Official / IMO</span>
+            <strong>Damage Stability</strong>
+            <p>Subdivision, probabilistic damage stability, damage control booklet ve SOLAS damage stability mantigi.</p>
+            <small>Use for: flooding risk, subdivision, survivability</small>
+          </a>
+          <a class="stability-resource-card" href="https://www.imo.org/en/ourwork/safety/pages/default.aspx" target="_blank" rel="noopener noreferrer">
+            <span>Official / Safety</span>
+            <strong>Maritime Safety Framework</strong>
+            <p>SOLAS, load lines, dangerous cargo, ship design/construction ve IMO safety komitelerine genel bakis.</p>
+            <small>Use for: regulatory map and safety background</small>
+          </a>
+          <a class="stability-resource-card" href="https://arxiv.org/abs/1410.2240" target="_blank" rel="noopener noreferrer">
+            <span>Open Paper</span>
+            <strong>Free-Surface Hydrodynamics</strong>
+            <p>Free-surface, breaking wave, VOF formulation ve ship hull cevresindeki akiskan davranisi icin teknik okuma.</p>
+            <small>Use for: free-surface and wave interaction theory</small>
+          </a>
+          <a class="stability-resource-card" href="https://arxiv.org/abs/2407.11601" target="_blank" rel="noopener noreferrer">
+            <span>Open Paper</span>
+            <strong>Surf-Riding Threshold / SGISC</strong>
+            <p>IMO Second Generation Intact Stability Criteria icinde surf-riding ve broaching esigi uzerine ileri matematiksel calisma.</p>
+            <small>Use for: following sea dynamic stability</small>
+          </a>
+          <a class="stability-resource-card" href="https://arxiv.org/abs/2406.12853" target="_blank" rel="noopener noreferrer">
+            <span>Open Review</span>
+            <strong>Following Sea Stability Review</strong>
+            <p>Broaching, following sea ve surf-riding prediction methodunun IMO SGISC ile baglantisini anlatan inceleme.</p>
+            <small>Use for: advanced dynamic stability reading</small>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <script src="stability.js?v=stability-lab-2"></script>
+    <script src="stability-loadicator-basic.js?v=stability-lab-15"></script>
+    <script type="module" src="stability-3d.js?v=stability-lab-9"></script>
+  </body>
+</html>
