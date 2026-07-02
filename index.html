@@ -73,8 +73,8 @@
           </article>
           <article>
             <span>Bunker Index</span>
-            <strong data-live="bunker">$620/t</strong>
-            <small data-live-note="bunker">VLSFO simulated</small>
+            <strong data-live="bunker">$686.50/t</strong>
+            <small data-live-note="bunker">Ship & Bunker VLSFO SG · checked 2026-07-02</small>
           </article>
           <article>
             <span>Weather Alerts</span>
@@ -90,7 +90,7 @@
             <div class="ops-list">
               <div><strong>Weather Routing</strong><span data-live-note="weatherRouting">Bay of Bengal squall line · reroute advised</span></div>
               <div><strong>Port Congestion</strong><span data-live-note="anchorageDelay">Singapore anchorage delay estimated 18-24h</span></div>
-              <div><strong>Bunker Watch</strong><span data-live-note="bunkerSpread">VLSFO spread: Singapore +$34/t vs Fujairah</span></div>
+              <div><strong>Bunker Watch</strong><span data-live-note="bunkerSpread">VLSFO: SG $686.50/t · RTM $599.50/t · FUJ $759.00/t</span></div>
             </div>
           </article>
           <article>
@@ -265,7 +265,7 @@
                 <label><span>Sea cons (mt/day)</span><input name="seaCons" type="number" value="28" min="0" step="0.1" /></label>
                 <label><span>Port cons (mt/day)</span><input name="portCons" type="number" value="4" min="0" step="0.1" /></label>
                 <label><span>Port days</span><input name="portDays" type="number" value="4.5" min="0" step="0.1" /></label>
-                <label><span>Bunker ($/mt)</span><input name="bunkerPrice" type="number" value="620" min="0" step="1" /></label>
+                <label><span>Bunker ($/mt)</span><input name="bunkerPrice" type="number" value="686.5" min="0" step="0.1" /></label>
                 <label><span>Port costs ($)</span><input name="portCosts" type="number" value="68000" min="0" step="100" /></label>
                 <label><span>Canal costs ($)</span><input name="canalCosts" type="number" value="0" min="0" step="100" /></label>
                 <label><span>Daily hire ($)</span><input name="dailyHire" type="number" value="14500" min="0" step="100" /></label>
@@ -375,7 +375,7 @@
                 <label><span>Port days</span><input name="portDays" type="number" value="5" min="0" step="0.1" /></label>
                 <label><span>Weather delay (h)</span><input name="weatherDelay" type="number" value="14" min="0" step="1" /></label>
                 <label><span>ROB bunker (mt)</span><input name="rob" type="number" value="180" min="0" step="1" /></label>
-                <label><span>Bunker price ($/mt)</span><input name="bunkerPrice" type="number" value="620" min="0" step="1" /></label>
+                <label><span>Bunker price ($/mt)</span><input name="bunkerPrice" type="number" value="686.5" min="0" step="0.1" /></label>
                 <label><span>Canal / extra ($)</span><input name="canalCosts" type="number" value="0" min="0" step="100" /></label>
                 <label><span>Daily hire ($)</span><input name="dailyHire" type="number" value="14500" min="0" step="100" /></label>
                 <button type="submit">Pro Estimate Hesapla</button>
@@ -460,7 +460,7 @@
                 <label><span>Quantity</span><input name="cargoQty" type="number" value="52000" min="0" step="100" /></label>
                 <label><span>Freight rate</span><input name="freightRate" type="number" value="18.5" min="0" step="0.1" /></label>
                 <label><span>Speed</span><input name="speed" type="number" value="13.5" min="1" step="0.1" /></label>
-                <label><span>Bunker price</span><input name="bunkerPrice" type="number" value="620" min="0" step="1" /></label>
+                <label><span>Bunker price</span><input name="bunkerPrice" type="number" value="686.5" min="0" step="0.1" /></label>
                 <label><span>Distance</span><input name="distance" type="number" value="5820" min="0" step="10" /></label>
                 <button type="submit">Sensitivity Hesapla</button>
               </form>
@@ -691,7 +691,7 @@
               <form class="broker-form" id="adminForm">
                 <label><span>Cargo type</span><select name="adminCargoType"><option value="coal">Coal</option><option value="grain">Grain</option><option value="container">Container</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option></select></label>
                 <label><span>Freight multiplier</span><input name="freightMultiplier" type="number" value="1" min="0.1" step="0.01" /></label>
-                <label><span>Default bunker</span><input name="defaultBunker" type="number" value="620" min="0" step="1" /></label>
+                <label><span>Default bunker</span><input name="defaultBunker" type="number" value="686.5" min="0" step="0.1" /></label>
                 <label><span>News query</span><input name="newsQuery" value="maritime shipping" /></label>
                 <button type="submit">Ayarları Uygula</button>
               </form>
@@ -752,7 +752,7 @@
                 <label><span>Distance nm</span><input name="distance" type="number" value="5800" min="0" step="10" /></label>
                 <label><span>Freight rate</span><input name="freightRate" type="number" value="18.5" min="0" step="0.1" /></label>
                 <label><span>Daily hire</span><input name="dailyHire" type="number" value="14500" min="0" step="100" /></label>
-                <label><span>Bunker $/t</span><input name="bunkerPrice" type="number" value="620" min="0" step="1" /></label>
+                <label><span>Bunker $/t</span><input name="bunkerPrice" type="number" value="686.5" min="0" step="0.1" /></label>
                 <label><span>Sea cons mt/day</span><input name="seaCons" type="number" value="28" min="0" step="0.1" /></label>
                 <label><span>Port days</span><input name="portDays" type="number" value="5" min="0" step="0.1" /></label>
                 <button type="submit">Optimize Et</button>
@@ -982,7 +982,7 @@
                 <label><span>Quantity</span><input name="cargoQty" type="number" value="52000" min="0" step="100" /></label>
                 <label><span>Distance nm</span><input name="distance" type="number" value="5800" min="0" step="10" /></label>
                 <label><span>Freight rate</span><input name="freightRate" type="number" value="18.5" min="0" step="0.1" /></label>
-                <label><span>Bunker $/t</span><input name="bunkerPrice" type="number" value="620" min="0" step="1" /></label>
+                <label><span>Bunker $/t</span><input name="bunkerPrice" type="number" value="686.5" min="0" step="0.1" /></label>
                 <label><span>Canal dues</span><input name="canalDues" type="number" value="0" min="0" step="1000" /></label>
                 <label><span>Weather delay h</span><input name="weatherDelay" type="number" value="18" min="0" step="1" /></label>
                 <label><span>Port cost</span><input name="portCost" type="number" value="68000" min="0" step="1000" /></label>
@@ -1436,7 +1436,7 @@
               <div class="mini-heading"><span>7. Fixture Risk Radar</span><strong>Fix / Watch / Avoid</strong></div>
               <form class="broker-form" id="osRiskRadarForm">
                 <label><span>TCE $/day</span><input name="tce" type="number" value="21500" step="500" /></label>
-                <label><span>Bunker $/t</span><input name="bunker" type="number" value="620" min="0" step="1" /></label>
+                <label><span>Bunker $/t</span><input name="bunker" type="number" value="686.5" min="0" step="0.1" /></label>
                 <label><span>Laycan width days</span><input name="laycanDays" type="number" value="5" min="0" step="1" /></label>
                 <label><span>Port delay days</span><input name="portDelay" type="number" value="2.5" min="0" step="0.1" /></label>
                 <label><span>Clause risk</span><select name="clauseRisk"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select></label>
@@ -1464,7 +1464,7 @@
               <form class="broker-form" id="osAdminPanelForm">
                 <label><span>Cargo rate multiplier</span><input name="cargoMultiplier" type="number" value="1.04" min="0.2" step="0.01" /></label>
                 <label><span>Port delay index</span><input name="portDelayIndex" type="number" value="46" min="0" max="100" step="1" /></label>
-                <label><span>Bunker default</span><input name="bunkerDefault" type="number" value="620" min="0" step="1" /></label>
+                <label><span>Bunker default</span><input name="bunkerDefault" type="number" value="686.5" min="0" step="0.1" /></label>
                 <label><span>Data mode</span><select name="dataMode"><option>Demo + source badges</option><option>API-ready</option><option>Licensed source required</option></select></label>
                 <button type="submit">Admin Ayarlarini Uygula</button>
               </form>
@@ -1559,7 +1559,7 @@
                 <label><span>Quantity</span><input name="cargoQty" type="number" value="50000" min="0" step="100" /></label>
                 <label><span>Distance nm</span><input name="distance" type="number" value="3150" min="0" step="10" /></label>
                 <label><span>Freight rate</span><input name="freightRate" type="number" value="18.5" min="0" step="0.1" /></label>
-                <label><span>Bunker $/t</span><input name="bunkerPrice" type="number" value="620" min="0" step="1" /></label>
+                <label><span>Bunker $/t</span><input name="bunkerPrice" type="number" value="686.5" min="0" step="0.1" /></label>
                 <label><span>Daily hire</span><input name="dailyHire" type="number" value="14500" min="0" step="100" /></label>
                 <label><span>Port delay days</span><input name="portDelay" type="number" value="2" min="0" step="0.1" /></label>
                 <label><span>Canal route</span><select name="canalRoute"><option value="none">No canal</option><option value="suez">Suez / faster</option><option value="panama">Panama / faster</option><option value="cape">Cape route / slower</option></select></label>
@@ -2634,6 +2634,6 @@
       </main>
     </div>
 
-    <script src="script.js?v=port-expansion-1"></script>
+    <script src="script.js?v=bunker-verified-1"></script>
   </body>
 </html>

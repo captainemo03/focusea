@@ -1206,10 +1206,33 @@ FJSUV|Suva|Fiji|Oceania|Container / General cargo|11
 PGPOM|Port Moresby|Papua New Guinea|Oceania|Container / General cargo|12
 `.trim();
 
+const verifiedBunkerSnapshot = {
+  sourceName: "Ship & Bunker World Bunker Prices",
+  sourceUrl: "https://shipandbunker.com/prices",
+  checkedAt: "2026-07-02",
+  product: "VLSFO",
+  unit: "$/mt",
+  ports: {
+    singapore: { label: "Singapore", vlsfo: 686.5, vlsfoChange: -4.5, mgo: 896.5, mgoChange: -5.5, hfo380: 451.5, hfo380Change: -6.5 },
+    rotterdam: { label: "Rotterdam", vlsfo: 599.5, vlsfoChange: 2, mgo: 929, mgoChange: 30, hfo380: 454, hfo380Change: 0.5 },
+    houston: { label: "Houston", vlsfo: 576.5, vlsfoChange: -5, mgo: 936.5, mgoChange: -0.5, hfo380: 467.5, hfo380Change: -4.5 },
+    fujairah: { label: "Fujairah", vlsfo: 759, vlsfoChange: -90, mgo: 1199.5, mgoChange: -81, hfo380: 480.5, hfo380Change: -29.5 },
+    laLongBeach: { label: "LA / Long Beach", vlsfo: 658.5, vlsfoChange: 5 },
+    hongKong: { label: "Hong Kong", vlsfo: 687.5, vlsfoChange: 1 },
+    newYork: { label: "New York", vlsfo: 606.5, vlsfoChange: 6 },
+    santos: { label: "Santos", vlsfo: 623.5, vlsfoChange: 0 }
+  },
+  averages: {
+    global20Vlsfo: 690.5,
+    global4Vlsfo: 655,
+    globalAverageVlsfo: 765
+  }
+};
+
 const liveFeedState = {
   vessels: 84219,
   congestion: 37,
-  bunker: 620,
+  bunker: verifiedBunkerSnapshot.ports.singapore.vlsfo,
   weather: 9,
   pnl: 148,
   co2: 1420,
@@ -1229,11 +1252,11 @@ const liveFeedState = {
   wci: 3180,
   fbx: 2940,
   transpacificSpot: 4680,
-  vlsfoSingapore: 620,
-  vlsfoRotterdam: 596,
-  vlsfoFujairah: 628,
-  mgoSingapore: 782,
-  hi5Spread: 134,
+  vlsfoSingapore: verifiedBunkerSnapshot.ports.singapore.vlsfo,
+  vlsfoRotterdam: verifiedBunkerSnapshot.ports.rotterdam.vlsfo,
+  vlsfoFujairah: verifiedBunkerSnapshot.ports.fujairah.vlsfo,
+  mgoSingapore: verifiedBunkerSnapshot.ports.singapore.mgo,
+  hi5Spread: verifiedBunkerSnapshot.ports.singapore.vlsfo - verifiedBunkerSnapshot.ports.singapore.hfo380,
   bunkerAdjustment: 48,
   lngSpot: 84500,
   lngQueue: 63,
@@ -1277,11 +1300,11 @@ const marketIndexDefinitions = [
   { id: "wci", short: "WCI", name: "Drewry World Container Index", sector: "Container", key: "wci", unit: "$/FEU", source: "api-ready", note: "Global composite container freight benchmark.", brokerUse: "Container rate check and customer quote positioning.", volatility: 42, min: 1400, max: 6200 },
   { id: "fbx", short: "FBX", name: "Freightos Baltic Index", sector: "Container", key: "fbx", unit: "$/FEU", source: "api-ready", note: "Digital freight marketplace container benchmark.", brokerUse: "Spot quote confidence and lane comparison.", volatility: 36, min: 1300, max: 5900 },
   { id: "transpacific-spot", short: "TP Spot", name: "Transpacific Eastbound Spot", sector: "Container", key: "transpacificSpot", unit: "$/FEU", source: "simulated", note: "Internal lane pulse for Asia / US container spot rates.", brokerUse: "Transpacific quote timing and rate movement alert.", volatility: 58, min: 1800, max: 7800 },
-  { id: "vlsfo-singapore", short: "VLSFO SG", name: "Singapore VLSFO", sector: "Bunker", key: "vlsfoSingapore", unit: "$/t", source: "api-ready", note: "Major bunker stem benchmark.", brokerUse: "Voyage estimate bunker cost and speed optimization.", volatility: 4.8, min: 450, max: 860 },
-  { id: "vlsfo-rotterdam", short: "VLSFO RTM", name: "Rotterdam VLSFO", sector: "Bunker", key: "vlsfoRotterdam", unit: "$/t", source: "api-ready", note: "North Europe bunker stem benchmark.", brokerUse: "Bunker port selection and ROB planning.", volatility: 4.2, min: 430, max: 820 },
-  { id: "vlsfo-fujairah", short: "VLSFO FUJ", name: "Fujairah VLSFO", sector: "Bunker", key: "vlsfoFujairah", unit: "$/t", source: "api-ready", note: "Middle East bunker stem benchmark.", brokerUse: "MEG route estimate, bunker spread and deviation economics.", volatility: 4.6, min: 450, max: 850 },
-  { id: "mgo-singapore", short: "MGO SG", name: "Singapore MGO", sector: "Bunker", key: "mgoSingapore", unit: "$/t", source: "api-ready", note: "Marine gasoil reference for ECA and special operations.", brokerUse: "ECA exposure, port consumption and voyage cost model.", volatility: 5.5, min: 610, max: 980 },
-  { id: "hi5-spread", short: "Hi5", name: "VLSFO / HSFO Hi5 Spread", sector: "Bunker", key: "hi5Spread", unit: "$/t", source: "api-ready", note: "Spread proxy for scrubber economics.", brokerUse: "Scrubber vessel comparison and owner counter logic.", volatility: 2.2, min: 55, max: 245 },
+  { id: "vlsfo-singapore", short: "VLSFO SG", name: "Singapore VLSFO", sector: "Bunker", key: "vlsfoSingapore", unit: "$/t", source: "verified", note: "Source-backed VLSFO bunker stem benchmark.", brokerUse: "Voyage estimate bunker cost and speed optimization.", bunkerPort: "singapore", bunkerProduct: "vlsfo", decimals: 2 },
+  { id: "vlsfo-rotterdam", short: "VLSFO RTM", name: "Rotterdam VLSFO", sector: "Bunker", key: "vlsfoRotterdam", unit: "$/t", source: "verified", note: "Source-backed North Europe VLSFO bunker benchmark.", brokerUse: "Bunker port selection and ROB planning.", bunkerPort: "rotterdam", bunkerProduct: "vlsfo", decimals: 2 },
+  { id: "vlsfo-fujairah", short: "VLSFO FUJ", name: "Fujairah VLSFO", sector: "Bunker", key: "vlsfoFujairah", unit: "$/t", source: "verified", note: "Source-backed Middle East VLSFO bunker benchmark.", brokerUse: "MEG route estimate, bunker spread and deviation economics.", bunkerPort: "fujairah", bunkerProduct: "vlsfo", decimals: 2 },
+  { id: "mgo-singapore", short: "MGO SG", name: "Singapore MGO", sector: "Bunker", key: "mgoSingapore", unit: "$/t", source: "verified", note: "Source-backed marine gasoil reference for ECA and special operations.", brokerUse: "ECA exposure, port consumption and voyage cost model.", bunkerPort: "singapore", bunkerProduct: "mgo", decimals: 2 },
+  { id: "hi5-spread", short: "Hi5", name: "Singapore VLSFO / IFO380 Hi5 Spread", sector: "Bunker", key: "hi5Spread", unit: "$/t", source: "verified", note: "Source-backed Singapore VLSFO minus IFO380 spread proxy for scrubber economics.", brokerUse: "Scrubber vessel comparison and owner counter logic.", bunkerPort: "singapore", bunkerProduct: "hi5Spread", decimals: 2 },
   { id: "baf", short: "BAF", name: "Bunker Adjustment Factor Pulse", sector: "Bunker", key: "bunkerAdjustment", unit: "idx", source: "simulated", note: "Internal surcharge pressure index.", brokerUse: "Container surcharge discussion and freight escalation clauses.", volatility: 1.4, min: 20, max: 90 },
   { id: "lng-spot", short: "LNG Spot", name: "LNG Carrier Spot Charter Rate", sector: "LNG / Gas", key: "lngSpot", unit: "$/day", source: "api-ready", note: "Indicative LNG carrier charter market pulse.", brokerUse: "LNG voyage economics and time charter comparison.", volatility: 950, min: 42000, max: 190000 },
   { id: "lng-queue", short: "LNG Queue", name: "LNG Terminal Queue Pressure", sector: "LNG / Gas", key: "lngQueue", unit: "idx", source: "simulated", note: "Terminal waiting and slot pressure score.", brokerUse: "Laycan risk, demurrage exposure and discharge planning.", volatility: 1.8, min: 18, max: 92 },
@@ -1548,7 +1571,7 @@ const calculators = {
       { id: "seaCons", label: "Seyir tüketimi (mt/gün)", value: 28 },
       { id: "portDays", label: "Liman süresi (gün)", value: 4 },
       { id: "portCons", label: "Liman tüketimi (mt/gün)", value: 4 },
-      { id: "price", label: "Bunker fiyatı ($/mt)", value: 620 },
+      { id: "price", label: "Bunker fiyatı ($/mt)", value: verifiedBunkerSnapshot.ports.singapore.vlsfo },
       { id: "margin", label: "Emniyet payı (%)", value: 5 }
     ],
     calculate: ({ seaDays, seaCons, portDays, portCons, price, margin }) => {
@@ -1669,7 +1692,7 @@ const calculators = {
       { id: "seaCons", label: "Sea cons (mt/day)", value: 28 },
       { id: "portCons", label: "Port cons (mt/day)", value: 4 },
       { id: "portDays", label: "Port days", value: 4.5 },
-      { id: "bunkerPrice", label: "Bunker price ($/mt)", value: 620 },
+      { id: "bunkerPrice", label: "Bunker price ($/mt)", value: verifiedBunkerSnapshot.ports.singapore.vlsfo },
       { id: "portCosts", label: "Port costs ($)", value: 68000 },
       { id: "canalCosts", label: "Canal costs ($)", value: 0 },
       { id: "dailyHire", label: "Daily hire ($)", value: 14500 },
@@ -2163,7 +2186,7 @@ function clamp(value, min, max) {
 function money(value, maximumFractionDigits = 0) {
   const amount = Number(value || 0);
   const sign = amount < 0 ? "-" : "";
-  return `${sign}$${Math.abs(amount).toLocaleString("en-US", { maximumFractionDigits })}`;
+  return `${sign}$${Math.abs(amount).toLocaleString("en-US", { minimumFractionDigits: maximumFractionDigits, maximumFractionDigits })}`;
 }
 
 function escapeHtml(value = "") {
@@ -2173,6 +2196,50 @@ function escapeHtml(value = "") {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
+}
+
+function applyVerifiedBunkerSnapshot() {
+  const ports = verifiedBunkerSnapshot.ports;
+  const singapore = ports.singapore;
+  liveFeedState.bunker = singapore.vlsfo;
+  liveFeedState.vlsfoSingapore = singapore.vlsfo;
+  liveFeedState.vlsfoRotterdam = ports.rotterdam.vlsfo;
+  liveFeedState.vlsfoFujairah = ports.fujairah.vlsfo;
+  liveFeedState.mgoSingapore = singapore.mgo;
+  liveFeedState.hi5Spread = Number((singapore.vlsfo - singapore.hfo380).toFixed(2));
+}
+
+function bunkerPriceLabel(value) {
+  return `${money(value, 2)}/t`;
+}
+
+function bunkerChangeForDefinition(definition) {
+  if (!definition?.bunkerPort || !definition?.bunkerProduct) return null;
+  const port = verifiedBunkerSnapshot.ports[definition.bunkerPort];
+  if (!port) return null;
+  if (definition.bunkerProduct === "hi5Spread") {
+    return Number(((port.vlsfoChange || 0) - (port.hfo380Change || 0)).toFixed(2));
+  }
+  return port[`${definition.bunkerProduct}Change`] ?? null;
+}
+
+function bunkerSourceNote() {
+  return `${verifiedBunkerSnapshot.sourceName} · checked ${verifiedBunkerSnapshot.checkedAt}`;
+}
+
+function bunkerSpreadNote() {
+  const ports = verifiedBunkerSnapshot.ports;
+  return `VLSFO: SG ${bunkerPriceLabel(ports.singapore.vlsfo)} · RTM ${bunkerPriceLabel(ports.rotterdam.vlsfo)} · FUJ ${bunkerPriceLabel(ports.fujairah.vlsfo)}`;
+}
+
+function applyBunkerDefaultsToForms() {
+  const defaultPrice = String(verifiedBunkerSnapshot.ports.singapore.vlsfo);
+  document.querySelectorAll('input[name="bunkerPrice"], input[name="defaultBunker"], input[name="bunkerDefault"], input[name="bunker"]').forEach((input) => {
+    if (!input.dataset.bunkerVerifiedDefault && (!input.value || input.value === "620")) {
+      input.value = defaultPrice;
+      input.dataset.bunkerVerifiedDefault = "true";
+    }
+  });
 }
 
 const pageGroups = {
@@ -3020,7 +3087,7 @@ function renderPortCostRisk() {
       { label: "Risk score", value: `${Math.round(risk)}/100` },
       { label: "Daily dashboard", value: watch }
     ])}
-    <small>Market watch: bunker ${money(liveFeedState.bunker)}/t, congestion ${liveFeedState.congestion}%, cargo note: ${cargo.note}</small>
+    <small>Market watch: bunker ${bunkerPriceLabel(liveFeedState.bunker)}, congestion ${liveFeedState.congestion}%, cargo note: ${cargo.note}</small>
   `;
 }
 
@@ -3262,7 +3329,7 @@ function renderDailyBrief() {
     ${metricCards([
       { label: "Focus", value: values.focusMarket },
       { label: "Open offers", value: values.openOffers },
-      { label: "Bunker", value: `${money(liveFeedState.bunker)}/t` },
+      { label: "Bunker", value: `${bunkerPriceLabel(liveFeedState.bunker)}` },
       { label: "Congestion", value: `${liveFeedState.congestion}% · ${congestionNote}` },
       { label: "Weather alerts", value: liveFeedState.weather },
       { label: "Next move", value: "Review counters, chase subjects, check news" }
@@ -3627,7 +3694,7 @@ function renderNotifications() {
   const risk = disputeRiskForm ? collectFormValues(disputeRiskForm) : {};
   const notifications = [
     { level: "watch", text: `Laycan ${offer.laycan || "window"} takipte.` },
-    { level: liveFeedState.bunker > 650 ? "high" : "normal", text: `Bunker ${money(liveFeedState.bunker)}/t seviyesinde.` },
+    { level: liveFeedState.bunker > 650 ? "high" : "normal", text: `Bunker ${bunkerPriceLabel(liveFeedState.bunker)} seviyesinde.` },
     { level: liveFeedState.congestion > 55 ? "high" : "normal", text: `Port congestion ${liveFeedState.congestion}%.` },
     { level: Number(risk.sofDelay || 0) > 12 ? "high" : "watch", text: `SOF delay ${risk.sofDelay || 0}h; demurrage claim kontrol et.` },
     { level: "watch", text: `News query: ${activeNewsQuery}.` }
@@ -3735,12 +3802,12 @@ function dataTrustRows() {
     },
     {
       name: "Bunker prices",
-      provider: "API-ready bunker feed model",
-      badge: "api-ready",
-      confidence: 72,
-      updated: now,
-      value: `Singapore VLSFO ${money(liveFeedState.vlsfoSingapore)}/t`,
-      usage: "Used in TCE, voyage estimate, ROB and speed sensitivity."
+      provider: verifiedBunkerSnapshot.sourceName,
+      badge: "verified",
+      confidence: 94,
+      updated: verifiedBunkerSnapshot.checkedAt,
+      value: `Singapore VLSFO ${bunkerPriceLabel(liveFeedState.vlsfoSingapore)}`,
+      usage: "Source-backed snapshot used in TCE, voyage estimate, ROB and speed sensitivity."
     },
     {
       name: "Weather routing",
@@ -4220,7 +4287,7 @@ function renderRiskRadar() {
       { label: "Exposure", value: money(exposure) },
       { label: "Cargo", value: cargo.label },
       { label: "TCE", value: `${money(values.tce)}/day` },
-      { label: "Bunker", value: `${money(liveFeedState.bunker)}/t` }
+      { label: "Bunker", value: `${bunkerPriceLabel(liveFeedState.bunker)}` }
     ])}
     <div class="score-meter"><span style="width:${score}%"></span></div>
     <div class="risk-radar-grid">
@@ -4244,7 +4311,7 @@ function renderMarketBrief() {
   const lngWatch = liveFeedState.lngStates[Math.floor(seconds / 20) % liveFeedState.lngStates.length];
   const security = liveFeedState.securityAreas[Math.floor(seconds / 15) % liveFeedState.securityAreas.length];
   const brief = [
-    `Bunker: ${money(liveFeedState.bunker)}/t (${liveFeedState.bunker > 650 ? "expensive" : "normal watch"}).`,
+    `Bunker: ${bunkerPriceLabel(liveFeedState.bunker)} (${liveFeedState.bunker > 650 ? "expensive" : "normal watch"}).`,
     `Port congestion: ${liveFeedState.congestion}% (${liveFeedState.congestion > 55 ? "delay risk high" : "manageable"}).`,
     `BDI: ${liveFeedState.bdi.toLocaleString("en-US")} (${liveFeedState.bdi > 2200 ? "dry bulk firming" : "dry bulk watch"}).`,
     `BDTI: ${liveFeedState.bdti.toLocaleString("en-US")} (${liveFeedState.bdti > 1150 ? "dirty tanker premium rising" : "dirty tanker balanced"}).`,
@@ -4262,7 +4329,7 @@ function renderMarketBrief() {
   };
   marketBriefResult.innerHTML = `
     ${metricCards([
-      { label: "Bunker", value: `${money(liveFeedState.bunker)}/t` },
+      { label: "Bunker", value: `${bunkerPriceLabel(liveFeedState.bunker)}` },
       { label: "BDI", value: liveFeedState.bdi.toLocaleString("en-US") },
       { label: "SCFI", value: liveFeedState.scfi.toLocaleString("en-US") },
       { label: "EUA", value: `${liveFeedState.eua.toFixed(2)} EUR/t` }
@@ -4305,6 +4372,8 @@ function marketIndexValue(definition) {
 }
 
 function marketIndexDelta(definition) {
+  const bunkerChange = bunkerChangeForDefinition(definition);
+  if (bunkerChange !== null) return Number(bunkerChange.toFixed(definition.decimals ?? 1));
   const seconds = Date.now() / 1000;
   const seed = definition.id.split("").reduce((sum, char) => sum + char.charCodeAt(0), 0);
   const swing = Math.sin((seconds + seed) / 18) * (definition.volatility || 1);
@@ -4316,6 +4385,7 @@ function marketIndexDelta(definition) {
 
 function marketIndexInsight(definition, value, delta) {
   const sign = delta > 0 ? "rising" : delta < 0 ? "easing" : "flat";
+  const feedName = definition.source === "verified" ? `verified ${verifiedBunkerSnapshot.sourceName} snapshot` : "demo feed";
   const riskTone = definition.sector === "Port / Risk" && value > 65
     ? "High operational risk; add buffer before fixing."
     : definition.sector === "Bunker" && value > 680
@@ -4323,7 +4393,7 @@ function marketIndexInsight(definition, value, delta) {
       : definition.sector === "Carbon / Green" && value > 70
         ? "Carbon cost is material; clarify ETS/FuelEU allocation."
         : "Use as a directional signal, not as a final rate.";
-  return `${definition.short} is ${sign} in the demo feed. ${riskTone}`;
+  return `${definition.short} is ${sign} in the ${feedName}. ${riskTone}`;
 }
 
 function filteredMarketIndexes() {
@@ -4363,6 +4433,7 @@ function renderMarketIndexes(focusId = "") {
     const delta = marketIndexDelta(definition);
     const trendClass = delta > 0.2 ? "positive" : delta < -0.2 ? "negative" : "neutral";
     const trendText = delta > 0 ? `+${delta}` : `${delta}`;
+    const trendSource = definition.source === "verified" ? "source" : "demo";
     return `
       <button class="market-index-card ${definition.id === selectedMarketIndexId ? "active" : ""}" type="button" data-market-index="${definition.id}">
         <span>${escapeHtml(definition.sector)}</span>
@@ -4370,7 +4441,7 @@ function renderMarketIndexes(focusId = "") {
         <strong>${escapeHtml(definition.short)}</strong>
         <small>${escapeHtml(definition.name)}</small>
         <b>${formatMarketIndexValue(definition, value)}</b>
-        <i class="index-change ${trendClass}">${trendText} demo</i>
+        <i class="index-change ${trendClass}">${trendText} ${trendSource}</i>
       </button>
     `;
   }).join("");
@@ -4397,7 +4468,7 @@ function renderMarketIndexes(focusId = "") {
       <div>
         <h3>Decision note</h3>
         <p>${escapeHtml(marketIndexInsight(selected, selectedValue, selectedDelta))}</p>
-        <small>Values marked simulated/API-ready are demo signals until a verified market data source is connected.</small>
+        <small>${selected.source === "verified" ? `Source: ${escapeHtml(bunkerSourceNote())}` : "Values marked simulated/API-ready are demo signals until a verified market data source is connected."}</small>
       </div>
     </div>
     <div class="related-indexes">
@@ -5347,7 +5418,7 @@ function renderTceOptimizer2() {
 function renderTerminalAlarms() {
   if (!terminalAlarmResult) return;
   const alarms = [
-    liveFeedState.bunker > 660 && { level: "High", text: `Bunker above ${money(liveFeedState.bunker)}/t; rerun TCE sensitivity.` },
+    liveFeedState.bunker > 660 && { level: "High", text: `Bunker above ${bunkerPriceLabel(liveFeedState.bunker)}; rerun TCE sensitivity.` },
     liveFeedState.congestion > 55 && { level: "High", text: `Port congestion at ${liveFeedState.congestion}%; add waiting cost to recap.` },
     terminalInboxItems.some((item) => item.status === "Subjects deadline") && { level: "High", text: "Subject deadline exists in Broker Inbox." },
     terminalInboxItems.some((item) => item.priority === "High") && { level: "Medium", text: "High priority offer requires broker action." },
@@ -5358,7 +5429,7 @@ function renderTerminalAlarms() {
   terminalAlarmResult.innerHTML = `
     ${metricCards([
       { label: "Alarms", value: alarms.length },
-      { label: "Bunker", value: `${money(liveFeedState.bunker)}/t` },
+      { label: "Bunker", value: `${bunkerPriceLabel(liveFeedState.bunker)}` },
       { label: "Congestion", value: `${liveFeedState.congestion}%` },
       { label: "Inbox high", value: terminalInboxItems.filter((item) => item.priority === "High").length }
     ])}
@@ -5693,7 +5764,7 @@ function renderMarketConfidence() {
     { label: "Dry bulk indexes", value: `BDI ${liveFeedState.bdi.toLocaleString("en-US")} · BPI ${liveFeedState.bpi.toLocaleString("en-US")}`, badge: "licensed", time: now },
     { label: "Tanker indexes", value: `BDTI ${liveFeedState.bdti.toLocaleString("en-US")} · BCTI ${liveFeedState.bcti.toLocaleString("en-US")}`, badge: "licensed", time: now },
     { label: "Container indexes", value: `SCFI ${liveFeedState.scfi.toLocaleString("en-US")} · WCI ${formatMarketIndexValue(marketIndexDefinitions.find((item) => item.id === "wci"), liveFeedState.wci)}`, badge: "api-ready", time: now },
-    { label: "Bunker indexes", value: `SG VLSFO ${money(liveFeedState.vlsfoSingapore)}/t · Hi5 ${money(liveFeedState.hi5Spread)}/t`, badge: "api-ready", time: now },
+    { label: "Bunker indexes", value: `SG VLSFO ${bunkerPriceLabel(liveFeedState.vlsfoSingapore)} · Hi5 ${bunkerPriceLabel(liveFeedState.hi5Spread)}`, badge: "verified", time: verifiedBunkerSnapshot.checkedAt },
     { label: "Carbon / green indexes", value: `EUA ${liveFeedState.eua.toFixed(2)} EUR/t · CII ${liveFeedState.ciiRisk}`, badge: "api-ready", time: now },
     { label: "Port congestion", value: `${liveFeedState.congestion}%`, badge: "simulated", time: now },
     { label: "Cargo route scores", value: `Coal ${liveFeedState.coalRoute} · Grain ${liveFeedState.grainFreight} · Crude ${liveFeedState.crudeRouteRisk}`, badge: "simulated", time: now },
@@ -5865,11 +5936,45 @@ function renderDealComparison() {
   `;
 }
 
+function renderMarketConfidence() {
+  if (!marketConfidenceResult) return;
+  const now = new Date().toLocaleTimeString();
+  const rows = [
+    { label: "Maritime news bulletin", value: "Live/fallback source links", badge: "verified", time: now },
+    { label: "Dry bulk indexes", value: `BDI ${liveFeedState.bdi.toLocaleString("en-US")} / BPI ${liveFeedState.bpi.toLocaleString("en-US")}`, badge: "licensed", time: now },
+    { label: "Tanker indexes", value: `BDTI ${liveFeedState.bdti.toLocaleString("en-US")} / BCTI ${liveFeedState.bcti.toLocaleString("en-US")}`, badge: "licensed", time: now },
+    { label: "Container indexes", value: `SCFI ${liveFeedState.scfi.toLocaleString("en-US")} / WCI ${formatMarketIndexValue(marketIndexDefinitions.find((item) => item.id === "wci"), liveFeedState.wci)}`, badge: "api-ready", time: now },
+    { label: "Bunker indexes", value: `SG VLSFO ${bunkerPriceLabel(liveFeedState.vlsfoSingapore)} / Hi5 ${bunkerPriceLabel(liveFeedState.hi5Spread)}`, badge: "verified", time: verifiedBunkerSnapshot.checkedAt },
+    { label: "Carbon / green indexes", value: `EUA ${liveFeedState.eua.toFixed(2)} EUR/t / CII ${liveFeedState.ciiRisk}`, badge: "api-ready", time: now },
+    { label: "Port congestion", value: `${liveFeedState.congestion}%`, badge: "simulated", time: now },
+    { label: "Cargo route scores", value: `Coal ${liveFeedState.coalRoute} / Grain ${liveFeedState.grainFreight} / Crude ${liveFeedState.crudeRouteRisk}`, badge: "simulated", time: now },
+    { label: "Fixture terms", value: "User pasted / form input", badge: "input", time: "on edit" }
+  ];
+  marketConfidenceResult.innerHTML = `
+    ${metricCards([
+      { label: "Verified", value: rows.filter((row) => row.badge === "verified").length },
+      { label: "API-ready", value: rows.filter((row) => row.badge === "api-ready").length },
+      { label: "Licensed", value: rows.filter((row) => row.badge === "licensed").length },
+      { label: "Simulated", value: rows.filter((row) => row.badge === "simulated").length },
+    ])}
+    <div class="confidence-list">
+      ${rows.map((row) => `
+        <div class="confidence-row">
+          <strong>${escapeHtml(row.label)}</strong>
+          <span>${escapeHtml(row.value)}</span>
+          <em class="source-badge ${row.badge}">${sourceBadgeText(row.badge)}</em>
+        </div>
+      `).join("")}
+    </div>
+    <small>Bunker prices use ${escapeHtml(bunkerSourceNote())}; simulated rows are still clearly separated.</small>
+  `;
+}
+
 function renderEdgeAlarms() {
   if (!edgeAlarmResult) return;
   const alarms = [
     terminalInboxItems.some((item) => item.status === "Subjects deadline") && "Subject deadline is open in inbox.",
-    liveFeedState.bunker > 660 && `Bunker high at ${money(liveFeedState.bunker)}/t.`,
+    liveFeedState.bunker > 660 && `Bunker high at ${bunkerPriceLabel(liveFeedState.bunker)}.`,
     liveFeedState.congestion > 55 && `Port delay rising: ${liveFeedState.congestion}%.`,
     lastProfitRadar?.verdict === "Avoid" && "Latest profit radar says Avoid.",
     lastDocumentAi?.claim?.amount > 0 && `Document AI found possible demurrage claim ${money(lastDocumentAi.claim.amount)}.`,
@@ -5879,7 +5984,7 @@ function renderEdgeAlarms() {
   edgeAlarmResult.innerHTML = `
     ${metricCards([
       { label: "Alarms", value: alarms.length },
-      { label: "Bunker", value: `${money(liveFeedState.bunker)}/t` },
+      { label: "Bunker", value: `${bunkerPriceLabel(liveFeedState.bunker)}` },
       { label: "Congestion", value: `${liveFeedState.congestion}%` },
       { label: "High inbox", value: terminalInboxItems.filter((item) => item.priority === "High").length }
     ])}
@@ -5892,7 +5997,7 @@ function renderDailyBriefPro() {
   const items = [
     `Open offers: ${terminalInboxItems.length}; high priority: ${terminalInboxItems.filter((item) => item.priority === "High").length}.`,
     `Subject deadline: ${terminalInboxItems.find((item) => item.status === "Subjects deadline")?.id || "none"}.`,
-    `Bunker watch: ${money(liveFeedState.bunker)}/t.`,
+    `Bunker watch: ${bunkerPriceLabel(liveFeedState.bunker)}.`,
     `Port delay index: ${liveFeedState.congestion}%.`,
     `Market pulse: dry bulk ${liveFeedState.dryBulkStates[new Date().getSeconds() % liveFeedState.dryBulkStates.length]}.`,
     `Latest profit radar: ${lastProfitRadar ? `${lastProfitRadar.verdict} (${lastProfitRadar.score}/100)` : "run radar for current deal"}.`,
@@ -5906,7 +6011,7 @@ function renderDailyBriefPro() {
     ${metricCards([
       { label: "Brief items", value: items.length },
       { label: "High priority", value: terminalInboxItems.filter((item) => item.priority === "High").length },
-      { label: "Bunker", value: `${money(liveFeedState.bunker)}/t` },
+      { label: "Bunker", value: `${bunkerPriceLabel(liveFeedState.bunker)}` },
       { label: "Port delay", value: `${liveFeedState.congestion}%` }
     ])}
     <ul class="compact-list">${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
@@ -6673,7 +6778,7 @@ function renderOsAdminPanel() {
       { label: "Cargo", value: cargo.label },
       { label: "Multiplier", value: cargo.freightMultiplier.toFixed(2) },
       { label: "Port delay", value: `${liveFeedState.congestion}%` },
-      { label: "Bunker", value: `${money(liveFeedState.bunker)}/t` },
+      { label: "Bunker", value: `${bunkerPriceLabel(liveFeedState.bunker)}` },
       { label: "Mode", value: escapeHtml(values.dataMode) }
     ])}
     <small>Admin parameters applied to Broker OS, cargo playbook, risk radar and market widgets.</small>
@@ -8141,7 +8246,7 @@ function buildAutoDealAnalysis(values) {
     { label: "BDI", value: liveFeedState.bdi.toLocaleString("en-US"), source: "licensed" },
     { label: "BDTI", value: liveFeedState.bdti.toLocaleString("en-US"), source: "licensed" },
     { label: "SCFI", value: liveFeedState.scfi.toLocaleString("en-US"), source: "api-ready" },
-    { label: "Bunker", value: `${money(liveFeedState.bunker)}/t`, source: "api-ready" },
+    { label: "Bunker", value: `${bunkerPriceLabel(liveFeedState.bunker)}`, source: "api-ready" },
     { label: "Port congestion", value: `${liveFeedState.congestion}%`, source: "simulated" },
     { label: "Fixture terms", value: "pasted text", source: "input" }
   ];
@@ -9655,7 +9760,7 @@ function updateLiveFeed() {
   const wave = Math.sin(now.getSeconds() / 6);
   liveFeedState.vessels += Math.round(Math.random() * 14 - 5);
   liveFeedState.congestion = Math.max(18, Math.min(82, liveFeedState.congestion + Math.round(Math.random() * 4 - 2)));
-  liveFeedState.bunker = Math.max(560, Math.min(720, liveFeedState.bunker + Math.round(Math.random() * 6 - 3)));
+  applyVerifiedBunkerSnapshot();
   liveFeedState.weather = Math.max(2, Math.min(18, liveFeedState.weather + Math.round(Math.random() * 2 - 1)));
   liveFeedState.pnl = Math.max(92, Math.min(220, liveFeedState.pnl + Math.round(Math.random() * 8 - 4)));
   liveFeedState.co2 = Math.max(1280, Math.min(1580, liveFeedState.co2 + Math.round(Math.random() * 12 - 6)));
@@ -9664,7 +9769,6 @@ function updateLiveFeed() {
     const next = clamp(Number(liveFeedState[key] || 0) + wave * volatility + Math.random() * volatility - volatility / 2, min, max);
     liveFeedState[key] = Number(next.toFixed(decimals));
   };
-  liveFeedState.vlsfoSingapore = liveFeedState.bunker;
   moveIndex("bdi", 900, 3600, 18);
   moveIndex("bci", 1200, 5200, 32);
   moveIndex("bpi", 800, 3300, 22);
@@ -9680,10 +9784,6 @@ function updateLiveFeed() {
   moveIndex("wci", 1400, 6200, 42);
   moveIndex("fbx", 1300, 5900, 36);
   moveIndex("transpacificSpot", 1800, 7800, 58);
-  moveIndex("vlsfoRotterdam", 430, 820, 4.2);
-  moveIndex("vlsfoFujairah", 450, 850, 4.6);
-  moveIndex("mgoSingapore", 610, 980, 5.5);
-  moveIndex("hi5Spread", 55, 245, 2.2);
   moveIndex("bunkerAdjustment", 20, 90, 1.4);
   moveIndex("lngSpot", 42000, 190000, 950);
   moveIndex("lngQueue", 18, 92, 1.8);
@@ -9712,11 +9812,10 @@ function updateLiveFeed() {
   const security = liveFeedState.securityAreas[Math.floor(now.getSeconds() / 15) % liveFeedState.securityAreas.length];
   const delayLow = 14 + (now.getSeconds() % 8);
   const delayHigh = delayLow + 6;
-  const spread = 24 + (now.getSeconds() % 18);
 
   setLiveText("vessels", liveFeedState.vessels.toLocaleString("en-US"));
   setLiveText("congestion", `${liveFeedState.congestion}%`);
-  setLiveText("bunker", `$${liveFeedState.bunker}/t`);
+  setLiveText("bunker", bunkerPriceLabel(liveFeedState.bunker));
   setLiveText("weather", String(liveFeedState.weather));
   setLiveText("pnl", `$${liveFeedState.pnl}K`);
   setLiveText("co2", `${liveFeedState.co2.toLocaleString("en-US")} t`);
@@ -9728,18 +9827,18 @@ function updateLiveFeed() {
 
   setLiveNote("vessels", `simulated AIS delta · ${now.toLocaleTimeString()}`);
   setLiveNote("congestion", liveFeedState.congestion > 55 ? "Singapore high queue" : "Singapore watch");
-  setLiveNote("bunker", `VLSFO simulated · spread +$${spread}/t`);
+  setLiveNote("bunker", bunkerSourceNote());
   setLiveNote("weather", liveFeedState.weather > 12 ? "multi-region weather watch" : "Indian Ocean watch");
   setLiveNote("weatherRouting", `Bay of Bengal squall line · reroute advised in ${4 + (now.getSeconds() % 5)}h`);
   setLiveNote("anchorageDelay", `Singapore anchorage delay estimated ${delayLow}-${delayHigh}h`);
-  setLiveNote("bunkerSpread", `VLSFO spread: Singapore +$${spread}/t vs Fujairah`);
+  setLiveNote("bunkerSpread", bunkerSpreadNote());
   setLiveNote("containerIndex", `Asia-Europe spot rate ${wave >= 0 ? "+" : "-"}${Math.abs(wave * 4.8).toFixed(1)}%`);
   setLiveNote("dryBulk", dryBulk === "Bullish" ? "Pacific grain demand rising" : "tonnage balance shifting");
   setLiveNote("lngWatch", `${lngWatch} terminal queue pressure`);
   setLiveNote("security", security === "GoA" ? "Enhanced watch recommended" : "route watch recommended");
 
   const timestamp = document.querySelector("#liveTimestamp");
-  if (timestamp) timestamp.textContent = `Simulated live feed · last update ${now.toLocaleTimeString()} · values are demo data`;
+  if (timestamp) timestamp.textContent = `Live board · bunker verified ${verifiedBunkerSnapshot.checkedAt}; AIS/weather/port signals are demo · last update ${now.toLocaleTimeString()}`;
   renderOpsWorkspace();
   renderCommandDeck(selectedCommandScenarioId);
   renderPortCostRisk();
@@ -10783,6 +10882,8 @@ chatForm.addEventListener("submit", (event) => {
   chatWindow.scrollTop = chatWindow.scrollHeight;
 });
 
+applyVerifiedBunkerSnapshot();
+applyBunkerDefaultsToForms();
 populatePortSelects();
 setPort("istanbul");
 renderGlobalPortAtlas();
