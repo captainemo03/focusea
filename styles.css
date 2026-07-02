@@ -255,6 +255,96 @@ main {
   padding: 28px;
 }
 
+.site-footer {
+  display: grid;
+  gap: 18px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(100, 97, 255, 0.13), transparent 38%),
+    rgba(8, 8, 31, 0.74);
+  box-shadow: 0 18px 46px rgba(5, 5, 24, 0.22);
+}
+
+.footer-brand {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footer-brand strong {
+  color: var(--text);
+  font-size: 1.3rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.footer-brand span,
+.footer-legal-grid p,
+.footer-bottom {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.footer-brand span {
+  max-width: 680px;
+  text-align: right;
+}
+
+.footer-legal-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.footer-legal-grid article {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.footer-legal-grid span {
+  display: block;
+  color: #28f0c6;
+  font-size: 0.78rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.footer-legal-grid p {
+  margin: 8px 0 0;
+  font-size: 0.9rem;
+}
+
+.footer-legal-grid a,
+.footer-bottom a {
+  color: #6fffe3;
+  font-weight: 850;
+}
+
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 4px;
+  font-size: 0.88rem;
+}
+
+.footer-bottom nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 .hero {
   display: flex;
   align-items: end;
@@ -3325,6 +3415,7 @@ main {
 
   .nav-list,
   .dashboard-strip,
+  .footer-legal-grid,
   .ops-board,
   .command-deck-hero,
   .command-kpi-grid,
@@ -3373,6 +3464,15 @@ main {
     flex-direction: column;
   }
 
+  .footer-brand {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .footer-brand span {
+    text-align: left;
+  }
+
   .hero::before {
     background-position: center;
   }
@@ -3385,6 +3485,7 @@ main {
   }
 
   .hero,
+  .site-footer,
   .calculator-panel,
   .command-deck-panel,
   .broker-panel,
@@ -3410,6 +3511,7 @@ main {
 
   .nav-list,
   .dashboard-strip,
+  .footer-legal-grid,
   .ops-board,
   .command-deck-hero,
   .command-kpi-grid,
@@ -3464,6 +3566,11 @@ main {
   .detail-columns,
   .heatmap-row {
     grid-template-columns: 1fr;
+  }
+
+  .footer-bottom {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .command-deck-copy,
