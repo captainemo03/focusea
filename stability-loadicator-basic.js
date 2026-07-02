@@ -575,7 +575,79 @@
   }
 
   function selectedParcel() {
-    return cargoPlan.find((parcel) => parcel.id === selectedParcelId) || cargoPlan[0] || null;
+    return cargoPlan.find((parcel) => parcel.id === selectedParcelId) || null;
+  }
+
+  function selectedHoldValue() {
+    const holdValue = String(form.elements.hold.value || "0");
+    if (holdValue !== "custom") return holdValue;
+    const longitudinal = number("longitudinal");
+    return holdDefs.reduce((best, hold) => (
+      Math.abs(longitudinal - hold.x) < Math.abs(longitudinal - best.x) ? hold : best
+    ), holdDefs[2]).value;
+  }
+
+  function holdTotalWeight(holdValue) {
+    return cargoPlan
+      .filter((parcel) => parcel.hold === String(holdValue))
+      .reduce((sum, parcel) => sum + parcel.weight, 0);
+  }
+
+  function templateKeyForCargo(cargoKey) {
+    return {
+      containers: "container40",
+      coal: "coalParcel",
+      grain: "grainParcel",
+      ironOre: "ironOreParcel",
+      projectCargo: "projectCargoParcel",
+      crudeOil: "liquidTankParcel",
+      chemicals: "liquidTankParcel",
+      lng: "liquidTankParcel"
+    }[cargoKey] || "coalParcel";
+  }
+
+  function selectHoldTarget(holdValue, selectExisting = true) {
+    const target = holdDefFor(holdValue);
+    form.elements.hold.value = target.value;
+    form.elements.longitudinal.value = target.x;
+    if (!selectExisting) return null;
+
+    const existing = cargoPlan.find((parcel) => parcel.hold === target.value) || null;
+    selectedParcelId = existing?.id || null;
+    if (existing) {
+      setSingleLoadFromParcel(existing);
+    } else {
+      form.elements.cargoWeight.value = 0;
+    }
+    return existing;
+  }
+
+  function quickParcelForHold(holdValue, preferSameCargo = true) {
+    const target = String(holdValue);
+    const selected = selectedParcel();
+    if (selected?.hold === target) return selected;
+    const currentCargoKey = currentCargo().key;
+    if (preferSameCargo) {
+      const sameCargo = cargoPlan.find((parcel) => parcel.hold === target && parcel.cargoKey === currentCargoKey);
+      if (sameCargo) return sameCargo;
+    }
+    return cargoPlan
+      .filter((parcel) => parcel.hold === target)
+      .sort((a, b) => b.weight - a.weight)[0] || null;
+  }
+
+  function createQuickParcel(holdValue, weight) {
+    const cargo = currentCargo();
+    const parcel = createParcel(templateKeyForCargo(cargo.key), holdValue, {
+      cargoKey: cargo.key,
+      label: cargo.label,
+      vesselKey: currentVessel().key,
+      weight: Math.max(weight, 0),
+      kg: number("cargoKg") || cargo.kg,
+      sf: number("cargoSf") || cargo.sf,
+      z: number("transverse")
+    });
+    return parcel;
   }
 
   function nextParcelId() {
@@ -640,6 +712,7 @@
       hold: String(holdValue ?? form.elements.hold.value ?? "0"),
       label: template.label,
       cargoKey: template.cargoKey,
+      vesselKey: template.vesselKey,
       weight: template.weight,
       kg: template.kg,
       sf: template.sf,
@@ -650,13 +723,15 @@
     selectedParcelId = parcel.id;
     setSingleLoadFromParcel(parcel);
     renderProfessionalPlan(calculateModel());
+    return parcel;
   }
 
   function setSingleLoadFromParcel(parcel) {
     if (!parcel) return;
     const template = planTemplateFor(parcel.templateKey);
-    if (template.vesselKey && form.elements.vesselType.value !== template.vesselKey) {
-      form.elements.vesselType.value = template.vesselKey;
+    const vesselKey = parcel.vesselKey || template.vesselKey;
+    if (vesselKey && form.elements.vesselType.value !== vesselKey) {
+      form.elements.vesselType.value = vesselKey;
       applyVesselPreset();
     }
     form.elements.cargoType.value = parcel.cargoKey;
@@ -1093,10 +1168,14 @@
     readouts.cargoKg.textContent = `${fmt(model.cargoKg, 1)} m`;
     readouts.cargoSf.textContent = `${fmt(model.cargoSf, 2)} m3/mt`;
     const selectedHold = holdNames[form.elements.hold.value] || "Custom cargo position";
+    const targetHold = selectedHoldValue();
+    const targetTotal = holdTotalWeight(targetHold);
     holdLabel.textContent = selectedHold;
-    if (quickLoadTarget) quickLoadTarget.textContent = `${selectedHold} / ${fmt(model.cargoWeight, 0)} mt`;
+    if (quickLoadTarget) {
+      quickLoadTarget.textContent = `${holdNames[targetHold]} / hold total ${fmt(targetTotal, 0)} mt`;
+    }
     quickHoldButtons.forEach((button) => {
-      button.classList.toggle("active", button.dataset.hold === form.elements.hold.value);
+      button.classList.toggle("active", button.dataset.hold === targetHold);
     });
     liveTrim.textContent = `Trim ${fmt(model.trimMeters, 2)} m ${model.trimMeters < 0 ? "by head" : "by stern"}`;
   }
@@ -2399,41 +2478,58 @@
 
   form.elements.hold.addEventListener("change", () => {
     const nextValue = form.elements.hold.value;
-    if (nextValue !== "custom") form.elements.longitudinal.value = nextValue;
-    const parcel = selectedParcel();
-    if (parcel && nextValue !== "custom") parcel.hold = nextValue;
+    if (nextValue !== "custom") {
+      selectHoldTarget(nextValue);
+    }
     sync();
   });
 
   quickHoldButtons.forEach((button) => {
     button.addEventListener("click", () => {
       const nextValue = button.dataset.hold;
-      form.elements.hold.value = nextValue;
-      form.elements.longitudinal.value = nextValue;
-      const parcel = selectedParcel();
-      if (parcel) parcel.hold = nextValue;
+      selectHoldTarget(nextValue);
       sync();
     });
   });
 
   quickLoadButtons.forEach((button) => {
     button.addEventListener("click", () => {
-      const field = form.elements.cargoWeight;
       const step = Number(button.dataset.loadStep) || 0;
-      const min = Number(field.min) || 0;
-      const max = Number(field.max) || currentVessel().maxCargo;
-      field.value = clamp(Number(field.value) + step, min, max);
-      const parcel = selectedParcel();
-      if (parcel) parcel.weight = Number(field.value);
+      const holdValue = selectedHoldValue();
+      let parcel = quickParcelForHold(holdValue, step > 0);
+
+      if (step > 0) {
+        if (!parcel || parcel.cargoKey !== currentCargo().key) {
+          parcel = createQuickParcel(holdValue, step);
+        } else {
+          parcel.weight = Math.max(parcel.weight + step, 0);
+          selectedParcelId = parcel.id;
+          setSingleLoadFromParcel(parcel);
+        }
+      } else if (parcel) {
+        parcel.weight = Math.max(parcel.weight + step, 0);
+        if (parcel.weight <= 0) {
+          cargoPlan = cargoPlan.filter((item) => item.id !== parcel.id);
+          selectedParcelId = cargoPlan.find((item) => item.hold === holdValue)?.id || null;
+          const nextParcel = selectedParcel();
+          if (nextParcel) setSingleLoadFromParcel(nextParcel);
+          else selectHoldTarget(holdValue, false);
+        } else {
+          selectedParcelId = parcel.id;
+          setSingleLoadFromParcel(parcel);
+        }
+      }
       sync();
     });
   });
 
   if (quickLoadClear) {
     quickLoadClear.addEventListener("click", () => {
+      const holdValue = selectedHoldValue();
+      cargoPlan = cargoPlan.filter((parcel) => parcel.hold !== holdValue);
+      selectedParcelId = null;
+      selectHoldTarget(holdValue, false);
       form.elements.cargoWeight.value = 0;
-      const parcel = selectedParcel();
-      if (parcel) parcel.weight = 0;
       sync();
     });
   }
