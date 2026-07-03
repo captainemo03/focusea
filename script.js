@@ -2252,11 +2252,23 @@ const clearSuperNotes = document.querySelector("#clearSuperNotes");
 const superReportHistory = document.querySelector("#superReportHistory");
 const superFeatureGrid = document.querySelector("#superFeatureGrid");
 const superBuildQueue = document.querySelector("#superBuildQueue");
+const theaterScenarioButtons = document.querySelectorAll("[data-theater-scenario]");
+const theaterHeadline = document.querySelector("#theaterHeadline");
+const theaterSummary = document.querySelector("#theaterSummary");
+const theaterScore = document.querySelector("#theaterScore");
+const theaterDecision = document.querySelector("#theaterDecision");
+const theaterStory = document.querySelector("#theaterStory");
+const theaterRadar = document.querySelector("#theaterRadar");
+const theaterProof = document.querySelector("#theaterProof");
+const theaterScript = document.querySelector("#theaterScript");
+const theaterMatrix = document.querySelector("#theaterMatrix");
 let activeNewsQuery = "maritime shipping";
 let generatedOpsEmailText = "";
 let selectedCommandScenarioId = "coal";
+let selectedTheaterScenario = "broker";
 let commandDeckPresentationActive = false;
 let lastCommandDeckReport = "";
+let lastTheaterReport = null;
 let lastParsedOffer = null;
 let lastCopilotReport = null;
 let lastTceOptimization = null;
@@ -2543,6 +2555,7 @@ function applyBunkerDefaultsToForms() {
 
 const pageGroups = {
   dashboard: ["#command", ".dashboard-strip", ".ops-board", "#commandDeck", "#smartOps"],
+  theater: ["#commandTheaterPanel"],
   broker: ["#brokerDesk", "#brokerPro", "#brokerOps"],
   terminal: ["#platformCore", "#brokerIntelligence", "#commandTerminal"],
   edge: ["#edgeSuite"],
@@ -9951,6 +9964,356 @@ function runFullDecisionLab() {
   renderDecisionHeader();
 }
 
+const commandTheaterScenarios = {
+  broker: {
+    title: "Broker War Room",
+    headline: "Fixture mailini al, Focusea ticari karari ve aksiyonu uretsin.",
+    summary: "Tek bir offer metninden cargo, rota, freight, demurrage, risk, TCE, recap ve broker maili cikarilir.",
+    score: 94,
+    decision: "Fix with guards",
+    metrics: [
+      { label: "Workflow time", value: "42 sec", score: 92 },
+      { label: "TCE confidence", value: "88%", score: 88 },
+      { label: "Risk clarity", value: "91/100", score: 91 },
+      { label: "Document output", value: "5 files", score: 96 }
+    ],
+    story: [
+      "Kullanici WhatsApp/mail offer metnini yapistirir.",
+      "Focusea cargo, laycan, load/disport, freight, demurrage ve subjects alanlarini ayiklar.",
+      "Voyage estimate, P&L, TCE ve risk radari ayni ekranda hesaplanir.",
+      "Sistem broker'a counter wording, recap ve client-safe mail taslagi verir."
+    ],
+    proof: [
+      ["Data trust", "Bunker/index kartlari kaynak ve live/simulated etiketiyle ayrilir."],
+      ["Commercial brain", "Cargo tipi rate, bunker, port cost ve demurrage katsayilarini degistirir."],
+      ["Action layer", "PDF, JSON, TXT ve mail ciktisi tek tikla indirilebilir."],
+      ["Memory", "Report history ve CRM mantigi kullanici hafizasi gibi calisir."]
+    ],
+    script: [
+      "1. Bu ekranda sadece bilgi gostermiyoruz; bir broker'in is akisini bitiriyoruz.",
+      "2. Offer paste ediliyor, sistem alanlari cikariyor ve eksikleri soyluyor.",
+      "3. Sonra TCE, P&L, demurrage exposure ve risk radari olusuyor.",
+      "4. En sonda recap, mail ve rapor indiriliyor. Yani site karar + belge + aksiyon uretiyor."
+    ],
+    matrix: [
+      ["Fixture parser", "Offer metninden deal room olusturur", "Ready"],
+      ["TCE/P&L engine", "Freight, bunker, hire, port cost hesabi", "Ready"],
+      ["Broker mail studio", "Firm offer / counter / recap maili", "Ready"],
+      ["Deal risk radar", "Fix / Watch / Avoid karari", "Ready"],
+      ["Backend sync", "Kullanici hesabi ve kayitli fixture", "API-ready"]
+    ]
+  },
+  turkiye: {
+    title: "Turkiye Port Ops",
+    headline: "Turk limanlari icin broker, acente ve operasyon zekasi.",
+    summary: "Mersin, Ambarli, Izmir, Aliaga, Gemlik, Izmit, Tekirdag, Iskenderun ve Samsun uzerinden evrak, draft, bekleme ve cost riskleri okunur.",
+    score: 91,
+    decision: "Ops desk ready",
+    metrics: [
+      { label: "Port coverage", value: "9 TR hubs", score: 86 },
+      { label: "Docs clarity", value: "93%", score: 93 },
+      { label: "Waiting risk", value: "Live model", score: 84 },
+      { label: "Cost desk", value: "PDA-ready", score: 90 }
+    ],
+    story: [
+      "Broker limani secer ve cargo/draft bilgisi girer.",
+      "Focusea draft margin, pilotage/tug ihtiyaci, local docs ve agency notlarini gosterir.",
+      "SOF/NOR Turkiye sablonu ile rain letter, shifting, waiting ve time-bar takip edilir.",
+      "Port cost estimator tahmini PDA mantigiyla ticari riske baglanir."
+    ],
+    proof: [
+      ["Local intelligence", "Turkiye limanlari genel atlas degil, operasyon notlariyla verilir."],
+      ["SOF/NOR workflow", "Claim icin gereken olaylar liman sablonuna baglanir."],
+      ["Suitability", "Cargo + port + draft uygunluk karari uretilir."],
+      ["Import layer", "UN/LOCODE veya resmi CSV ile atlas genisletmeye hazir."]
+    ],
+    script: [
+      "1. Burada fark su: liman sadece haritada nokta degil, ticari karar motoru.",
+      "2. Draft, docs, bekleme, pilotage ve local cost ayni workflow'a giriyor.",
+      "3. Kullanici Turkiye limanlarini ders, broker is akisi ve operasyon raporu olarak kullanabiliyor."
+    ],
+    matrix: [
+      ["Turkiye port profile", "Draft, docs, pilotage, tug, waiting risk", "Ready"],
+      ["Port cost estimator", "Pilotage/towage/agency/port dues tahmini", "Ready"],
+      ["Cabotage module", "Ic hat rota, sure, bunker, mevzuat notu", "Ready"],
+      ["Agency notes", "Kullanici terminal hafizasi", "Ready"],
+      ["Official import", "Resmi veriyle port atlas genisletme", "Ready"]
+    ]
+  },
+  claim: {
+    title: "Claim Battle",
+    headline: "SOF, NOR ve clause metninden demurrage savas dosyasi.",
+    summary: "Statement of Facts olaylari zaman cizelgesine ayrilir, laytime/demurrage hesaplanir, evidence checklist ve claim letter uretilir.",
+    score: 89,
+    decision: "Claim pack strong",
+    metrics: [
+      { label: "SOF events", value: "Auto map", score: 87 },
+      { label: "Evidence gaps", value: "Flagged", score: 90 },
+      { label: "Clause risk", value: "Red/yellow", score: 88 },
+      { label: "PDF claim", value: "1 click", score: 94 }
+    ],
+    story: [
+      "Kullanici SOF/NOR/CP clause metnini yapistirir.",
+      "Sistem NOR tendered, berth, loading, rain stop, completion olaylarini ayiklar.",
+      "Allowed time, used time, demurrage/dispatch ve evidence riskleri hesaplanir.",
+      "Claim letter, invoice taslagi ve time-bar alarmi uretilir."
+    ],
+    proof: [
+      ["Legal workflow", "Owner/charterer lehine clause riski aciklanir."],
+      ["Evidence checklist", "NOR, SOF, rain log, photos, invoice eksikleri gosterilir."],
+      ["CP diff", "Iki charter party arasindaki kritik farklar yakalanir."],
+      ["Time-bar calendar", "Claim ve invoice tarihleri kirmizi/sari/yesil izlenir."]
+    ],
+    script: [
+      "1. Normal siteler demurrage tanimi verir; Focusea claim dosyasi uretir.",
+      "2. SOF olaylari timeline'a doner, laytime hesabi yapilir.",
+      "3. Eksik evidence gorunur ve PDF claim pack indirilebilir."
+    ],
+    matrix: [
+      ["SOF analyzer", "Olaylari laytime timeline'a cevirir", "Ready"],
+      ["Clause risk engine", "Owner/charterer lehine risk analizi", "Ready"],
+      ["Claim letter", "Demurrage claim metni uretir", "Ready"],
+      ["Evidence pack", "Eksik belgeleri listeler", "Ready"],
+      ["Dispute score", "Claim gucu ve tartisma riski", "Ready"]
+    ]
+  },
+  market: {
+    title: "Market Shock",
+    headline: "Index, bunker, haber ve port gecikmesini deal riskine bagla.",
+    summary: "Market terminali BDI/BDTI/BCTI/SCFI alanlarini, bunker snapshot'ini, haberleri ve weather/port riskini tek karar skoruna baglar.",
+    score: 87,
+    decision: "Source-aware terminal",
+    metrics: [
+      { label: "Index lane", value: "BDI/SCFI", score: 82 },
+      { label: "Bunker lane", value: "Verified tag", score: 88 },
+      { label: "News lane", value: "Source links", score: 86 },
+      { label: "Deal impact", value: "Auto alerts", score: 90 }
+    ],
+    story: [
+      "Kullanici bir deal acikken market ve haber panelini gorur.",
+      "Bunker artisi, port congestion, weather risk ve cargo sentiment deal kartina etki eder.",
+      "Her veri kartinda source, last updated, live/simulated/licensed-required etiketi bulunur.",
+      "Sistem broker'a 'bu fixture artik Watch' gibi aksiyon onerir."
+    ],
+    proof: [
+      ["No fake-live rule", "Lisans gerektiren Baltic verisi acikca API/licensed-ready diye etiketlenir."],
+      ["Bunker defaults", "Formlardaki bunker alanlari merkezi snapshot ile tutarli olur."],
+      ["News bulletin", "Son dakika haberleri linkli kaynak mantigiyla listelenir."],
+      ["Alert bridge", "Market olayi acik fixture riskine baglanir."]
+    ],
+    script: [
+      "1. Bu kisim guven katmani: veri nereden geliyor, guncel mi, simule mi acikca gorunuyor.",
+      "2. Market sadece tablo degil; bunker/index/haber hareketi deal kararina baglaniyor.",
+      "3. Boylece broker 'bu bilgi benim fixture'imi nasil etkiler?' sorusuna cevap aliyor."
+    ],
+    matrix: [
+      ["Market confidence badge", "Verified/API-ready/simulated/source label", "Ready"],
+      ["Baltic panel", "BDI/BDTI/BCTI/SCFI veri alani", "API-ready"],
+      ["Bunker snapshot", "Tek merkezden fiyat varsayimi", "Ready"],
+      ["News bulletin", "Kaynak linkli denizcilik haberleri", "Ready"],
+      ["Deal alert", "Market sokunu acik deal'e baglar", "Ready"]
+    ]
+  },
+  loadicator: {
+    title: "Loadicator Engineering",
+    headline: "Yuk plani, trim, heel, GM, ballast ve rapor akisi sahnede.",
+    summary: "Ana site ticari karari verir, yan Load-Stability Lab ise yuk dagilimi, sancak/iskele, ballast, SF/BM ve auto-balance mantigini gostermek icin acilir.",
+    score: 90,
+    decision: "Engineering bridge ready",
+    metrics: [
+      { label: "Views", value: "Side/top/iso", score: 88 },
+      { label: "Cargo logic", value: "Multi cargo", score: 86 },
+      { label: "Balance", value: "Auto advice", score: 91 },
+      { label: "Report", value: "Load plan", score: 93 }
+    ],
+    story: [
+      "Kullanici konteyner, coal, grain, ore veya project cargo secip holdlara koyar.",
+      "Sistem agirlik, KG, port/stbd offset, trim, heel ve GM degisimini canli hesaplar.",
+      "Ballast tanklari ve auto-balance onerileriyle plan duzeltilir.",
+      "Load plan report indirip ana Super Suite raporuna baglanir."
+    ],
+    proof: [
+      ["Engineering vocabulary", "GM, KG, KM, trim, heel, draft, SF/BM paneli vardir."],
+      ["Port/stbd awareness", "Sancak-iskele offset heel hesabina girer."],
+      ["Cargo slots", "Yukler hold bazli kalir, kullanici isterse siler."],
+      ["Side-site bridge", "Yan site ayri pencere gibi muhendislik unitesi olur."]
+    ],
+    script: [
+      "1. Focusea sadece broker terminali degil; yuk-stabilite tarafina da baglaniyor.",
+      "2. Yuku nereye koyarsan trim, heel ve GM degisiyor.",
+      "3. Auto balance onerisi ve PDF load plan raporu ile muhendislik gosterimi tamamlanir."
+    ],
+    matrix: [
+      ["3D/load view", "Side/top/iso gemi perspektifi", "Ready"],
+      ["Multi cargo plan", "Konteyner, bulk, ore, project cargo", "Ready"],
+      ["Port/stbd heel", "Sancak-iskele dagilim hesabi", "Ready"],
+      ["Ballast tanks", "Fore/aft/wing tank duzeltme mantigi", "Ready"],
+      ["SF/BM chart", "Shear force ve bending moment paneli", "Ready"]
+    ]
+  },
+  investor: {
+    title: "Investor Demo",
+    headline: "Focusea'yi okul projesi degil, urun gibi anlat.",
+    summary: "Moduller tek urun diline baglanir: broker terminali, market intelligence, claim automation, port ops, loadicator bridge, academy ve backend-ready roadmap.",
+    score: 96,
+    decision: "Pitch ready",
+    metrics: [
+      { label: "Product pillars", value: "7", score: 96 },
+      { label: "Exports", value: "PDF/JSON/TXT", score: 94 },
+      { label: "Differentiator", value: "Paste -> action", score: 98 },
+      { label: "Roadmap", value: "Backend ready", score: 92 }
+    ],
+    story: [
+      "Focusea'nin farki tek modul degil, uctan uca is akisi olmasi.",
+      "Kullanici metin yapistirir; sistem hesap, risk, belge, mail ve takip planini hazirlar.",
+      "Market, port, claim ve loadicator birbirine baglanir.",
+      "Backend, user account, OCR ve licensed data entegrasyonuna hazir product roadmap sunulur."
+    ],
+    proof: [
+      ["Product depth", "40+ Super Suite modulu ayni deal context'inde calisir."],
+      ["Download proof", "Raporlar gercek dosya olarak iner."],
+      ["Trust layer", "Kaynak, guncelleme ve confidence etiketi kullanilir."],
+      ["Scalability", "FastAPI/Python engine ayri deploy edilebilir."]
+    ],
+    script: [
+      "1. Bu proje bir landing page degil; broker'in gunluk isini bitiren terminal.",
+      "2. Farkimiz: kullanici metin giriyor, sistem hesapliyor, riskliyor, belge ve mail uretiyor.",
+      "3. Sonraki seviye backend, hesapli kullanici, OCR ve lisansli veri kaynaklari.",
+      "4. Yani Focusea hem egitim hem ticari operasyon hem de muhendislik demonstrasyonu."
+    ],
+    matrix: [
+      ["Broker terminal", "Offer -> TCE -> risk -> mail", "Ready"],
+      ["Claim automation", "SOF -> laytime -> claim pack", "Ready"],
+      ["Market intelligence", "Index/bunker/news/source layer", "Ready"],
+      ["Port ops", "TR/global port intelligence", "Ready"],
+      ["Backend roadmap", "Accounts, OCR, reports, API", "API-ready"]
+    ]
+  }
+};
+
+function theaterStatusClass(status) {
+  if (/api/i.test(status)) return "api-ready";
+  if (/ready/i.test(status)) return "verified";
+  return "simulated";
+}
+
+function theaterReportText(scenario = commandTheaterScenarios[selectedTheaterScenario]) {
+  return reportLines("FOCUSEA COMMAND THEATER REPORT", [
+    `Scenario: ${scenario.title}`,
+    `Decision: ${scenario.decision}`,
+    `Show score: ${scenario.score}/100`,
+    "",
+    "Executive summary:",
+    scenario.summary,
+    "",
+    "Storyline:",
+    ...scenario.story.map((item, index) => `${index + 1}. ${item}`),
+    "",
+    "KPI radar:",
+    ...scenario.metrics.map((item) => `- ${item.label}: ${item.value} (${item.score}/100)`),
+    "",
+    "Proof stack:",
+    ...scenario.proof.map(([title, text]) => `- ${title}: ${text}`),
+    "",
+    "Demo script:",
+    ...scenario.script,
+    "",
+    "Feature matrix:",
+    ...scenario.matrix.map(([name, output, status]) => `- ${name}: ${output} [${status}]`)
+  ]);
+}
+
+function renderCommandTheater(id = selectedTheaterScenario) {
+  const scenario = commandTheaterScenarios[id] || commandTheaterScenarios.broker;
+  selectedTheaterScenario = Object.keys(commandTheaterScenarios).includes(id) ? id : "broker";
+  theaterScenarioButtons.forEach((button) => {
+    button.classList.toggle("active", button.dataset.theaterScenario === selectedTheaterScenario);
+  });
+  if (theaterHeadline) theaterHeadline.textContent = scenario.headline;
+  if (theaterSummary) theaterSummary.textContent = scenario.summary;
+  if (theaterScore) theaterScore.textContent = scenario.score;
+  if (theaterDecision) theaterDecision.textContent = scenario.decision;
+  if (theaterStory) {
+    theaterStory.innerHTML = `
+      ${metricCards([
+        { label: "Scenario", value: escapeHtml(scenario.title) },
+        { label: "Decision", value: escapeHtml(scenario.decision) },
+        { label: "Show score", value: `${scenario.score}/100` },
+        { label: "Export pack", value: "PDF / JSON / TXT" }
+      ])}
+      <div class="theater-timeline">${scenario.story.map((item, index) => `
+        <div>
+          <span>${String(index + 1).padStart(2, "0")}</span>
+          <p>${escapeHtml(item)}</p>
+        </div>
+      `).join("")}</div>
+    `;
+  }
+  if (theaterRadar) {
+    theaterRadar.innerHTML = `
+      ${metricCards(scenario.metrics.map((metric) => ({
+        label: escapeHtml(metric.label),
+        value: escapeHtml(metric.value)
+      })))}
+      <div class="theater-radar-bars">${scenario.metrics.map((metric) => `
+        <div class="theater-radar-row">
+          <span>${escapeHtml(metric.label)}</span>
+          <div><i style="width:${clamp(metric.score, 0, 100)}%"></i></div>
+          <strong>${metric.score}</strong>
+        </div>
+      `).join("")}</div>
+    `;
+  }
+  if (theaterProof) {
+    theaterProof.innerHTML = `<div class="theater-proof-grid">${scenario.proof.map(([title, text]) => `
+      <div>
+        <strong>${escapeHtml(title)}</strong>
+        <span>${escapeHtml(text)}</span>
+      </div>
+    `).join("")}</div>`;
+  }
+  if (theaterScript) {
+    theaterScript.innerHTML = `<pre>${escapeHtml(scenario.script.join("\n"))}</pre>`;
+  }
+  if (theaterMatrix) {
+    theaterMatrix.innerHTML = scenario.matrix.map(([name, output, status]) => `
+      <article>
+        <div>
+          <span>${escapeHtml(name)}</span>
+          <em class="source-badge ${theaterStatusClass(status)}">${escapeHtml(status)}</em>
+        </div>
+        <p>${escapeHtml(output)}</p>
+      </article>
+    `).join("");
+  }
+  lastTheaterReport = {
+    id: selectedTheaterScenario,
+    generatedAt: new Date().toLocaleString(),
+    title: scenario.title,
+    score: scenario.score,
+    decision: scenario.decision,
+    summary: scenario.summary,
+    metrics: scenario.metrics,
+    story: scenario.story,
+    proof: scenario.proof,
+    matrix: scenario.matrix,
+    reportText: theaterReportText(scenario)
+  };
+}
+
+function handleTheaterDownload(type) {
+  if (!lastTheaterReport) renderCommandTheater(selectedTheaterScenario);
+  const scenario = commandTheaterScenarios[selectedTheaterScenario] || commandTheaterScenarios.broker;
+  const actions = {
+    pdf: () => downloadPdfFile("focusea-command-theater-report.pdf", "Focusea Command Theater Report", lastTheaterReport.reportText),
+    json: () => downloadJsonFile("focusea-command-theater-report.json", lastTheaterReport),
+    script: () => downloadTextFile("focusea-command-theater-demo-script.txt", scenario.script.join("\n"))
+  };
+  actions[type]?.();
+  theaterStory?.querySelector(".download-confirm")?.remove();
+  theaterStory?.insertAdjacentHTML("beforeend", `<small class="download-confirm">Downloaded: ${escapeHtml(window.focuseaLastDownload?.filename || type)}</small>`);
+}
+
 const superSuiteFeatures = [
   { category: "Broker", title: "Fixture Autopilot", output: "Offer card, recap, risk, TCE, email and PDF", action: "Paste fixture mail and run all modules." },
   { category: "Broker", title: "Deal Room", output: "Offer, counter, recap, CP, SOF, laytime, claim, invoice", action: "Use Super report as deal-room cover sheet." },
@@ -11881,6 +12244,12 @@ if (clearSuperNotes) {
 }
 bindBrokerOsDownloadButtons();
 
+theaterScenarioButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    renderCommandTheater(button.dataset.theaterScenario);
+  });
+});
+
 pageNavLinks.forEach((link) => {
   link.addEventListener("click", (event) => {
     event.preventDefault();
@@ -11931,6 +12300,12 @@ document.addEventListener("click", (event) => {
   const button = event.target.closest("[data-download-super]");
   if (!button) return;
   handleSuperDownload(button.dataset.downloadSuper);
+});
+
+document.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-download-theater]");
+  if (!button) return;
+  handleTheaterDownload(button.dataset.downloadTheater);
 });
 
 document.addEventListener("click", (event) => {
@@ -12316,6 +12691,7 @@ renderSustainabilityDesk();
 renderClientPortal();
 runAllBrokerOs();
 runFullDecisionLab();
+renderCommandTheater();
 renderAllSuperSuite();
 renderMarketIndexes();
 renderDataTrustLayer();

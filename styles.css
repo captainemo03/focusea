@@ -166,6 +166,7 @@ a {
 .autopilot-panel,
 .deal-iq-panel,
 .decision-lab-panel,
+.command-theater-panel,
 .super-suite-panel,
 .python-engine-panel,
 .command-deck-panel,
@@ -922,6 +923,35 @@ main {
     rgba(18, 16, 62, 0.78);
 }
 
+.command-theater-panel {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(rgba(40, 240, 198, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(40, 240, 198, 0.03) 1px, transparent 1px),
+    radial-gradient(circle at 10% 0%, rgba(40, 240, 198, 0.2), transparent 30%),
+    radial-gradient(circle at 78% 10%, rgba(245, 200, 75, 0.12), transparent 26%),
+    radial-gradient(circle at 100% 65%, rgba(100, 97, 255, 0.2), transparent 30%),
+    linear-gradient(135deg, rgba(3, 18, 29, 0.96), rgba(17, 16, 63, 0.88)),
+    rgba(18, 16, 62, 0.84);
+  background-size: 72px 72px, 72px 72px, auto, auto, auto, auto, auto;
+}
+
+.command-theater-panel::before {
+  content: "";
+  position: absolute;
+  inset: 18px;
+  pointer-events: none;
+  border: 1px solid rgba(40, 240, 198, 0.12);
+  border-radius: 8px;
+  mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+}
+
+.command-theater-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
 .super-suite-panel {
   background:
     radial-gradient(circle at 9% 0%, rgba(40, 240, 198, 0.18), transparent 28%),
@@ -990,6 +1020,262 @@ main {
     linear-gradient(135deg, rgba(40, 240, 198, 0.12), transparent 45%),
     linear-gradient(90deg, rgba(100, 97, 255, 0.12), transparent 60%),
     rgba(2, 13, 18, 0.32);
+}
+
+.theater-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(150px, 0.22fr);
+  gap: 18px;
+  align-items: stretch;
+  margin-bottom: 14px;
+  padding: 22px;
+  border: 1px solid rgba(40, 240, 198, 0.25);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(40, 240, 198, 0.13), transparent 42%),
+    linear-gradient(90deg, rgba(245, 200, 75, 0.08), transparent 54%),
+    rgba(2, 13, 18, 0.34);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+}
+
+.theater-stage-copy {
+  display: grid;
+  align-content: center;
+  gap: 7px;
+}
+
+.theater-stage-copy span {
+  color: #6fffe3;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.theater-stage-copy strong {
+  color: var(--text);
+  font-size: clamp(1.55rem, 3vw, 3.45rem);
+  line-height: 0.98;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+.theater-stage-copy p {
+  max-width: 900px;
+  margin: 0;
+  color: #d8edf1;
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+.theater-score {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 4px;
+  min-height: 170px;
+  border: 1px solid rgba(40, 240, 198, 0.3);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle, rgba(40, 240, 198, 0.22), transparent 58%),
+    rgba(1, 12, 20, 0.56);
+}
+
+.theater-score span {
+  color: var(--text);
+  font-size: 4.2rem;
+  font-weight: 950;
+  letter-spacing: -0.03em;
+}
+
+.theater-score small {
+  color: #6fffe3;
+  font-weight: 900;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.theater-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-bottom: 16px;
+}
+
+.theater-controls button {
+  min-height: 40px;
+  border: 1px solid rgba(40, 240, 198, 0.24);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.055);
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 900;
+  padding: 0 13px;
+}
+
+.theater-controls button.active,
+.theater-controls button:hover {
+  border-color: rgba(40, 240, 198, 0.64);
+  background: linear-gradient(135deg, rgba(40, 240, 198, 0.92), rgba(111, 255, 227, 0.78));
+  color: #06131f;
+}
+
+.theater-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.theater-grid article {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  min-height: 100%;
+  overflow: hidden;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(40, 240, 198, 0.025)),
+    rgba(255, 255, 255, 0.045);
+}
+
+.theater-main-card {
+  background:
+    linear-gradient(135deg, rgba(40, 240, 198, 0.09), transparent 42%),
+    rgba(255, 255, 255, 0.045);
+}
+
+.theater-output {
+  display: grid;
+  gap: 12px;
+}
+
+.theater-timeline {
+  display: grid;
+  gap: 9px;
+}
+
+.theater-timeline div {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 11px;
+  border: 1px solid rgba(40, 240, 198, 0.14);
+  border-radius: 8px;
+  background: rgba(2, 13, 18, 0.32);
+}
+
+.theater-timeline span {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: rgba(40, 240, 198, 0.16);
+  color: #6fffe3;
+  font-weight: 950;
+}
+
+.theater-timeline p {
+  margin: 0;
+  color: #d8edf1;
+  line-height: 1.5;
+}
+
+.theater-radar-bars {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.theater-radar-row {
+  display: grid;
+  grid-template-columns: minmax(100px, 0.7fr) minmax(120px, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  color: #d8edf1;
+}
+
+.theater-radar-row span,
+.theater-radar-row strong {
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.theater-radar-row div {
+  overflow: hidden;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.theater-radar-row i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #28f0c6, #f5c84b);
+}
+
+.theater-proof-grid {
+  display: grid;
+  gap: 9px;
+}
+
+.theater-proof-grid div {
+  padding: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(2, 13, 18, 0.28);
+}
+
+.theater-proof-grid strong,
+.theater-proof-grid span {
+  display: block;
+}
+
+.theater-proof-grid strong {
+  color: var(--text);
+}
+
+.theater-proof-grid span {
+  margin-top: 4px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.theater-matrix-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 10px;
+}
+
+.theater-matrix-grid article {
+  min-height: 120px;
+  padding: 12px;
+  border-color: rgba(40, 240, 198, 0.14);
+  background: rgba(2, 13, 18, 0.28);
+}
+
+.theater-matrix-grid article div {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.theater-matrix-grid span {
+  color: var(--text);
+  font-weight: 900;
+}
+
+.theater-matrix-grid p,
+.theater-export-copy {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
 }
 
 .super-suite-hero span,
@@ -1182,6 +1468,7 @@ main {
 .autopilot-grid .wide-card,
 .deal-iq-grid .wide-card,
 .decision-lab-grid .wide-card,
+.theater-grid .wide-card,
 .super-suite-grid .wide-card,
 .broker-form .wide-label {
   grid-column: 1 / -1;
@@ -3617,8 +3904,10 @@ main {
   .autopilot-grid,
   .deal-iq-grid,
   .decision-lab-grid,
+  .theater-grid,
   .super-suite-grid,
   .python-engine-grid,
+  .theater-stage,
   .super-suite-hero,
   .python-engine-hero,
   .auto-deal-controls,
@@ -3687,6 +3976,7 @@ main {
   .autopilot-panel,
   .deal-iq-panel,
   .decision-lab-panel,
+  .command-theater-panel,
   .super-suite-panel,
   .python-engine-panel,
   .assistant-panel,
@@ -3716,12 +4006,14 @@ main {
   .autopilot-grid,
   .deal-iq-grid,
   .decision-lab-grid,
+  .theater-grid,
   .super-suite-grid,
   .python-engine-grid,
   .broker-os-hero,
   .autopilot-hero,
   .deal-iq-hero,
   .decision-lab-hero,
+  .theater-stage,
   .super-suite-hero,
   .python-engine-hero,
   .export-actions,
@@ -3739,6 +4031,7 @@ main {
   .copilot-output-grid,
   .risk-radar-grid,
   .port-intel-grid,
+  .theater-matrix-grid,
   .smart-ops-grid,
   .news-grid,
   .account-grid,
@@ -3757,6 +4050,8 @@ main {
   .port-columns,
   .port-costs div,
   .detail-columns,
+  .theater-radar-row,
+  .theater-timeline div,
   .heatmap-row {
     grid-template-columns: 1fr;
   }
