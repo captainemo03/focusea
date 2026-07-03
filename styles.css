@@ -1329,6 +1329,175 @@ main {
   line-height: 1.45;
 }
 
+.workflow-command-card {
+  border-color: rgba(40, 240, 198, 0.3) !important;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(40, 240, 198, 0.16), transparent 34%),
+    linear-gradient(135deg, rgba(103, 91, 255, 0.14), transparent 52%),
+    rgba(255, 255, 255, 0.045) !important;
+}
+
+.workflow-inbox-list,
+.workflow-event-list,
+.timebar-list,
+.clause-diff-list,
+.mission-list,
+.community-note-list,
+.workflow-two-col {
+  display: grid;
+  gap: 10px;
+}
+
+.workflow-two-col {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.workflow-inbox-list div,
+.workflow-event-list div,
+.timebar-list div,
+.clause-diff-list div,
+.community-note-list div {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  padding: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(2, 13, 18, 0.32);
+}
+
+.workflow-inbox-list div.preview,
+.workflow-event-list div.found,
+.timebar-list div.low,
+.clause-diff-list div.added {
+  border-color: rgba(40, 240, 198, 0.26);
+}
+
+.workflow-event-list div.missing,
+.timebar-list div.high,
+.clause-diff-list div.removed {
+  border-color: rgba(255, 154, 154, 0.38);
+}
+
+.timebar-list div.medium {
+  border-color: rgba(245, 200, 75, 0.34);
+}
+
+.workflow-inbox-list strong,
+.workflow-event-list strong,
+.timebar-list strong,
+.clause-diff-list strong,
+.community-note-list strong {
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.workflow-inbox-list span,
+.workflow-inbox-list small,
+.workflow-event-list span,
+.timebar-list span,
+.timebar-list em,
+.clause-diff-list span,
+.community-note-list span,
+.community-note-list small {
+  color: var(--muted);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.deal-room-timeline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.deal-room-timeline span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 7px 11px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 900;
+  background: rgba(2, 13, 18, 0.32);
+}
+
+.deal-room-timeline span.active {
+  border-color: rgba(40, 240, 198, 0.42);
+  color: #06131f;
+  background: linear-gradient(135deg, #28f0c6, #6fffe3);
+}
+
+.mission-list div {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 11px;
+  border: 1px solid rgba(40, 240, 198, 0.16);
+  border-radius: 8px;
+  background: rgba(2, 13, 18, 0.32);
+}
+
+.mission-list span {
+  display: grid;
+  place-items: center;
+  width: 31px;
+  height: 31px;
+  border-radius: 50%;
+  color: #06131f;
+  font-weight: 950;
+  background: #28f0c6;
+}
+
+.mission-list p {
+  margin: 0;
+  color: #d8edf1;
+  line-height: 1.45;
+}
+
+.workflow-score-ring {
+  position: relative;
+  display: grid;
+  place-items: center;
+  gap: 5px;
+  width: min(100%, 220px);
+  aspect-ratio: 1;
+  margin: 0 auto 10px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(5, 14, 28, 0.95) 0 54%, transparent 55%),
+    conic-gradient(#28f0c6 0 var(--score), rgba(255, 255, 255, 0.1) var(--score) 100%);
+  box-shadow: inset 0 0 0 1px rgba(40, 240, 198, 0.16), 0 18px 42px rgba(0, 0, 0, 0.22);
+}
+
+.workflow-score-ring strong,
+.workflow-score-ring span {
+  position: relative;
+  z-index: 1;
+  display: block;
+  text-align: center;
+}
+
+.workflow-score-ring strong {
+  color: var(--text);
+  font-size: clamp(3rem, 9vw, 5rem);
+  font-weight: 950;
+  line-height: 0.95;
+}
+
+.workflow-score-ring span {
+  max-width: 140px;
+  color: #6fffe3;
+  font-size: 0.82rem;
+  font-weight: 950;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 .theater-output {
   display: grid;
   gap: 12px;
@@ -4213,6 +4382,7 @@ main {
   .copilot-output-grid,
   .risk-radar-grid,
   .port-intel-grid,
+  .workflow-two-col,
   .workflow-gate-grid,
   .theater-matrix-grid,
   .smart-ops-grid,
@@ -4236,6 +4406,10 @@ main {
   .theater-radar-row,
   .theater-timeline div,
   .heatmap-row {
+    grid-template-columns: 1fr;
+  }
+
+  .mission-list div {
     grid-template-columns: 1fr;
   }
 

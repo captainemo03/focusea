@@ -8,7 +8,7 @@
     <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), serial=()" />
     <title>Focusea Maritime Platform</title>
     <link rel="icon" href="favicon.svg?v=focusea-badge2" type="image/svg+xml" />
-    <link rel="stylesheet" href="styles.css?v=workflow-suite-1" />
+    <link rel="stylesheet" href="styles.css?v=workflow-os-1" />
   </head>
   <body>
     <div class="app-shell">
@@ -2274,6 +2274,132 @@ TRALI,Aliaga Nemrut Bay,Turkiye,Turkiye,Tanker / Bulk / Container,20</textarea><
               <div class="broker-output" id="workflowConfidenceResult"></div>
             </article>
 
+            <article class="wide-card workflow-command-card">
+              <div class="mini-heading"><span>Focusea Inbox</span><strong>Mail / WhatsApp -> deal room</strong></div>
+              <form class="broker-form single-column" id="workflowInboxForm">
+                <label><span>Incoming broker message</span><textarea name="messageText">50k coal Indonesia to India laycan 10/15 Jul freight 18.50 pmt demurrage 18k/day. Owners ask quick reply, subjects receiver approval by 1700 LT. NOR WIBON/WIPON, time lost waiting berth to count.</textarea></label>
+                <div class="auto-deal-controls">
+                  <label><span>Source</span><select name="source"><option>WhatsApp</option><option>Email</option><option>Broker note</option><option>Client portal</option></select></label>
+                  <label><span>Status</span><select name="status"><option>New offer</option><option selected>Counter needed</option><option>On subjects</option><option>Claim risk</option><option>Market alert</option></select></label>
+                  <label><span>Deadline h</span><input name="deadlineHours" type="number" value="18" min="0" step="1" /></label>
+                </div>
+                <button type="submit">Inbox Analiz Et</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" id="saveWorkflowInbox">Save to inbox</button>
+                <button type="button" class="ghost-button small" id="clearWorkflowInbox">Clear inbox</button>
+              </div>
+              <div class="broker-output" id="workflowInboxResult"></div>
+            </article>
+
+            <article class="wide-card">
+              <div class="mini-heading"><span>Deal Room 2.0</span><strong>Tek fixture dosyasi</strong></div>
+              <form class="broker-form" id="workflowDealRoomForm">
+                <label><span>Deal ref</span><input name="dealRef" value="FX-2026-001" /></label>
+                <label><span>Stage</span><select name="stage"><option>Offer</option><option selected>Counter</option><option>Subjects</option><option>Fixed</option><option>SOF</option><option>Claim</option><option>Invoice</option></select></label>
+                <label><span>Owner</span><input name="owner" value="Ocean Star Owners" /></label>
+                <label><span>Charterer</span><input name="charterer" value="Atlas Commodities" /></label>
+                <button type="submit">Deal Room Yenile</button>
+              </form>
+              <div class="broker-output" id="workflowDealRoomResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Document Upload / OCR Lane</span><strong>PDF, SOF, NOR, CP hazirligi</strong></div>
+              <form class="broker-form single-column" id="workflowOcrForm">
+                <label><span>Document file</span><input name="documentFile" type="file" accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg" /></label>
+                <label><span>Pasted / OCR text</span><textarea name="documentText">NOR tendered 10 Jul 1430. Vessel all fast 11 Jul 0610. Loading commenced 11 Jul 0800. Rain stopped operations 11 Jul 1300/1700. Completed 13 Jul 2215. Invoice demurrage USD 18,000/day.</textarea></label>
+                <button type="submit">Belgeyi Tara</button>
+              </form>
+              <div class="broker-output" id="workflowOcrResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Time Bar Calendar</span><strong>Subject, laycan, claim alarmlari</strong></div>
+              <form class="broker-form" id="workflowTimeBarForm">
+                <label><span>Subject deadline h</span><input name="subjectHours" type="number" value="18" min="0" step="1" /></label>
+                <label><span>Laycan opens in days</span><input name="laycanOpenDays" type="number" value="7" min="0" step="1" /></label>
+                <label><span>Canceling in days</span><input name="cancelingDays" type="number" value="12" min="0" step="1" /></label>
+                <label><span>Claim time bar days</span><input name="timeBarDays" type="number" value="90" min="1" step="1" /></label>
+                <button type="submit">Takvimi Kur</button>
+              </form>
+              <div class="broker-output" id="workflowTimeBarResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Vessel Vetting / Suitability</span><strong>Yuk + liman + gemi uygunlugu</strong></div>
+              <form class="broker-form" id="workflowVettingForm">
+                <label><span>Vessel type</span><select name="vesselType"><option>Supramax bulk carrier</option><option>Panamax bulk carrier</option><option>Container feeder</option><option>MR tanker</option><option>LNG carrier</option><option>MPP / project vessel</option></select></label>
+                <label><span>Age</span><input name="age" type="number" value="14" min="0" step="1" /></label>
+                <label><span>Draft m</span><input name="draft" type="number" value="12.6" min="0" step="0.1" /></label>
+                <label><span>PSC deficiencies</span><input name="psc" type="number" value="2" min="0" step="1" /></label>
+                <label><span>Class status</span><select name="classStatus"><option>Class valid</option><option>Condition of class</option><option>Class due soon</option></select></label>
+                <label><span>Cargo</span><select name="cargoType" data-cargo-select><option value="coal">Coal</option><option value="grain">Grain</option><option value="ironOre">Iron Ore</option><option value="container">Container</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option><option value="chemicals">Chemicals</option><option value="projectCargo">Project Cargo</option></select></label>
+                <button type="submit">Vetting Calistir</button>
+              </form>
+              <div class="broker-output" id="workflowVettingResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Clause Version Control</span><strong>Eski / yeni CP farki</strong></div>
+              <form class="broker-form single-column" id="workflowClauseVersionForm">
+                <label><span>Old wording</span><textarea name="oldClause">Laytime to commence 6 hours after valid NOR, weather delays excepted, demurrage claim documents within 90 days.</textarea></label>
+                <label><span>New wording</span><textarea name="newClause">NOR WIBON/WIPON. Time lost waiting berth shall count as laytime. Weather delays excepted unless used. Demurrage documents within 60 days.</textarea></label>
+                <button type="submit">Clause Diff Calistir</button>
+              </form>
+              <div class="broker-output" id="workflowClauseVersionResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>AI Counter Negotiator</span><strong>Pazarlik cumlesi uret</strong></div>
+              <form class="broker-form" id="workflowCounterForm">
+                <label><span>Side</span><select name="side"><option>Broker neutral</option><option>Owner</option><option selected>Charterer</option></select></label>
+                <label><span>Goal</span><select name="goal"><option>Improve freight</option><option selected>Protect clauses</option><option>Lift subjects safely</option><option>Reject risky wording</option></select></label>
+                <label><span>Tone</span><select name="tone"><option>Firm</option><option selected>Commercial</option><option>Soft</option></select></label>
+                <button type="submit">Counter Wording Uret</button>
+              </form>
+              <div class="broker-output" id="workflowCounterResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Commercial What-If Lab</span><strong>P&L / TCE hassasiyet</strong></div>
+              <form class="broker-form" id="workflowWhatIfForm">
+                <label><span>Freight change</span><input name="freightDelta" type="number" value="0.75" step="0.05" /></label>
+                <label><span>Bunker change $/t</span><input name="bunkerDelta" type="number" value="35" step="5" /></label>
+                <label><span>Delay change days</span><input name="delayDelta" type="number" value="1.5" step="0.1" /></label>
+                <label><span>Speed saving %</span><input name="speedSavingPct" type="number" value="6" min="-20" max="30" step="1" /></label>
+                <button type="submit">Senaryoyu Hesapla</button>
+              </form>
+              <div class="broker-output" id="workflowWhatIfResult"></div>
+            </article>
+
+            <article class="wide-card">
+              <div class="mini-heading"><span>Broker Daily Mission</span><strong>Bugunun 7 aksiyonu</strong></div>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" id="refreshWorkflowMission">Mission Yenile</button>
+              </div>
+              <div class="broker-output" id="workflowMissionResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Community / Agency Notes</span><strong>Local port hafizasi</strong></div>
+              <form class="broker-form" id="workflowCommunityForm">
+                <label><span>Port</span><select name="portId"><option value="mersin">Mersin</option><option value="ambarli">Ambarli / Kumport</option><option value="izmir">Izmir / Alsancak</option><option value="aliaga">Aliaga / Nemrut</option><option value="gemlik">Gemlik</option><option value="izmit">Kocaeli / Izmit</option><option value="tekirdag">Tekirdag</option><option value="iskenderun">Iskenderun</option><option value="samsun">Samsun</option></select></label>
+                <label><span>Category</span><select name="category"><option>Agency</option><option>Rain letter</option><option>Documents</option><option>Waiting</option><option>Cost</option></select></label>
+                <label class="wide-label"><span>Note</span><textarea name="note">Agent says rain letter must be requested immediately after stoppage; terminal does not issue retroactive letter.</textarea></label>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" id="saveWorkflowCommunity">Save note</button>
+                <button type="button" class="ghost-button small" id="clearWorkflowCommunity">Clear notes</button>
+              </div>
+              <div class="broker-output" id="workflowCommunityResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Focusea Score</span><strong>Tek karar skoru</strong></div>
+              <div class="broker-output" id="workflowScoreResult"></div>
+            </article>
+
             <article class="wide-card theater-main-card">
               <div class="mini-heading"><span>Workflow Timeline</span><strong>Is akisi</strong></div>
               <div class="broker-output theater-output" id="theaterStory"></div>
@@ -3104,6 +3230,6 @@ TRALI,Aliaga Nemrut Bay,Turkiye,Turkiye,Tanker / Bulk / Container,20</textarea><
       </main>
     </div>
 
-    <script src="script.js?v=workflow-suite-1"></script>
+    <script src="script.js?v=workflow-os-1"></script>
   </body>
 </html>

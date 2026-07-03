@@ -2282,6 +2282,31 @@ const workflowClientPortalResult = document.querySelector("#workflowClientPortal
 const negotiationProForm = document.querySelector("#negotiationProForm");
 const negotiationProResult = document.querySelector("#negotiationProResult");
 const workflowConfidenceResult = document.querySelector("#workflowConfidenceResult");
+const workflowInboxForm = document.querySelector("#workflowInboxForm");
+const workflowInboxResult = document.querySelector("#workflowInboxResult");
+const saveWorkflowInbox = document.querySelector("#saveWorkflowInbox");
+const clearWorkflowInbox = document.querySelector("#clearWorkflowInbox");
+const workflowDealRoomForm = document.querySelector("#workflowDealRoomForm");
+const workflowDealRoomResult = document.querySelector("#workflowDealRoomResult");
+const workflowOcrForm = document.querySelector("#workflowOcrForm");
+const workflowOcrResult = document.querySelector("#workflowOcrResult");
+const workflowTimeBarForm = document.querySelector("#workflowTimeBarForm");
+const workflowTimeBarResult = document.querySelector("#workflowTimeBarResult");
+const workflowVettingForm = document.querySelector("#workflowVettingForm");
+const workflowVettingResult = document.querySelector("#workflowVettingResult");
+const workflowClauseVersionForm = document.querySelector("#workflowClauseVersionForm");
+const workflowClauseVersionResult = document.querySelector("#workflowClauseVersionResult");
+const workflowCounterForm = document.querySelector("#workflowCounterForm");
+const workflowCounterResult = document.querySelector("#workflowCounterResult");
+const workflowWhatIfForm = document.querySelector("#workflowWhatIfForm");
+const workflowWhatIfResult = document.querySelector("#workflowWhatIfResult");
+const refreshWorkflowMission = document.querySelector("#refreshWorkflowMission");
+const workflowMissionResult = document.querySelector("#workflowMissionResult");
+const workflowCommunityForm = document.querySelector("#workflowCommunityForm");
+const workflowCommunityResult = document.querySelector("#workflowCommunityResult");
+const saveWorkflowCommunity = document.querySelector("#saveWorkflowCommunity");
+const clearWorkflowCommunity = document.querySelector("#clearWorkflowCommunity");
+const workflowScoreResult = document.querySelector("#workflowScoreResult");
 let activeNewsQuery = "maritime shipping";
 let generatedOpsEmailText = "";
 let selectedCommandScenarioId = "coal";
@@ -2296,6 +2321,17 @@ let lastWeatherLaytime = null;
 let lastCarbonDesk = null;
 let lastWorkflowClientPortal = null;
 let lastNegotiationPro = null;
+let lastWorkflowInbox = null;
+let lastWorkflowDealRoom = null;
+let lastWorkflowOcr = null;
+let lastWorkflowTimeBar = null;
+let lastWorkflowVetting = null;
+let lastWorkflowClauseVersion = null;
+let lastWorkflowCounter = null;
+let lastWorkflowWhatIf = null;
+let lastWorkflowMission = null;
+let lastWorkflowCommunity = null;
+let lastFocuseaScore = null;
 let lastParsedOffer = null;
 let lastCopilotReport = null;
 let lastTceOptimization = null;
@@ -10533,6 +10569,10 @@ function renderWorkflowGate() {
   renderDealIntelligenceGraph();
   renderWorkflowClientPortal();
   renderWorkflowConfidence();
+  renderWorkflowDealRoom();
+  renderWorkflowWhatIf();
+  renderWorkflowMission();
+  renderFocuseaScore();
 }
 
 function handleWorkflowDownload(type) {
@@ -10857,6 +10897,502 @@ function renderWorkflowConfidence() {
   `;
 }
 
+const workflowInboxKey = "focusea-workflow-inbox-v1";
+const workflowCommunityKey = "focusea-workflow-community-notes-v1";
+
+function workflowDateAfter({ hours = 0, days = 0 } = {}) {
+  const date = new Date();
+  date.setMinutes(date.getMinutes() + Math.round((Number(hours) || 0) * 60 + (Number(days) || 0) * 1440));
+  return date;
+}
+
+function workflowDateLabel(date) {
+  return date.toLocaleString(undefined, { month: "short", day: "2-digit", hour: "2-digit", minute: "2-digit" });
+}
+
+function workflowStatusBadge(score) {
+  if (score >= 76) return "licensed";
+  if (score >= 56) return "api-ready";
+  return "verified";
+}
+
+function workflowCurrentGate() {
+  if (!lastWorkflowGate) lastWorkflowGate = workflowGateContext(workflowGateForm ? collectFormValues(workflowGateForm) : {});
+  return lastWorkflowGate;
+}
+
+function buildWorkflowInboxItem(values = {}) {
+  const messageText = String(values.messageText || "");
+  const parsed = parseOfferText(messageText);
+  const risk = scoreParsedOffer(parsed);
+  const source = values.source || "Inbox";
+  const status = values.status || (risk.score >= 65 ? "Counter needed" : "New offer");
+  const deadlineHours = Number(values.deadlineHours) || 0;
+  const route = parsed.route || "Route TBC";
+  return {
+    id: `INB-${Date.now().toString().slice(-5)}`,
+    source,
+    status,
+    messageText,
+    cargoType: parsed.cargoType,
+    cargoLabel: parsed.cargoLabel,
+    route,
+    quantity: parsed.quantity,
+    unit: parsed.unit,
+    freight: parsed.freight,
+    demurrage: parsed.demurrage,
+    laycan: parsed.laycan,
+    vesselSize: parsed.vesselSize,
+    missing: parsed.missing,
+    riskScore: risk.score,
+    riskLabel: risk.label,
+    factors: risk.factors,
+    deadlineHours,
+    deadlineAt: deadlineHours ? workflowDateAfter({ hours: deadlineHours }).toISOString() : "",
+    receivedAt: new Date().toLocaleString()
+  };
+}
+
+function getWorkflowInbox() {
+  const saved = safeLocalGet(workflowInboxKey, []);
+  return Array.isArray(saved) ? saved : [];
+}
+
+function setWorkflowInbox(items) {
+  safeLocalSet(workflowInboxKey, items);
+}
+
+function renderWorkflowInbox() {
+  if (!workflowInboxResult) return;
+  const values = workflowInboxForm ? collectFormValues(workflowInboxForm) : {};
+  const preview = buildWorkflowInboxItem(values);
+  const inbox = getWorkflowInbox();
+  const savedPlusPreview = [preview, ...inbox].slice(0, 7);
+  lastWorkflowInbox = { preview, inbox };
+  workflowInboxResult.innerHTML = `
+    ${metricCards([
+      { label: "Preview status", value: escapeHtml(preview.status) },
+      { label: "Risk", value: `${preview.riskScore}/100` },
+      { label: "Cargo", value: escapeHtml(preview.cargoLabel) },
+      { label: "Route", value: escapeHtml(preview.route) },
+      { label: "Saved inbox", value: inbox.length }
+    ])}
+    <div class="workflow-inbox-list">
+      ${savedPlusPreview.map((item, index) => `
+        <div class="${index === 0 ? "preview" : ""}">
+          <strong>${escapeHtml(item.id)} · ${escapeHtml(item.status)}</strong>
+          <span>${escapeHtml(item.cargoLabel)} · ${escapeHtml(item.route)} · ${item.freight ? money(item.freight, 2) : "freight TBC"} · risk ${item.riskScore}/100</span>
+          <small>${index === 0 ? "Preview from pasted text" : escapeHtml(item.receivedAt || "Saved")} ${item.missing?.length ? `· missing: ${escapeHtml(item.missing.join(", "))}` : ""}</small>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+function saveWorkflowInboxEntry() {
+  const values = workflowInboxForm ? collectFormValues(workflowInboxForm) : {};
+  const item = buildWorkflowInboxItem(values);
+  setWorkflowInbox([item, ...getWorkflowInbox()].slice(0, 60));
+  renderWorkflowInbox();
+  renderWorkflowDealRoom();
+  renderWorkflowMission();
+  renderFocuseaScore();
+}
+
+function clearWorkflowInboxEntries() {
+  setWorkflowInbox([]);
+  renderWorkflowInbox();
+  renderWorkflowDealRoom();
+  renderWorkflowMission();
+  renderFocuseaScore();
+}
+
+function workflowLatestDeal() {
+  return getWorkflowInbox()[0] || lastWorkflowInbox?.preview || null;
+}
+
+function renderWorkflowDealRoom() {
+  if (!workflowDealRoomResult) return;
+  const values = workflowDealRoomForm ? collectFormValues(workflowDealRoomForm) : {};
+  const gate = workflowCurrentGate();
+  const inboxDeal = workflowLatestDeal();
+  const stage = values.stage || "Counter";
+  const stageOrder = ["Offer", "Counter", "Subjects", "Fixed", "SOF", "Laytime", "Claim", "Invoice"];
+  const activeIndex = Math.max(0, stageOrder.indexOf(stage));
+  const documents = [
+    ["Offer", inboxDeal ? "Captured from inbox" : "Use inbox parser"],
+    ["Recap", gate.decision.includes("FIX") ? "Draft ready" : "Needs protection"],
+    ["CP comments", lastWorkflowClauseVersion ? "Version diff ready" : "Pending diff"],
+    ["SOF / NOR", lastWorkflowOcr ? "OCR lane scanned" : "Pending upload"],
+    ["Laytime", lastWeatherLaytime ? "Weather linked" : "Need SOF"],
+    ["Claim", lastDocumentRedTeam?.score >= 65 ? "High dispute watch" : "Evidence checklist"],
+    ["Invoice", lastCarbonDesk ? "ETS note attached" : "Commercial pack"]
+  ];
+  const todo = [
+    ...(gate.blockers || []).slice(0, 3),
+    inboxDeal?.deadlineHours ? `Subject deadline in ${inboxDeal.deadlineHours} h` : "Set subject deadline",
+    lastWorkflowVetting?.verdict ? `Vetting: ${lastWorkflowVetting.verdict}` : "Run vessel vetting",
+    lastWorkflowCounter?.wording ? "Send counter wording after review" : "Generate counter wording"
+  ].filter(Boolean).slice(0, 7);
+  lastWorkflowDealRoom = { values, gate, inboxDeal, documents, todo, activeIndex };
+  workflowDealRoomResult.innerHTML = `
+    ${metricCards([
+      { label: "Deal ref", value: escapeHtml(values.dealRef || "FX") },
+      { label: "Stage", value: escapeHtml(stage) },
+      { label: "Gate", value: escapeHtml(gate.decision) },
+      { label: "Risk", value: `${gate.risk}/100` },
+      { label: "Files", value: documents.length }
+    ])}
+    <div class="deal-room-timeline">
+      ${stageOrder.map((item, index) => `<span class="${index <= activeIndex ? "active" : ""}">${escapeHtml(item)}</span>`).join("")}
+    </div>
+    <div class="workflow-two-col">
+      <div class="ops-list">${documents.map(([title, status]) => `<div><strong>${escapeHtml(title)}</strong><span>${escapeHtml(status)}</span></div>`).join("")}</div>
+      <div class="ops-list">${todo.map((item) => `<div><strong>Action</strong><span>${escapeHtml(item)}</span></div>`).join("")}</div>
+    </div>
+  `;
+}
+
+function workflowExtractEvents(text = "") {
+  const rows = [
+    ["NOR", /nor(?:\s+tendered)?[^0-9]*(\d{1,2}\s*[A-Za-z]{3,9}|\d{1,2}\/\d{1,2})?[^0-9]*(\d{3,4})?/i],
+    ["All fast", /all\s+fast[^0-9]*(\d{1,2}\s*[A-Za-z]{3,9}|\d{1,2}\/\d{1,2})?[^0-9]*(\d{3,4})?/i],
+    ["Loading started", /(?:loading|discharging|operation)\s+(?:commenced|started)[^0-9]*(\d{1,2}\s*[A-Za-z]{3,9}|\d{1,2}\/\d{1,2})?[^0-9]*(\d{3,4})?/i],
+    ["Weather stop", /(?:rain|weather|swell|wind)[^0-9]*(?:stopped|stop|delay|delayed)?[^0-9]*(\d{1,2}\s*[A-Za-z]{3,9}|\d{1,2}\/\d{1,2})?[^0-9]*(\d{3,4})?/i],
+    ["Completed", /(?:completed|completion|finished)[^0-9]*(\d{1,2}\s*[A-Za-z]{3,9}|\d{1,2}\/\d{1,2})?[^0-9]*(\d{3,4})?/i]
+  ];
+  return rows.map(([label, pattern]) => {
+    const match = text.match(pattern);
+    return {
+      label,
+      found: Boolean(match),
+      detail: match ? [match[1], match[2]].filter(Boolean).join(" ") || "mentioned" : "missing"
+    };
+  });
+}
+
+function renderWorkflowOcrLane() {
+  if (!workflowOcrForm || !workflowOcrResult) return;
+  const values = collectFormValues(workflowOcrForm);
+  const text = String(values.documentText || "");
+  const file = values.documentFile;
+  const events = workflowExtractEvents(text);
+  const findings = redTeamFindings(text, "Broker neutral");
+  const claimRate = parseMoneyNumber(text.match(/(?:demurrage|dem)[^0-9]*(?:usd|us\$|\$)?\s*([0-9,]+(?:\.[0-9]+)?)/i)?.[1]) || workflowCurrentGate().demurrageRate;
+  const foundCount = events.filter((event) => event.found).length;
+  const readiness = clamp(Math.round(foundCount * 16 + (findings.length ? 10 : 0) + (text.length > 80 ? 12 : 0)), 0, 100);
+  lastWorkflowOcr = { text, fileName: file?.name || "", events, findings, readiness, claimRate };
+  workflowOcrResult.innerHTML = `
+    ${metricCards([
+      { label: "OCR readiness", value: `${readiness}/100` },
+      { label: "Events found", value: `${foundCount}/${events.length}` },
+      { label: "Claim rate", value: `${money(claimRate)}/day` },
+      { label: "File", value: escapeHtml(file?.name || "Pasted text") }
+    ])}
+    <div class="workflow-event-list">
+      ${events.map((event) => `<div class="${event.found ? "found" : "missing"}"><strong>${escapeHtml(event.label)}</strong><span>${escapeHtml(event.detail)}</span></div>`).join("")}
+    </div>
+    <div class="confidence-row"><span>Static site note</span><em class="source-badge api-ready">Backend-ready</em><span>True OCR/PDF extraction needs Python backend endpoint.</span></div>
+  `;
+  renderWorkflowDealRoom();
+  renderWorkflowMission();
+  renderFocuseaScore();
+}
+
+function renderWorkflowTimeBar() {
+  if (!workflowTimeBarForm || !workflowTimeBarResult) return;
+  const values = collectFormValues(workflowTimeBarForm);
+  const events = [
+    { label: "Subject deadline", type: "hours", amount: Number(values.subjectHours) || 0, severity: Number(values.subjectHours) <= 12 ? 84 : Number(values.subjectHours) <= 24 ? 62 : 38 },
+    { label: "Laycan opens", type: "days", amount: Number(values.laycanOpenDays) || 0, severity: Number(values.laycanOpenDays) <= 3 ? 78 : 44 },
+    { label: "Canceling date", type: "days", amount: Number(values.cancelingDays) || 0, severity: Number(values.cancelingDays) <= 5 ? 82 : 42 },
+    { label: "Demurrage time bar", type: "days", amount: Number(values.timeBarDays) || 90, severity: Number(values.timeBarDays) <= 30 ? 78 : 36 }
+  ].map((item) => ({
+    ...item,
+    dueAt: workflowDateAfter(item.type === "hours" ? { hours: item.amount } : { days: item.amount })
+  }));
+  const urgent = events.filter((item) => item.severity >= 70).length;
+  lastWorkflowTimeBar = { values, events, urgent };
+  workflowTimeBarResult.innerHTML = `
+    ${metricCards([
+      { label: "Critical dates", value: events.length },
+      { label: "Urgent", value: urgent },
+      { label: "Next", value: workflowDateLabel(events[0].dueAt) }
+    ])}
+    <div class="timebar-list">
+      ${events.map((item) => `
+        <div class="${riskBand(item.severity)}">
+          <strong>${escapeHtml(item.label)}</strong>
+          <span>${workflowDateLabel(item.dueAt)}</span>
+          <em>${riskBandLabel(item.severity)}</em>
+        </div>
+      `).join("")}
+    </div>
+  `;
+  renderWorkflowMission();
+  renderFocuseaScore();
+}
+
+function renderWorkflowVetting() {
+  if (!workflowVettingForm || !workflowVettingResult) return;
+  const values = collectFormValues(workflowVettingForm);
+  const gate = workflowCurrentGate();
+  const cargo = getCargoProfile(values.cargoType || gate.cargoType);
+  const { port } = turkiyePortProfile(gate.portId || "mersin");
+  const margin = turkiyeDraftMargin(port, values.draft || gate.values.draft);
+  const classRisk = values.classStatus === "Condition of class" ? 28 : values.classStatus === "Class due soon" ? 16 : 4;
+  const risk = clamp(Math.round(
+    (Number(values.age) || 0) * 1.1
+    + (Number(values.psc) || 0) * 7
+    + classRisk
+    + cargo.risk * 0.28
+    + (margin < 0 ? 32 : margin < 1 ? 18 : 0)
+  ), 0, 100);
+  const verdict = risk >= 72 ? "Risky / hold subjects" : risk >= 52 ? "Conditional acceptance" : "Suitable";
+  const checks = [
+    cargo.docs?.[0] || "Cargo documentation",
+    cargo.handling?.[0] || "Cargo handling limits",
+    `Draft margin ${margin.toFixed(1)} m at ${port.name}`,
+    values.classStatus,
+    `${values.psc} PSC deficiencies`
+  ].filter(Boolean);
+  lastWorkflowVetting = { values, cargo, port, margin, risk, verdict, checks };
+  workflowVettingResult.innerHTML = `
+    ${metricCards([
+      { label: "Verdict", value: escapeHtml(verdict) },
+      { label: "Risk", value: `${risk}/100` },
+      { label: "Draft margin", value: `${margin.toFixed(1)} m` },
+      { label: "Cargo", value: escapeHtml(cargo.label) }
+    ])}
+    <div class="ops-list">${checks.map((item) => `<div><strong>Check</strong><span>${escapeHtml(item)}</span></div>`).join("")}</div>
+  `;
+  renderWorkflowDealRoom();
+  renderWorkflowMission();
+  renderFocuseaScore();
+}
+
+function renderWorkflowClauseVersion() {
+  if (!workflowClauseVersionForm || !workflowClauseVersionResult) return;
+  const values = collectFormValues(workflowClauseVersionForm);
+  const oldLines = String(values.oldClause || "").split(/\n+/).map((line) => line.trim()).filter(Boolean);
+  const newLines = String(values.newClause || "").split(/\n+/).map((line) => line.trim()).filter(Boolean);
+  const removed = oldLines.filter((line) => !newLines.some((newLine) => newLine.toLowerCase() === line.toLowerCase()));
+  const added = newLines.filter((line) => !oldLines.some((oldLine) => oldLine.toLowerCase() === line.toLowerCase()));
+  const oldFindings = redTeamFindings(values.oldClause || "", "Old");
+  const newFindings = redTeamFindings(values.newClause || "", "New");
+  const riskShift = clamp(Math.round(newFindings.length * 12 + added.length * 8 - oldFindings.length * 6 + removed.length * 5), 0, 100);
+  const verdict = riskShift >= 64 ? "Protection weakened" : riskShift >= 42 ? "Needs comment" : "Acceptable with review";
+  lastWorkflowClauseVersion = { values, removed, added, oldFindings, newFindings, riskShift, verdict };
+  workflowClauseVersionResult.innerHTML = `
+    ${metricCards([
+      { label: "Verdict", value: escapeHtml(verdict) },
+      { label: "Risk shift", value: `${riskShift}/100` },
+      { label: "Added", value: added.length },
+      { label: "Removed", value: removed.length }
+    ])}
+    <div class="clause-diff-list">
+      ${removed.map((line) => `<div class="removed"><strong>- Removed protection</strong><span>${escapeHtml(line)}</span></div>`).join("")}
+      ${added.map((line) => `<div class="added"><strong>+ Added wording</strong><span>${escapeHtml(line)}</span></div>`).join("")}
+      ${!removed.length && !added.length ? `<div><strong>No line change</strong><span>Still run red-team before subjects lifted.</span></div>` : ""}
+    </div>
+  `;
+  renderWorkflowDealRoom();
+  renderWorkflowCounter();
+  renderWorkflowMission();
+  renderFocuseaScore();
+}
+
+function renderWorkflowCounter() {
+  if (!workflowCounterForm || !workflowCounterResult) return;
+  const values = collectFormValues(workflowCounterForm);
+  const gate = workflowCurrentGate();
+  const clause = lastWorkflowClauseVersion;
+  const side = values.side || "Broker neutral";
+  const goal = values.goal || "Protect clauses";
+  const rate = lastNegotiationPro?.suggested || gate.freight * (gate.risk >= 62 ? 1.03 : 1.01);
+  const clauseLine = clause?.verdict === "Protection weakened"
+    ? "Please reinstate valid NOR, weather exception and time-bar wording before subjects are lifted."
+    : "Please confirm NOR validity, waiting time, weather exceptions, demurrage/dispatch and full document list in recap.";
+  const wording = [
+    `Many thanks. ${side} can counter commercially at ${money(rate, 2)}/${gate.cargo.unit} basis ${gate.parsed.route || "route TBC"}.`,
+    clauseLine,
+    goal === "Lift subjects safely" ? "Subjects can be lifted only after receiver/terminal, agency PDA and vessel suitability are confirmed." : "This remains subject to clean CP wording, management approval and final stem confirmation.",
+    `Current commercial screen shows TCE ${money(gate.tce)}/day and risk ${gate.risk}/100.`
+  ].join(" ");
+  const posture = gate.risk >= 72 ? "Firm reservation" : gate.risk >= 55 ? "Commercial counter" : "Close to fix";
+  lastWorkflowCounter = { values, wording, posture, rate };
+  workflowCounterResult.innerHTML = `
+    ${metricCards([
+      { label: "Posture", value: escapeHtml(posture) },
+      { label: "Counter rate", value: `${money(rate, 2)}/${gate.cargo.unit}` },
+      { label: "Risk basis", value: `${gate.risk}/100` }
+    ])}
+    <pre>${escapeHtml(wording)}</pre>
+  `;
+  renderWorkflowDealRoom();
+  renderWorkflowMission();
+}
+
+function renderWorkflowWhatIf() {
+  if (!workflowWhatIfForm || !workflowWhatIfResult) return;
+  const values = collectFormValues(workflowWhatIfForm);
+  const gate = workflowCurrentGate();
+  const freightDelta = Number(values.freightDelta) || 0;
+  const bunkerDelta = Number(values.bunkerDelta) || 0;
+  const delayDelta = Number(values.delayDelta) || 0;
+  const speedSavingPct = Number(values.speedSavingPct) || 0;
+  const newFreight = Math.max(0, gate.freight + freightDelta);
+  const newGross = gate.quantity * newFreight;
+  const newBrokerage = newGross * (gate.commission / 100);
+  const adjustedBunkerTons = gate.bunkerTons * (1 - speedSavingPct / 100);
+  const newBunker = adjustedBunkerTons * (Number(gate.values.bunkerPrice || liveFeedState.bunker) + bunkerDelta);
+  const newVoyageDays = Math.max(1, gate.voyageDays + delayDelta + Math.max(0, speedSavingPct) * 0.04);
+  const extraHire = newVoyageDays * (Number(gate.values.dailyHire) || 14500);
+  const adjustedPnl = newGross - newBrokerage - newBunker - gate.portCost - extraHire;
+  const adjustedTce = (newGross - newBrokerage - newBunker - gate.portCost) / newVoyageDays;
+  const pnlDelta = adjustedPnl - gate.netPnl;
+  const recommendation = adjustedTce >= gate.targetTce && adjustedPnl > gate.netPnl
+    ? "Counter improves the deal; keep clause protections."
+    : adjustedPnl > 0
+      ? "Deal stays positive but margin is thinner; reduce delay or improve freight."
+      : "Avoid unless freight, demurrage or port risk improves.";
+  lastWorkflowWhatIf = { values, adjustedPnl, adjustedTce, pnlDelta, recommendation };
+  workflowWhatIfResult.innerHTML = `
+    ${metricCards([
+      { label: "Adjusted P&L", value: `<em class="${adjustedPnl >= 0 ? "positive" : "negative"}">${money(adjustedPnl)}</em>` },
+      { label: "P&L delta", value: `<em class="${pnlDelta >= 0 ? "positive" : "negative"}">${pnlDelta >= 0 ? "+" : ""}${money(pnlDelta)}</em>` },
+      { label: "Adjusted TCE", value: `${money(adjustedTce)}/day` },
+      { label: "New days", value: newVoyageDays.toFixed(1) }
+    ])}
+    <div class="danger-box"><span>Recommendation</span><p>${escapeHtml(recommendation)}</p></div>
+  `;
+  renderWorkflowMission();
+  renderFocuseaScore();
+}
+
+function workflowMissionItems() {
+  const gate = workflowCurrentGate();
+  const inboxDeal = workflowLatestDeal();
+  return [
+    inboxDeal?.deadlineHours && `Chase ${inboxDeal.status.toLowerCase()} before subject deadline in ${inboxDeal.deadlineHours} h.`,
+    gate.blockers?.[0] || "Run Deal Quality Gate and clear missing terms.",
+    lastWorkflowClauseVersion?.verdict === "Protection weakened" && "Send CP comment: new clause weakens NOR/weather/time-bar protection.",
+    lastWorkflowVetting?.risk >= 55 && `Resolve vessel suitability: ${lastWorkflowVetting.verdict}.`,
+    lastWorkflowTimeBar?.urgent && `Calendar has ${lastWorkflowTimeBar.urgent} urgent deadline(s).`,
+    lastWorkflowOcr?.readiness < 70 && "Upload/paste stronger SOF/NOR evidence before claim pack.",
+    lastWorkflowWhatIf?.pnlDelta < 0 && "What-if is hurting P&L; counter freight or reduce waiting.",
+    lastPortReality?.status && `Port reality: ${lastPortReality.status} at ${lastPortReality.port.name}.`,
+    lastCarbonDesk?.usdCost > 0 && `Attach ETS cost note: ${money(lastCarbonDesk.usdCost)} USD equivalent.`,
+    "Send client-safe portal summary after risk notes are cleaned."
+  ].filter(Boolean).slice(0, 7);
+}
+
+function renderWorkflowMission() {
+  if (!workflowMissionResult) return;
+  const items = workflowMissionItems();
+  lastWorkflowMission = { items, generatedAt: new Date().toLocaleString() };
+  workflowMissionResult.innerHTML = `
+    ${metricCards([
+      { label: "Mission items", value: items.length },
+      { label: "Open inbox", value: getWorkflowInbox().length },
+      { label: "Generated", value: escapeHtml(new Date().toLocaleTimeString()) }
+    ])}
+    <div class="mission-list">
+      ${items.map((item, index) => `<div><span>${index + 1}</span><p>${escapeHtml(item)}</p></div>`).join("")}
+    </div>
+  `;
+}
+
+function getWorkflowCommunityNotes() {
+  const saved = safeLocalGet(workflowCommunityKey, []);
+  return Array.isArray(saved) ? saved : [];
+}
+
+function setWorkflowCommunityNotes(notes) {
+  safeLocalSet(workflowCommunityKey, notes);
+}
+
+function renderWorkflowCommunity() {
+  if (!workflowCommunityResult) return;
+  const notes = getWorkflowCommunityNotes();
+  lastWorkflowCommunity = { notes };
+  workflowCommunityResult.innerHTML = `
+    ${metricCards([
+      { label: "Saved notes", value: notes.length },
+      { label: "Source", value: `<em class="source-badge input">User input</em>` }
+    ])}
+    <div class="community-note-list">
+      ${(notes.length ? notes : [{ portName: "No notes yet", category: "Start", note: "Save agency, rain letter, docs, waiting and cost notes here.", time: "" }]).slice(0, 8).map((item) => `
+        <div>
+          <strong>${escapeHtml(item.portName || item.portId || "Port")}</strong>
+          <span>${escapeHtml(item.category || "Note")} · ${escapeHtml(item.note || "")}</span>
+          <small>${escapeHtml(item.time || "Local browser memory")}</small>
+        </div>
+      `).join("")}
+    </div>
+  `;
+  renderFocuseaScore();
+}
+
+function addWorkflowCommunityNote() {
+  if (!workflowCommunityForm) return;
+  const values = collectFormValues(workflowCommunityForm);
+  const { port } = turkiyePortProfile(values.portId || "mersin");
+  const note = {
+    portId: values.portId || "mersin",
+    portName: port.name,
+    category: values.category || "Agency",
+    note: values.note || "",
+    time: new Date().toLocaleString()
+  };
+  setWorkflowCommunityNotes([note, ...getWorkflowCommunityNotes()].slice(0, 80));
+  renderWorkflowCommunity();
+  renderPortReality();
+}
+
+function clearWorkflowCommunityNotes() {
+  setWorkflowCommunityNotes([]);
+  renderWorkflowCommunity();
+}
+
+function renderFocuseaScore() {
+  if (!workflowScoreResult) return;
+  const gate = workflowCurrentGate();
+  const penalties = [
+    gate.risk * 0.28,
+    (lastDocumentRedTeam?.score || 38) * 0.12,
+    (lastPortReality?.waitingRisk || gate.portRisk) * 0.11,
+    (lastWorkflowVetting?.risk || 42) * 0.12,
+    (lastWorkflowClauseVersion?.riskShift || 30) * 0.1,
+    Math.max(0, gate.targetTce - gate.tce) * 0.0009,
+    (lastWorkflowTimeBar?.urgent || 0) * 5
+  ];
+  const readinessBonus = [
+    lastWorkflowInbox ? 4 : 0,
+    lastWorkflowDealRoom ? 5 : 0,
+    lastWorkflowOcr?.readiness >= 70 ? 5 : 0,
+    lastWorkflowCounter ? 4 : 0,
+    getWorkflowCommunityNotes().length ? 3 : 0
+  ].reduce((sum, value) => sum + value, 0);
+  const score = clamp(Math.round(100 - penalties.reduce((sum, value) => sum + value, 0) + readinessBonus), 0, 100);
+  const verdict = score >= 78 ? "Fix-ready with guards" : score >= 58 ? "Workable / watch" : "Do not lift subjects";
+  const reasons = [
+    `Gate risk ${gate.risk}/100`,
+    lastWorkflowVetting ? `Vetting ${lastWorkflowVetting.risk}/100` : "Vetting pending",
+    lastWorkflowClauseVersion ? `Clause shift ${lastWorkflowClauseVersion.riskShift}/100` : "Clause version pending",
+    lastWorkflowTimeBar?.urgent ? `${lastWorkflowTimeBar.urgent} urgent deadline(s)` : "No urgent time-bar flag",
+    gate.tce < gate.targetTce ? `TCE gap ${money(gate.targetTce - gate.tce)}/day` : "TCE meets target"
+  ];
+  lastFocuseaScore = { score, verdict, reasons };
+  workflowScoreResult.innerHTML = `
+    <div class="workflow-score-ring" style="--score:${score}%">
+      <strong>${score}</strong>
+      <span>${escapeHtml(verdict)}</span>
+    </div>
+    <div class="ops-list">${reasons.map((item) => `<div><strong>Signal</strong><span>${escapeHtml(item)}</span></div>`).join("")}</div>
+  `;
+}
+
 function renderAllWorkflowControl() {
   renderWorkflowGate();
   renderDealIntelligenceGraph();
@@ -10868,6 +11404,17 @@ function renderAllWorkflowControl() {
   renderWorkflowClientPortal();
   renderNegotiationPro();
   renderWorkflowConfidence();
+  renderWorkflowInbox();
+  renderWorkflowDealRoom();
+  renderWorkflowOcrLane();
+  renderWorkflowTimeBar();
+  renderWorkflowVetting();
+  renderWorkflowClauseVersion();
+  renderWorkflowCounter();
+  renderWorkflowWhatIf();
+  renderWorkflowMission();
+  renderWorkflowCommunity();
+  renderFocuseaScore();
 }
 
 const superSuiteFeatures = [
@@ -12766,6 +13313,14 @@ bindBrokerForm(weatherLaytimeForm, renderWeatherLaytime);
 bindBrokerForm(carbonDeskForm, renderCarbonDesk);
 bindBrokerForm(workflowClientPortalForm, renderWorkflowClientPortal);
 bindBrokerForm(negotiationProForm, renderNegotiationPro);
+bindBrokerForm(workflowInboxForm, renderWorkflowInbox);
+bindBrokerForm(workflowDealRoomForm, renderWorkflowDealRoom);
+bindBrokerForm(workflowOcrForm, renderWorkflowOcrLane);
+bindBrokerForm(workflowTimeBarForm, renderWorkflowTimeBar);
+bindBrokerForm(workflowVettingForm, renderWorkflowVetting);
+bindBrokerForm(workflowClauseVersionForm, renderWorkflowClauseVersion);
+bindBrokerForm(workflowCounterForm, renderWorkflowCounter);
+bindBrokerForm(workflowWhatIfForm, renderWorkflowWhatIf);
 bindBrokerForm(superSuiteForm, renderSuperSuite);
 
 if (offerTrackerForm) {
@@ -12807,6 +13362,11 @@ if (clearMarketMemory) {
     renderWorkflowConfidence();
   });
 }
+if (saveWorkflowInbox) saveWorkflowInbox.addEventListener("click", saveWorkflowInboxEntry);
+if (clearWorkflowInbox) clearWorkflowInbox.addEventListener("click", clearWorkflowInboxEntries);
+if (refreshWorkflowMission) refreshWorkflowMission.addEventListener("click", renderWorkflowMission);
+if (saveWorkflowCommunity) saveWorkflowCommunity.addEventListener("click", addWorkflowCommunityNote);
+if (clearWorkflowCommunity) clearWorkflowCommunity.addEventListener("click", clearWorkflowCommunityNotes);
 if (superTerminalNoteForm) superTerminalNoteForm.addEventListener("submit", addSuperTerminalNote);
 if (clearSuperNotes) {
   clearSuperNotes.addEventListener("click", () => {
