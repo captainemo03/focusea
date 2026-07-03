@@ -8,7 +8,7 @@
     <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), serial=()" />
     <title>Focusea Maritime Platform</title>
     <link rel="icon" href="favicon.svg?v=focusea-badge2" type="image/svg+xml" />
-    <link rel="stylesheet" href="styles.css?v=radar-fix-1" />
+    <link rel="stylesheet" href="styles.css?v=turkiye-desk-1" />
   </head>
   <body>
     <div class="app-shell">
@@ -965,6 +965,111 @@
                 <button type="submit">Port Pro Analiz Et</button>
               </form>
               <div class="broker-output" id="portIntelProResult"></div>
+            </article>
+
+            <article class="wide-card turkiye-desk-card">
+              <div class="mini-heading"><span>Turkiye Port Intelligence Pro</span><strong>Evrak, acente, draft, operasyon</strong></div>
+              <form class="broker-form" id="turkiyePortIntelForm">
+                <label><span>Turkish port</span><select name="turkiyePortId"><option value="mersin">Mersin</option><option value="ambarli">Ambarli / Kumport</option><option value="izmir">Izmir / Alsancak</option><option value="aliaga">Aliaga / Nemrut</option><option value="gemlik">Gemlik</option><option value="izmit">Kocaeli / Izmit</option><option value="tekirdag">Tekirdag</option><option value="iskenderun">Iskenderun</option><option value="samsun">Samsun</option><option value="istanbul">Istanbul</option></select></label>
+                <label><span>Cargo</span><select name="cargoType" data-cargo-select><option value="coal">Coal</option><option value="grain">Grain</option><option value="container">Container</option><option value="ironOre">Iron Ore</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option><option value="chemicals">Chemicals</option><option value="projectCargo">Project Cargo</option></select></label>
+                <label><span>Draft (m)</span><input name="draft" type="number" value="12.8" min="0" step="0.1" /></label>
+                <label><span>Waiting days</span><input name="waitingDays" type="number" value="1.5" min="0" step="0.1" /></label>
+                <label><span>Daily hire</span><input name="dailyHire" type="number" value="14500" min="0" step="100" /></label>
+                <label><span>Agency note</span><input name="agencyNote" value="Check customs cut-off, terminal nomination and rain evidence before NOR." /></label>
+                <button type="submit">Turkiye Liman Analizi</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-terminal="turkiye-port-pdf">Port PDF</button>
+                <button type="button" class="ghost-button small" data-download-terminal="turkiye-port-json">Port JSON</button>
+              </div>
+              <div class="broker-output" id="turkiyePortIntelResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>SOF / NOR Turkiye Templates</span><strong>Claim evrak paketi</strong></div>
+              <form class="broker-form" id="turkiyeSofNorForm">
+                <label><span>Port</span><select name="turkiyePortId"><option value="mersin">Mersin</option><option value="ambarli">Ambarli / Kumport</option><option value="izmir">Izmir / Alsancak</option><option value="aliaga">Aliaga / Nemrut</option><option value="gemlik">Gemlik</option><option value="izmit">Kocaeli / Izmit</option><option value="tekirdag">Tekirdag</option><option value="iskenderun">Iskenderun</option><option value="samsun">Samsun</option></select></label>
+                <label><span>Operation</span><select name="operation"><option>Loading</option><option>Discharging</option><option>Shifting + Loading</option><option>Waiting berth</option></select></label>
+                <label><span>Allowed laytime (h)</span><input name="allowedHours" type="number" value="72" min="1" step="1" /></label>
+                <label><span>Demurrage $/day</span><input name="demurrageRate" type="number" value="18000" min="0" step="100" /></label>
+                <label><span>Time bar days</span><input name="timeBarDays" type="number" value="90" min="1" step="1" /></label>
+                <label><span>Weather clause</span><select name="weatherClause"><option>Weather excepted</option><option>Weather counts if used</option><option>SHINC</option><option>SHEX unless used</option></select></label>
+                <button type="submit">Sablon Uret</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-terminal="turkiye-sof-pdf">Template PDF</button>
+                <button type="button" class="ghost-button small" data-download-terminal="turkiye-sof-txt">TXT</button>
+              </div>
+              <div class="broker-output" id="turkiyeSofNorResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Port Cost Estimator Turkiye</span><strong>Pilotage / tug / agency</strong></div>
+              <form class="broker-form" id="turkiyeCostForm">
+                <label><span>Port</span><select name="turkiyePortId"><option value="mersin">Mersin</option><option value="ambarli">Ambarli / Kumport</option><option value="izmir">Izmir / Alsancak</option><option value="aliaga">Aliaga / Nemrut</option><option value="gemlik">Gemlik</option><option value="izmit">Kocaeli / Izmit</option><option value="tekirdag">Tekirdag</option><option value="iskenderun">Iskenderun</option><option value="samsun">Samsun</option></select></label>
+                <label><span>Vessel type</span><select name="vesselType"><option value="handymax">Handymax</option><option value="panamax">Panamax</option><option value="cape">Capesize</option><option value="container">Container</option><option value="tanker">Tanker</option><option value="lng">LNG</option></select></label>
+                <label><span>Cargo</span><select name="cargoType" data-cargo-select><option value="coal">Coal</option><option value="grain">Grain</option><option value="container">Container</option><option value="ironOre">Iron Ore</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option><option value="chemicals">Chemicals</option><option value="projectCargo">Project Cargo</option></select></label>
+                <label><span>Port stay days</span><input name="portStayDays" type="number" value="3" min="0" step="0.1" /></label>
+                <label><span>Tugs</span><input name="tugCount" type="number" value="2" min="0" step="1" /></label>
+                <label><span>Agency fee</span><input name="agencyFee" type="number" value="4500" min="0" step="100" /></label>
+                <button type="submit">Masraf Hesapla</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-terminal="turkiye-cost-csv">Cost CSV</button>
+                <button type="button" class="ghost-button small" data-download-terminal="turkiye-cost-pdf">Cost PDF</button>
+              </div>
+              <div class="broker-output" id="turkiyeCostResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Cabotage & Coastal Trade</span><strong>Turkiye ic hat rota</strong></div>
+              <form class="broker-form" id="cabotageForm">
+                <label><span>Load port</span><select name="loadPortId"><option value="ambarli">Ambarli / Kumport</option><option value="tekirdag">Tekirdag</option><option value="izmit">Kocaeli / Izmit</option><option value="gemlik">Gemlik</option><option value="izmir">Izmir / Alsancak</option><option value="aliaga">Aliaga / Nemrut</option><option value="mersin">Mersin</option><option value="iskenderun">Iskenderun</option><option value="samsun">Samsun</option></select></label>
+                <label><span>Discharge port</span><select name="dischargePortId"><option value="mersin">Mersin</option><option value="iskenderun">Iskenderun</option><option value="samsun">Samsun</option><option value="izmir">Izmir / Alsancak</option><option value="aliaga">Aliaga / Nemrut</option><option value="gemlik">Gemlik</option><option value="izmit">Kocaeli / Izmit</option><option value="tekirdag">Tekirdag</option><option value="ambarli">Ambarli / Kumport</option></select></label>
+                <label><span>Cargo</span><select name="cargoType" data-cargo-select><option value="container">Container</option><option value="coal">Coal</option><option value="grain">Grain</option><option value="ironOre">Iron Ore</option><option value="chemicals">Chemicals</option><option value="projectCargo">Project Cargo</option></select></label>
+                <label><span>Quantity</span><input name="quantity" type="number" value="12000" min="0" step="100" /></label>
+                <label><span>Speed kn</span><input name="speed" type="number" value="12" min="1" step="0.1" /></label>
+                <label><span>Bunker $/t</span><input name="bunkerPrice" type="number" value="686.5" min="0" step="0.1" /></label>
+                <button type="submit">Ic Hat Hesapla</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-terminal="cabotage-pdf">Cabotage PDF</button>
+                <button type="button" class="ghost-button small" data-download-terminal="cabotage-json">JSON</button>
+              </div>
+              <div class="broker-output" id="cabotageResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Official Data Import Pro</span><strong>UN/LOCODE / WPI uyumlu</strong></div>
+              <form class="broker-form single-column" id="officialImportProForm">
+                <label><span>CSV text</span><textarea name="officialCsv">UNLOCODE,Name,Country,Region,Type,Depth
+TRMER,Mersin International Port,Turkiye,Turkiye,Container / Bulk / Ro-Ro,15.5
+TRIZM,Izmir Alsancak,Turkiye,Turkiye,Container / General cargo,11
+TRALI,Aliaga Nemrut Bay,Turkiye,Turkiye,Tanker / Bulk / Container,20</textarea></label>
+                <label><span>Source label</span><select name="sourceLabel"><option>UN/LOCODE official CSV</option><option>World Port Index CSV</option><option>User agency CSV</option></select></label>
+                <button type="submit">Validate + Atlas'a Aktar</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-terminal="official-import-json">Import JSON</button>
+              </div>
+              <div class="broker-output" id="officialImportProResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Cargo + Port Suitability</span><strong>Uygun / conditional / no-go</strong></div>
+              <form class="broker-form" id="cargoPortSuitabilityForm">
+                <label><span>Port</span><select name="turkiyePortId"><option value="mersin">Mersin</option><option value="ambarli">Ambarli / Kumport</option><option value="izmir">Izmir / Alsancak</option><option value="aliaga">Aliaga / Nemrut</option><option value="gemlik">Gemlik</option><option value="izmit">Kocaeli / Izmit</option><option value="tekirdag">Tekirdag</option><option value="iskenderun">Iskenderun</option><option value="samsun">Samsun</option></select></label>
+                <label><span>Cargo</span><select name="cargoType" data-cargo-select><option value="coal">Coal</option><option value="grain">Grain</option><option value="container">Container</option><option value="ironOre">Iron Ore</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option><option value="chemicals">Chemicals</option><option value="projectCargo">Project Cargo</option></select></label>
+                <label><span>Draft (m)</span><input name="draft" type="number" value="12.4" min="0" step="0.1" /></label>
+                <label><span>LOA (m)</span><input name="loa" type="number" value="190" min="0" step="1" /></label>
+                <label><span>IMDG / DG</span><select name="imdg"><option value="no">No</option><option value="yes">Yes</option></select></label>
+                <label><span>Hold / tank condition</span><select name="cleanliness"><option value="clean">Clean / approved</option><option value="minor">Minor remarks</option><option value="dirty">Not ready</option></select></label>
+                <button type="submit">Uygunluk Kontrolu</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-terminal="suitability-pdf">Suitability PDF</button>
+              </div>
+              <div class="broker-output" id="cargoPortSuitabilityResult"></div>
             </article>
 
             <article>
@@ -2722,6 +2827,6 @@
       </main>
     </div>
 
-    <script src="script.js?v=baltic-security-1"></script>
+    <script src="script.js?v=turkiye-desk-1"></script>
   </body>
 </html>

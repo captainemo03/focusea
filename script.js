@@ -2070,6 +2070,18 @@ const claimBuilderForm = document.querySelector("#claimBuilderForm");
 const claimBuilderResult = document.querySelector("#claimBuilderResult");
 const portIntelProForm = document.querySelector("#portIntelProForm");
 const portIntelProResult = document.querySelector("#portIntelProResult");
+const turkiyePortIntelForm = document.querySelector("#turkiyePortIntelForm");
+const turkiyePortIntelResult = document.querySelector("#turkiyePortIntelResult");
+const turkiyeSofNorForm = document.querySelector("#turkiyeSofNorForm");
+const turkiyeSofNorResult = document.querySelector("#turkiyeSofNorResult");
+const turkiyeCostForm = document.querySelector("#turkiyeCostForm");
+const turkiyeCostResult = document.querySelector("#turkiyeCostResult");
+const cabotageForm = document.querySelector("#cabotageForm");
+const cabotageResult = document.querySelector("#cabotageResult");
+const officialImportProForm = document.querySelector("#officialImportProForm");
+const officialImportProResult = document.querySelector("#officialImportProResult");
+const cargoPortSuitabilityForm = document.querySelector("#cargoPortSuitabilityForm");
+const cargoPortSuitabilityResult = document.querySelector("#cargoPortSuitabilityResult");
 const cargoPlaybookForm = document.querySelector("#cargoPlaybookForm");
 const cargoPlaybookResult = document.querySelector("#cargoPlaybookResult");
 const tceOptimizer2Form = document.querySelector("#tceOptimizer2Form");
@@ -2250,6 +2262,12 @@ let lastImportReport = null;
 let lastRecapCheck = null;
 let lastClaimBuilder = null;
 let lastTceOptimizer2 = null;
+let lastTurkiyePortIntel = null;
+let lastTurkiyeSofNor = null;
+let lastTurkiyeCost = null;
+let lastCabotage = null;
+let lastOfficialImportPro = null;
+let lastCargoPortSuitability = null;
 let lastBackendWorkspace = null;
 let lastAdminPro = null;
 let lastFixtureImportPro = null;
@@ -5650,6 +5668,598 @@ function renderPortIntelPro() {
   `;
 }
 
+const turkiyePortIds = ["istanbul", "ambarli", "mersin", "izmir", "aliaga", "gemlik", "izmit", "tekirdag", "iskenderun", "samsun"];
+
+const turkiyePortOpsData = {
+  istanbul: {
+    zone: "Marmara / Bosphorus",
+    maxLoa: 260,
+    waitingBase: 44,
+    customs: "Transit, Bosphorus traffic and terminal slot must be aligned before NOR.",
+    agency: "Pre-arrival agency appointment, customs broker and traffic clearance should be closed early.",
+    localDocs: ["Pre-arrival notice", "Crew list", "Cargo manifest", "Port clearance", "Customs declaration", "ISPS"],
+    opsNotes: ["Check Bosphorus traffic window", "Protect anchorage waiting evidence", "Keep pilot / VTS updates in SOF"],
+    costFactor: 1.06
+  },
+  ambarli: {
+    zone: "Marmara container gateway",
+    maxLoa: 370,
+    waitingBase: 56,
+    customs: "Container gate cut-off, customs filing and terminal nomination drive the schedule.",
+    agency: "Confirm terminal appointment, truck gate status, reefer/DG list and berth window.",
+    localDocs: ["Manifest", "Customs declaration", "ISPS", "DG list if any", "Reefer list", "Terminal nomination"],
+    opsNotes: ["Track gate congestion", "Confirm terminal cut-off", "Price waiting if berth window is tight"],
+    costFactor: 1.14
+  },
+  mersin: {
+    zone: "Eastern Mediterranean",
+    maxLoa: 366,
+    waitingBase: 48,
+    customs: "Customs cut-off, rail/truck program and terminal stack planning should be checked.",
+    agency: "Agency should confirm container/bulk terminal, berth productivity and customs document deadline.",
+    localDocs: ["Cargo manifest", "Customs declaration", "Crew list", "ISPS", "Port clearance", "Terminal nomination"],
+    opsNotes: ["Check heat and gate productivity", "Watch export/import customs deadline", "Add berth waiting buffer"],
+    costFactor: 1.1
+  },
+  izmir: {
+    zone: "Aegean urban port",
+    maxLoa: 240,
+    waitingBase: 38,
+    customs: "Draft, urban port traffic and berth window should be checked before fixing.",
+    agency: "Agency should confirm exact berth, draft allowance, customs schedule and pilot booking.",
+    localDocs: ["Cargo manifest", "Customs declaration", "Crew list", "Port clearance", "ISPS"],
+    opsNotes: ["Verify draft margin", "Protect rain/wind stoppage evidence", "Check cruise/passenger conflict if relevant"],
+    costFactor: 0.98
+  },
+  aliaga: {
+    zone: "Aegean industrial terminals",
+    maxLoa: 340,
+    waitingBase: 46,
+    customs: "Terminal-specific safety rules, DG controls and cargo compatibility are central.",
+    agency: "Pre-clear terminal acceptance, safety checklist, vetting if tanker and cargo documents.",
+    localDocs: ["Terminal safety checklist", "Cargo manifest", "DG declaration", "Crew list", "Port clearance", "Customs declaration"],
+    opsNotes: ["Confirm terminal acceptance", "Screen DG / tanker compatibility", "Price wind delay into laytime"],
+    costFactor: 1.18
+  },
+  gemlik: {
+    zone: "Marmara automotive / Ro-Ro",
+    maxLoa: 300,
+    waitingBase: 42,
+    customs: "Ro-Ro schedule, automotive program and gate flow affect berth availability.",
+    agency: "Confirm terminal sequence, customs cut-off, cargo unit list and truck gate status.",
+    localDocs: ["Cargo manifest", "Unit list", "Customs declaration", "Crew list", "ISPS", "Port clearance"],
+    opsNotes: ["Watch automotive peak periods", "Protect Ro-Ro ramp window", "Check fog delays"],
+    costFactor: 1.04
+  },
+  izmit: {
+    zone: "Marmara industrial gulf",
+    maxLoa: 380,
+    waitingBase: 52,
+    customs: "Exact terminal, cargo class and berth compatibility change the whole port call.",
+    agency: "Agency must confirm terminal allocation, safety checklist, DG permissions and survey plan.",
+    localDocs: ["Terminal safety checklist", "Customs declaration", "Cargo manifest", "DG declaration", "Crew list", "Port clearance"],
+    opsNotes: ["Confirm terminal allocation", "Screen liquid/DG cargo", "Keep survey and sampling events in SOF"],
+    costFactor: 1.2
+  },
+  tekirdag: {
+    zone: "Marmara / Thrace",
+    maxLoa: 250,
+    waitingBase: 34,
+    customs: "Road/gate pressure and wind window can affect bulk/Ro-Ro operations.",
+    agency: "Confirm berth, customs cut-off, truck gate plan and pilot booking.",
+    localDocs: ["Cargo manifest", "Customs declaration", "Crew list", "Port clearance", "ISPS"],
+    opsNotes: ["Watch northerly wind", "Check road/gate queue", "Keep stoppage reason in SOF"],
+    costFactor: 0.94
+  },
+  iskenderun: {
+    zone: "Eastern Mediterranean steel / bulk",
+    maxLoa: 300,
+    waitingBase: 45,
+    customs: "Terminal status, steel/bulk survey and heat operations need early confirmation.",
+    agency: "Confirm terminal acceptance, surveyor attendance, cargo damage protocol and customs timing.",
+    localDocs: ["Cargo manifest", "Customs declaration", "Crew list", "Survey appointment", "ISPS", "Port clearance"],
+    opsNotes: ["Check terminal status", "Keep damage survey records", "Add heat/weather buffer"],
+    costFactor: 1.08
+  },
+  samsun: {
+    zone: "Black Sea gateway",
+    maxLoa: 220,
+    waitingBase: 36,
+    customs: "Black Sea swell, winter weather and draft limits are the main operational checks.",
+    agency: "Confirm pilot window, berth depth, cargo docs and weather exposure.",
+    localDocs: ["Cargo manifest", "Customs declaration", "Crew list", "Port clearance", "ISPS"],
+    opsNotes: ["Watch Black Sea swell", "Check draft limit", "Add weather buffer for winter calls"],
+    costFactor: 0.9
+  }
+};
+
+const turkiyeCoastalZones = {
+  istanbul: "marmara",
+  ambarli: "marmara",
+  tekirdag: "marmara",
+  izmit: "marmara",
+  gemlik: "marmara",
+  izmir: "aegean",
+  aliaga: "aegean",
+  mersin: "eastmed",
+  iskenderun: "eastmed",
+  samsun: "blacksea"
+};
+
+const turkiyeCoastalDistances = {
+  "ambarli-mersin": 920,
+  "ambarli-iskenderun": 980,
+  "ambarli-samsun": 520,
+  "ambarli-izmir": 330,
+  "ambarli-aliaga": 300,
+  "ambarli-izmit": 75,
+  "ambarli-gemlik": 85,
+  "ambarli-tekirdag": 70,
+  "izmit-mersin": 900,
+  "izmit-iskenderun": 960,
+  "izmit-samsun": 500,
+  "gemlik-mersin": 850,
+  "tekirdag-mersin": 950,
+  "izmir-mersin": 560,
+  "izmir-iskenderun": 640,
+  "aliaga-mersin": 590,
+  "aliaga-iskenderun": 670,
+  "mersin-iskenderun": 95,
+  "mersin-samsun": 1010,
+  "iskenderun-samsun": 1080,
+  "izmir-samsun": 780,
+  "aliaga-samsun": 800
+};
+
+function turkiyePortOptionLabel(id) {
+  return ports[id]?.name || id;
+}
+
+function turkiyePortProfile(id = "mersin") {
+  const safeId = turkiyePortIds.includes(String(id)) ? String(id) : "mersin";
+  return {
+    id: safeId,
+    port: ports[safeId] || ports.mersin,
+    ops: turkiyePortOpsData[safeId] || turkiyePortOpsData.mersin
+  };
+}
+
+function portCostBase(port) {
+  return Object.values(port?.costs || {}).reduce((sum, value) => sum + Number(value || 0), 0);
+}
+
+function reportLines(title, lines = []) {
+  return [
+    title,
+    `Generated: ${new Date().toLocaleString()}`,
+    "",
+    ...lines
+  ].join("\n");
+}
+
+function turkiyeDraftMargin(port, draft) {
+  return portDepthMeters(port) - (Number(draft) || 0);
+}
+
+function turkiyeWaitingRisk(portId, waitingDays = 0, cargoRisk = 0) {
+  const ops = turkiyePortOpsData[portId] || turkiyePortOpsData.mersin;
+  return clamp(Math.round(ops.waitingBase + Number(waitingDays || 0) * 8 + cargoRisk * 0.18 + liveFeedState.congestion * 0.18), 0, 100);
+}
+
+function turkiyeStatusFromScore(score) {
+  if (score >= 78) return "NO-GO / fix only with protection";
+  if (score >= 58) return "CONDITIONAL / protect subjects";
+  return "SUITABLE / workable";
+}
+
+function renderTurkiyePortIntel() {
+  if (!turkiyePortIntelForm || !turkiyePortIntelResult) return;
+  const values = collectFormValues(turkiyePortIntelForm);
+  const { id, port, ops } = turkiyePortProfile(values.turkiyePortId);
+  const cargo = getCargoProfile(values.cargoType);
+  const margin = turkiyeDraftMargin(port, values.draft);
+  const baseCost = portCostBase(port) * ops.costFactor * cargo.portCostMultiplier;
+  const waitingCost = (Number(values.waitingDays) || 0) * (Number(values.dailyHire) || 0);
+  const total = baseCost + waitingCost;
+  const risk = clamp(turkiyeWaitingRisk(id, values.waitingDays, cargo.risk) + (margin < 0 ? 30 : margin < 1 ? 14 : 0), 0, 100);
+  const decision = turkiyeStatusFromScore(risk);
+  const action = margin < 0
+    ? "Draft exceeds model depth. Ask agency for berth-specific max draft before fixing."
+    : risk >= 58
+      ? "Keep subject to terminal confirmation, agency proforma and clean SOF/NOR evidence."
+      : "Workable call; still confirm terminal nomination and local document cut-off.";
+  lastTurkiyePortIntel = {
+    values,
+    portId: id,
+    port: port.name,
+    cargo: cargo.label,
+    margin,
+    risk,
+    decision,
+    total,
+    reportText: reportLines("FOCUSEA TURKIYE PORT INTELLIGENCE PRO", [
+      `Port: ${port.name} / ${ops.zone}`,
+      `Cargo: ${cargo.label}`,
+      `Draft margin: ${margin.toFixed(1)} m`,
+      `Estimated port + waiting cost: ${money(total)}`,
+      `Risk: ${risk}/100 - ${decision}`,
+      "",
+      "Local documents:",
+      ...ops.localDocs.map((item) => `- ${item}`),
+      "",
+      "Agency / operations:",
+      `- ${ops.agency}`,
+      `- ${ops.customs}`,
+      ...ops.opsNotes.map((item) => `- ${item}`),
+      "",
+      `User agency note: ${values.agencyNote || "-"}`
+    ])
+  };
+  turkiyePortIntelResult.innerHTML = `
+    ${metricCards([
+      { label: "Port", value: escapeHtml(port.name) },
+      { label: "Zone", value: escapeHtml(ops.zone) },
+      { label: "Draft margin", value: `${margin.toFixed(1)} m` },
+      { label: "Cost estimate", value: money(total) },
+      { label: "Risk", value: `${risk}/100` },
+      { label: "Decision", value: escapeHtml(decision) }
+    ])}
+    <div class="port-intel-grid turkiye-flow">
+      <div><strong>Agency note</strong><span>${escapeHtml(ops.agency)}</span></div>
+      <div><strong>Customs / cut-off</strong><span>${escapeHtml(ops.customs)}</span></div>
+      <div><strong>Local model</strong><span><em class="source-badge simulated">estimated</em> Costs are planning estimates, not tariff advice.</span></div>
+      <div><strong>Next action</strong><span>${escapeHtml(action)}</span></div>
+    </div>
+    <ul class="compact-list">
+      <li><strong>Documents:</strong> ${ops.localDocs.map(escapeHtml).join(", ")}</li>
+      <li><strong>Port services:</strong> ${port.services.map(escapeHtml).join(", ")}</li>
+      <li><strong>Operational risks:</strong> ${port.risks.map(escapeHtml).join(", ")}</li>
+      <li><strong>User note:</strong> ${escapeHtml(values.agencyNote || "-")}</li>
+    </ul>
+  `;
+}
+
+function renderTurkiyeSofNor() {
+  if (!turkiyeSofNorForm || !turkiyeSofNorResult) return;
+  const values = collectFormValues(turkiyeSofNorForm);
+  const { port, ops } = turkiyePortProfile(values.turkiyePortId);
+  const allowedHours = Number(values.allowedHours) || 72;
+  const demurrageRate = Number(values.demurrageRate) || 0;
+  const timeBarDays = Number(values.timeBarDays) || 90;
+  const timeBarDate = new Date(Date.now() + timeBarDays * 86400000);
+  const exposurePerHour = demurrageRate / 24;
+  const norTemplate = [
+    `NOTICE OF READINESS - ${port.name}`,
+    "To: Charterers / Receivers / Agents",
+    `Vessel hereby tenders NOR for ${values.operation} at ${port.name}, subject to charter party terms.`,
+    "Vessel is in all respects ready, with cargo spaces / tanks prepared as applicable.",
+    `Weather clause to check: ${values.weatherClause}.`,
+    "Please acknowledge receipt with date, time and signatory."
+  ].join("\n");
+  const sofTemplate = [
+    `STATEMENT OF FACTS - ${port.name}`,
+    "Arrived / NOR tendered / NOR accepted / Free pratique / Pilot on board / All fast / Operation started / Stoppages / Completed / Documents on board / Sailed.",
+    "Every stoppage should state start time, finish time, reason, responsible party and supporting evidence.",
+    `Allowed laytime model: ${allowedHours}h. Demurrage: ${money(demurrageRate)}/day (${money(exposurePerHour, 2)}/h).`
+  ].join("\n");
+  const evidence = ["Signed NOR", "Signed SOF", "Terminal log", "Rain/wind stoppage record", "Cargo operation log", "Photos if cargo damage", "Agency statement", "Invoice support"];
+  lastTurkiyeSofNor = {
+    values,
+    port: port.name,
+    reportText: reportLines("FOCUSEA TURKIYE SOF / NOR TEMPLATE PACK", [
+      `Port: ${port.name}`,
+      `Operation: ${values.operation}`,
+      `Allowed laytime: ${allowedHours}h`,
+      `Demurrage: ${money(demurrageRate)}/day`,
+      `Claim time bar watch date: ${timeBarDate.toLocaleDateString()}`,
+      "",
+      norTemplate,
+      "",
+      sofTemplate,
+      "",
+      "Evidence checklist:",
+      ...evidence.map((item) => `- ${item}`),
+      "",
+      `Local agency note: ${ops.agency}`
+    ])
+  };
+  turkiyeSofNorResult.innerHTML = `
+    ${metricCards([
+      { label: "Port", value: escapeHtml(port.name) },
+      { label: "Operation", value: escapeHtml(values.operation) },
+      { label: "Allowed", value: `${allowedHours}h` },
+      { label: "Demurrage", value: `${money(demurrageRate)}/day` },
+      { label: "Exposure", value: `${money(exposurePerHour, 2)}/h` },
+      { label: "Time bar watch", value: timeBarDate.toLocaleDateString() }
+    ])}
+    <div class="template-grid">
+      <pre>${escapeHtml(norTemplate)}</pre>
+      <pre>${escapeHtml(sofTemplate)}</pre>
+    </div>
+    <ul class="compact-list">${evidence.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+  `;
+}
+
+function turkiyeCostEstimate(values) {
+  const { id, port, ops } = turkiyePortProfile(values.turkiyePortId);
+  const cargo = getCargoProfile(values.cargoType);
+  const vesselMultipliers = { handymax: 0.86, panamax: 1, cape: 1.36, container: 1.22, tanker: 1.28, lng: 1.48 };
+  const vesselMultiplier = vesselMultipliers[values.vesselType] || 1;
+  const portStayDays = Number(values.portStayDays) || 0;
+  const tugCount = Number(values.tugCount) || 0;
+  const lines = [
+    { item: "Pilotage", amount: port.costs.pilotage * vesselMultiplier * ops.costFactor },
+    { item: "Towage", amount: port.costs.tug * Math.max(tugCount, 1) / 2 * vesselMultiplier * ops.costFactor },
+    { item: "Berth / quay", amount: port.costs.berth * Math.max(portStayDays, 0.5) / 3 * cargo.portCostMultiplier * ops.costFactor },
+    { item: "Port dues", amount: port.costs.portDues * vesselMultiplier * cargo.portCostMultiplier },
+    { item: "Agency fee", amount: Number(values.agencyFee) || 0 },
+    { item: "Docs / customs buffer", amount: 1800 * cargo.portCostMultiplier },
+    { item: "Operational contingency", amount: portCostBase(port) * 0.08 * ops.costFactor }
+  ].map((line) => ({ ...line, amount: Math.round(line.amount) }));
+  const total = lines.reduce((sum, line) => sum + line.amount, 0);
+  const confidence = Math.round(clamp(76 - cargo.risk * 0.12 + (turkiyePortIds.includes(id) ? 8 : 0), 50, 92));
+  return { id, port, ops, cargo, vesselMultiplier, lines, total, confidence };
+}
+
+function renderTurkiyeCost() {
+  if (!turkiyeCostForm || !turkiyeCostResult) return;
+  const values = collectFormValues(turkiyeCostForm);
+  const estimate = turkiyeCostEstimate(values);
+  lastTurkiyeCost = {
+    values,
+    ...estimate,
+    reportText: reportLines("FOCUSEA PORT COST ESTIMATOR TURKIYE", [
+      `Port: ${estimate.port.name}`,
+      `Vessel type: ${values.vesselType}`,
+      `Cargo: ${estimate.cargo.label}`,
+      `Estimated total: ${money(estimate.total)}`,
+      `Confidence: ${estimate.confidence}%`,
+      "",
+      "Line items:",
+      ...estimate.lines.map((line) => `- ${line.item}: ${money(line.amount)}`),
+      "",
+      "Note: Planning estimate. Replace with official proforma/tariff before commercial submission."
+    ])
+  };
+  turkiyeCostResult.innerHTML = `
+    ${metricCards([
+      { label: "Port", value: escapeHtml(estimate.port.name) },
+      { label: "Cargo", value: escapeHtml(estimate.cargo.label) },
+      { label: "Total", value: money(estimate.total) },
+      { label: "Confidence", value: `${estimate.confidence}%` }
+    ])}
+    <table class="mini-table">
+      <thead><tr><th>Item</th><th>Estimate</th></tr></thead>
+      <tbody>${estimate.lines.map((line) => `<tr><td>${escapeHtml(line.item)}</td><td>${money(line.amount)}</td></tr>`).join("")}</tbody>
+    </table>
+    <small><em class="source-badge simulated">estimated</em> Use this for broker screening; final port disbursement needs agency proforma.</small>
+  `;
+}
+
+function turkiyeCostCsvRows() {
+  if (!lastTurkiyeCost) renderTurkiyeCost();
+  return [
+    ["item", "amount_usd"],
+    ...(lastTurkiyeCost?.lines || []).map((line) => [line.item, line.amount]),
+    ["total", lastTurkiyeCost?.total || 0]
+  ];
+}
+
+function coastalDistance(loadPortId, dischargePortId) {
+  if (loadPortId === dischargePortId) return 0;
+  const key = `${loadPortId}-${dischargePortId}`;
+  const reverse = `${dischargePortId}-${loadPortId}`;
+  if (turkiyeCoastalDistances[key]) return turkiyeCoastalDistances[key];
+  if (turkiyeCoastalDistances[reverse]) return turkiyeCoastalDistances[reverse];
+  const zoneA = turkiyeCoastalZones[loadPortId] || "marmara";
+  const zoneB = turkiyeCoastalZones[dischargePortId] || "marmara";
+  if (zoneA === zoneB) return 120;
+  const fallback = {
+    "marmara-aegean": 340,
+    "marmara-eastmed": 920,
+    "marmara-blacksea": 520,
+    "aegean-eastmed": 610,
+    "aegean-blacksea": 790,
+    "eastmed-blacksea": 1040
+  };
+  return fallback[`${zoneA}-${zoneB}`] || fallback[`${zoneB}-${zoneA}`] || 650;
+}
+
+function renderCabotage() {
+  if (!cabotageForm || !cabotageResult) return;
+  const values = collectFormValues(cabotageForm);
+  const load = turkiyePortProfile(values.loadPortId);
+  const discharge = turkiyePortProfile(values.dischargePortId);
+  const cargo = getCargoProfile(values.cargoType);
+  const distance = coastalDistance(load.id, discharge.id);
+  const speed = Number(values.speed) || 1;
+  const seaDays = distance / speed / 24;
+  const portDays = 2.2 + (load.ops.waitingBase + discharge.ops.waitingBase) / 120;
+  const consumption = cargo.unit === "TEU" ? 34 : cargo.label.includes("Chemicals") ? 24 : cargo.label.includes("Project") ? 20 : 18;
+  const portCons = cargo.unit === "TEU" ? 6 : 3.2;
+  const bunkerTons = (seaDays * consumption + portDays * portCons) * cargo.bunkerMultiplier;
+  const bunkerCost = bunkerTons * (Number(values.bunkerPrice) || liveFeedState.bunker);
+  const loadCost = portCostBase(load.port) * load.ops.costFactor * cargo.portCostMultiplier * 0.72;
+  const dischargeCost = portCostBase(discharge.port) * discharge.ops.costFactor * cargo.portCostMultiplier * 0.72;
+  const coastalRate = cargo.unit === "TEU"
+    ? 185 * cargo.freightMultiplier
+    : cargo.unit === "lot"
+      ? cargo.baseFreight * 0.34
+      : cargo.baseFreight * cargo.freightMultiplier * 0.48;
+  const revenue = (Number(values.quantity) || 0) * coastalRate;
+  const totalCost = bunkerCost + loadCost + dischargeCost;
+  const margin = revenue - totalCost;
+  const risk = clamp(Math.round((load.ops.waitingBase + discharge.ops.waitingBase) / 2 + cargo.risk * 0.22 + (distance > 900 ? 8 : 0)), 0, 100);
+  lastCabotage = {
+    values,
+    load: load.port.name,
+    discharge: discharge.port.name,
+    cargo: cargo.label,
+    distance,
+    seaDays,
+    portDays,
+    bunkerTons,
+    bunkerCost,
+    revenue,
+    totalCost,
+    margin,
+    risk,
+    reportText: reportLines("FOCUSEA CABOTAGE & COASTAL TRADE TURKIYE", [
+      `Route: ${load.port.name} -> ${discharge.port.name}`,
+      `Distance: ${distance} nm`,
+      `Cargo: ${cargo.label}`,
+      `Sea / port days: ${seaDays.toFixed(1)} / ${portDays.toFixed(1)}`,
+      `Bunker: ${bunkerTons.toFixed(1)} t / ${money(bunkerCost)}`,
+      `Revenue model: ${money(revenue)}`,
+      `Cost model: ${money(totalCost)}`,
+      `Estimated margin: ${money(margin)}`,
+      `Risk: ${risk}/100`,
+      "",
+      "Cabotage checklist:",
+      "- Confirm flag / cabotage eligibility with legal/agency advice.",
+      "- Confirm local cargo docs, customs status and port proforma.",
+      "- Track weather window and pilot/tug availability at both ports."
+    ])
+  };
+  cabotageResult.innerHTML = `
+    ${metricCards([
+      { label: "Route", value: `${escapeHtml(load.port.name)} -> ${escapeHtml(discharge.port.name)}` },
+      { label: "Distance", value: `${distance} nm` },
+      { label: "Voyage days", value: `${(seaDays + portDays).toFixed(1)}d` },
+      { label: "Bunker", value: `${bunkerTons.toFixed(1)} t` },
+      { label: "Margin", value: `<em class="${margin >= 0 ? "positive" : "negative"}">${money(margin)}</em>` },
+      { label: "Risk", value: `${risk}/100` }
+    ])}
+    <ul class="compact-list">
+      <li><strong>Commercial:</strong> rate model ${money(coastalRate, cargo.unit === "TEU" ? 0 : 2)}/${cargo.unit}, revenue ${money(revenue)}, cost ${money(totalCost)}.</li>
+      <li><strong>Cabotage note:</strong> confirm flag, trade permission and local agency advice before fixing.</li>
+      <li><strong>Operational:</strong> ${escapeHtml(load.ops.opsNotes[0])}; ${escapeHtml(discharge.ops.opsNotes[0])}.</li>
+    </ul>
+  `;
+}
+
+function renderOfficialImportPro(commit = false) {
+  if (!officialImportProForm || !officialImportProResult) return;
+  const values = collectFormValues(officialImportProForm);
+  const records = parseGlobalPortCsv(values.officialCsv || "").map((record, index) => ({
+    ...record,
+    id: `official-${Date.now()}-${index}`,
+    source: values.sourceLabel || "Official/user CSV"
+  }));
+  const invalid = String(values.officialCsv || "").split(/\r?\n/).filter((line) => line.trim()).length - records.length - 1;
+  let saved = false;
+  if (commit && records.length) {
+    const existing = getImportedGlobalPorts();
+    const map = new Map();
+    [...existing, ...records].forEach((record) => {
+      const key = record.code || `${record.name}-${record.country}`;
+      map.set(key, record);
+    });
+    saved = setImportedGlobalPorts([...map.values()]);
+    renderGlobalPortAtlas(records[0]?.id);
+  }
+  lastOfficialImportPro = {
+    sourceLabel: values.sourceLabel,
+    records,
+    invalid: Math.max(0, invalid),
+    saved,
+    reportText: reportLines("FOCUSEA OFFICIAL DATA IMPORT PRO", [
+      `Source label: ${values.sourceLabel}`,
+      `Valid records: ${records.length}`,
+      `Invalid/ignored lines: ${Math.max(0, invalid)}`,
+      `Saved to atlas: ${saved ? "yes" : "preview only"}`,
+      "",
+      ...records.slice(0, 20).map((record) => `- ${record.code} | ${record.name} | ${record.country} | ${record.type} | ${record.depth}`)
+    ])
+  };
+  officialImportProResult.innerHTML = `
+    ${metricCards([
+      { label: "Valid records", value: records.length },
+      { label: "Ignored lines", value: Math.max(0, invalid) },
+      { label: "Source", value: escapeHtml(values.sourceLabel) },
+      { label: "Atlas write", value: commit ? (saved ? "Saved" : "Failed") : "Preview" }
+    ])}
+    <div class="ops-list">
+      ${records.slice(0, 8).map((record) => `<div><strong>${escapeHtml(record.code || "N/A")} - ${escapeHtml(record.name)}</strong><span>${escapeHtml(record.country)} / ${escapeHtml(record.region)} / ${escapeHtml(record.type)} / ${escapeHtml(record.depth)}</span></div>`).join("") || "<small>No valid records. Use UNLOCODE,Name,Country,Region,Type,Depth.</small>"}
+    </div>
+    <small><em class="source-badge ${commit && saved ? "verified" : "api-ready"}">${commit && saved ? "imported" : "preview"}</em> Data is stored locally in this browser and appears in Global Port Atlas after import.</small>
+  `;
+}
+
+function renderCargoPortSuitability() {
+  if (!cargoPortSuitabilityForm || !cargoPortSuitabilityResult) return;
+  const values = collectFormValues(cargoPortSuitabilityForm);
+  const { id, port, ops } = turkiyePortProfile(values.turkiyePortId);
+  const cargo = getCargoProfile(values.cargoType);
+  const typeText = `${port.type} ${port.services.join(" ")}`.toLowerCase();
+  const typeRules = {
+    coal: /bulk|coal|general/,
+    grain: /bulk|grain|general/,
+    container: /container/,
+    ironOre: /bulk|steel|ore|general/,
+    crudeOil: /tanker|liquid|petrochemical/,
+    lng: /lng|tanker|liquid/,
+    chemicals: /chemical|tanker|liquid|petrochemical/,
+    projectCargo: /project|general|ro-ro|bulk|heavy/
+  };
+  const typeMatch = (typeRules[values.cargoType] || /general/).test(typeText);
+  const margin = turkiyeDraftMargin(port, values.draft);
+  const loaRisk = (Number(values.loa) || 0) > ops.maxLoa ? 18 : 0;
+  const draftRisk = margin < 0 ? 35 : margin < 1 ? 16 : margin < 2 ? 7 : 0;
+  const cargoMismatchRisk = typeMatch ? 0 : 28;
+  const imdgRisk = values.imdg === "yes" && !/dangerous|dg|terminal safety|liquid|tanker|petrochemical/i.test(`${port.documents.join(" ")} ${port.type}`) ? 12 : values.imdg === "yes" ? 6 : 0;
+  const cleanlinessRisk = { clean: 0, minor: 10, dirty: 32 }[values.cleanliness] || 0;
+  const risk = clamp(Math.round(18 + cargo.risk * 0.24 + draftRisk + loaRisk + cargoMismatchRisk + imdgRisk + cleanlinessRisk), 0, 100);
+  const decision = risk >= 75 ? "NO-GO" : risk >= 50 ? "CONDITIONAL" : "SUITABLE";
+  const blockers = [
+    !typeMatch && "Cargo/terminal type mismatch",
+    draftRisk >= 16 && "Draft margin is tight or negative",
+    loaRisk && "LOA exceeds local model allowance",
+    imdgRisk >= 12 && "IMDG/DG needs terminal-specific approval",
+    cleanlinessRisk >= 32 && "Hold/tank is not ready"
+  ].filter(Boolean);
+  lastCargoPortSuitability = {
+    values,
+    port: port.name,
+    cargo: cargo.label,
+    risk,
+    decision,
+    blockers,
+    reportText: reportLines("FOCUSEA CARGO + PORT SUITABILITY", [
+      `Port: ${port.name}`,
+      `Cargo: ${cargo.label}`,
+      `Decision: ${decision}`,
+      `Risk: ${risk}/100`,
+      `Draft margin: ${margin.toFixed(1)} m`,
+      `LOA check: ${values.loa} m / local model ${ops.maxLoa} m`,
+      "",
+      "Blockers / watch items:",
+      ...(blockers.length ? blockers.map((item) => `- ${item}`) : ["- No hard blocker in the local model."]),
+      "",
+      "Cargo requirements:",
+      `- Best vessel: ${cargo.vessel}`,
+      `- Cargo note: ${cargo.note}`,
+      `- Local docs: ${ops.localDocs.join(", ")}`
+    ])
+  };
+  cargoPortSuitabilityResult.innerHTML = `
+    ${metricCards([
+      { label: "Port", value: escapeHtml(port.name) },
+      { label: "Cargo", value: escapeHtml(cargo.label) },
+      { label: "Decision", value: escapeHtml(decision) },
+      { label: "Risk", value: `${risk}/100` },
+      { label: "Draft margin", value: `${margin.toFixed(1)} m` },
+      { label: "Type match", value: typeMatch ? "yes" : "no" }
+    ])}
+    <div class="score-meter"><span style="width:${risk}%"></span></div>
+    <ul class="compact-list">
+      ${(blockers.length ? blockers : ["No hard blocker in the local model."]).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
+      <li><strong>Required:</strong> ${ops.localDocs.map(escapeHtml).join(", ")}</li>
+      <li><strong>Cargo note:</strong> ${escapeHtml(cargo.note)}</li>
+    </ul>
+  `;
+}
+
 const cargoPlaybookData = {
   coal: {
     docs: ["Cargo declaration", "Moisture certificate", "IMSBC declaration", "Terminal loading plan"],
@@ -5865,14 +6475,19 @@ function renderAdminPro() {
 }
 
 function setTerminalDownloadNotice(type, filename) {
-  const targets = {
-    deal: dealRoomResult,
-    import: importResult,
-    recap: recapCheckerResult,
-    claim: claimBuilderResult,
-    tce2: tceOptimizer2Result
-  };
-  const target = targets[type.split("-")[0]];
+  const target = type.startsWith("turkiye-port") ? turkiyePortIntelResult
+    : type.startsWith("turkiye-sof") ? turkiyeSofNorResult
+      : type.startsWith("turkiye-cost") ? turkiyeCostResult
+        : type.startsWith("cabotage") ? cabotageResult
+          : type.startsWith("official-import") ? officialImportProResult
+            : type.startsWith("suitability") ? cargoPortSuitabilityResult
+              : {
+                  deal: dealRoomResult,
+                  import: importResult,
+                  recap: recapCheckerResult,
+                  claim: claimBuilderResult,
+                  tce2: tceOptimizer2Result
+                }[type.split("-")[0]];
   if (!target) return;
   target.querySelector(".download-confirm")?.remove();
   target.insertAdjacentHTML("beforeend", `<small class="download-confirm">Downloaded: ${filename}</small>`);
@@ -5892,6 +6507,12 @@ function handleTerminalDownload(type) {
   if (type.startsWith("recap") && !lastRecapCheck) renderRecapChecker();
   if (type.startsWith("claim") && !lastClaimBuilder) renderClaimBuilder();
   if (type.startsWith("tce2") && !lastTceOptimizer2) renderTceOptimizer2();
+  if (type.startsWith("turkiye-port") && !lastTurkiyePortIntel) renderTurkiyePortIntel();
+  if (type.startsWith("turkiye-sof") && !lastTurkiyeSofNor) renderTurkiyeSofNor();
+  if (type.startsWith("turkiye-cost") && !lastTurkiyeCost) renderTurkiyeCost();
+  if (type.startsWith("cabotage") && !lastCabotage) renderCabotage();
+  if (type.startsWith("official-import") && !lastOfficialImportPro) renderOfficialImportPro(false);
+  if (type.startsWith("suitability") && !lastCargoPortSuitability) renderCargoPortSuitability();
   const actions = {
     "deal-pdf": () => downloadPdfFile("focusea-deal-room.pdf", "Focusea Deal Room", lastDealRoom?.reportText || "No deal room data."),
     "deal-json": () => downloadJsonFile("focusea-deal-room.json", lastDealRoom || {}),
@@ -5900,7 +6521,17 @@ function handleTerminalDownload(type) {
     "claim-pdf": () => downloadPdfFile("focusea-demurrage-claim.pdf", "Focusea Demurrage Claim", lastClaimBuilder?.reportText || "No claim data."),
     "claim-txt": () => downloadTextFile("focusea-demurrage-claim.txt", lastClaimBuilder?.reportText || "No claim data."),
     "tce2-csv": () => downloadCsvFile("focusea-tce-optimizer-2.csv", tceOptimizer2CsvRows()),
-    "tce2-pdf": () => downloadPdfFile("focusea-tce-optimizer-2.pdf", "Focusea TCE Optimizer 2.0", lastTceOptimizer2?.reportText || "No TCE data.")
+    "tce2-pdf": () => downloadPdfFile("focusea-tce-optimizer-2.pdf", "Focusea TCE Optimizer 2.0", lastTceOptimizer2?.reportText || "No TCE data."),
+    "turkiye-port-pdf": () => downloadPdfFile("focusea-turkiye-port-intelligence.pdf", "Focusea Turkiye Port Intelligence", lastTurkiyePortIntel?.reportText || "No Turkiye port data."),
+    "turkiye-port-json": () => downloadJsonFile("focusea-turkiye-port-intelligence.json", lastTurkiyePortIntel || {}),
+    "turkiye-sof-pdf": () => downloadPdfFile("focusea-turkiye-sof-nor-pack.pdf", "Focusea Turkiye SOF NOR Pack", lastTurkiyeSofNor?.reportText || "No SOF/NOR data."),
+    "turkiye-sof-txt": () => downloadTextFile("focusea-turkiye-sof-nor-pack.txt", lastTurkiyeSofNor?.reportText || "No SOF/NOR data."),
+    "turkiye-cost-csv": () => downloadCsvFile("focusea-turkiye-port-cost.csv", turkiyeCostCsvRows()),
+    "turkiye-cost-pdf": () => downloadPdfFile("focusea-turkiye-port-cost.pdf", "Focusea Turkiye Port Cost", lastTurkiyeCost?.reportText || "No cost data."),
+    "cabotage-pdf": () => downloadPdfFile("focusea-cabotage-turkiye.pdf", "Focusea Cabotage Turkiye", lastCabotage?.reportText || "No cabotage data."),
+    "cabotage-json": () => downloadJsonFile("focusea-cabotage-turkiye.json", lastCabotage || {}),
+    "official-import-json": () => downloadJsonFile("focusea-official-port-import.json", lastOfficialImportPro || {}),
+    "suitability-pdf": () => downloadPdfFile("focusea-cargo-port-suitability.pdf", "Focusea Cargo Port Suitability", lastCargoPortSuitability?.reportText || "No suitability data.")
   };
   actions[type]?.();
   if (window.focuseaLastDownload?.filename) {
@@ -5916,6 +6547,12 @@ function renderAllCommandTerminal() {
   renderClauseLibrary();
   renderClaimBuilder();
   renderPortIntelPro();
+  renderTurkiyePortIntel();
+  renderTurkiyeSofNor();
+  renderTurkiyeCost();
+  renderCabotage();
+  renderOfficialImportPro(false);
+  renderCargoPortSuitability();
   renderCargoPlaybook();
   renderTceOptimizer2();
   renderTerminalAlarms();
@@ -10800,6 +11437,11 @@ bindBrokerForm(recapCheckerForm, renderRecapChecker);
 bindBrokerForm(clauseLibraryForm, renderClauseLibrary);
 bindBrokerForm(claimBuilderForm, renderClaimBuilder);
 bindBrokerForm(portIntelProForm, renderPortIntelPro);
+bindBrokerForm(turkiyePortIntelForm, renderTurkiyePortIntel);
+bindBrokerForm(turkiyeSofNorForm, renderTurkiyeSofNor);
+bindBrokerForm(turkiyeCostForm, renderTurkiyeCost);
+bindBrokerForm(cabotageForm, renderCabotage);
+bindBrokerForm(cargoPortSuitabilityForm, renderCargoPortSuitability);
 bindBrokerForm(cargoPlaybookForm, renderCargoPlaybook);
 bindBrokerForm(tceOptimizer2Form, renderTceOptimizer2);
 bindBrokerForm(backendWorkspaceForm, renderBackendWorkspace);
@@ -11243,6 +11885,15 @@ if (globalPortList) {
 
 if (globalPortImportForm) {
   globalPortImportForm.addEventListener("submit", importGlobalPorts);
+}
+
+if (officialImportProForm) {
+  officialImportProForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    renderOfficialImportPro(true);
+  });
+  officialImportProForm.addEventListener("input", () => renderOfficialImportPro(false));
+  officialImportProForm.addEventListener("change", () => renderOfficialImportPro(false));
 }
 
 chatForm.addEventListener("submit", (event) => {

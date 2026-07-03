@@ -1767,11 +1767,39 @@ main {
 .broker-output {
   display: grid;
   gap: 10px;
+  min-width: 0;
   min-height: 120px;
   padding: 12px;
   border: 1px solid rgba(100, 97, 255, 0.24);
   border-radius: 8px;
   background: rgba(100, 97, 255, 0.07);
+}
+
+.turkiye-desk-card {
+  border-color: rgba(40, 240, 198, 0.28);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(40, 240, 198, 0.1), transparent 30%),
+    rgba(100, 97, 255, 0.055);
+}
+
+.template-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  min-width: 0;
+}
+
+.template-grid pre,
+.broker-output pre {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.turkiye-flow div {
+  min-width: 0;
 }
 
 .auto-deal-output {
@@ -3545,6 +3573,7 @@ main {
   .auto-deal-grid,
   .auto-deal-market,
   .broker-metrics,
+  .template-grid,
   .intelligence-grid,
   .market-index-form,
   .market-index-detail-body,
