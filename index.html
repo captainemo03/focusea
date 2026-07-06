@@ -8,7 +8,7 @@
     <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), serial=()" />
     <title>Focusea Maritime Platform</title>
     <link rel="icon" href="favicon.svg?v=focusea-badge2" type="image/svg+xml" />
-    <link rel="stylesheet" href="styles.css?v=workflow-pro-1" />
+    <link rel="stylesheet" href="styles.css?v=workflow-saas-1" />
   </head>
   <body>
     <div class="app-shell">
@@ -23,6 +23,7 @@
         <nav class="nav-list" data-page-nav>
           <a href="#dashboard" class="active" data-page-link="dashboard">Dashboard</a>
           <a href="#theater" data-page-link="theater">Workflow Control</a>
+          <a href="#saasCore" data-page-link="saasCore">SaaS Core</a>
           <a href="#broker" data-page-link="broker">Broker Desk</a>
           <a href="#terminal" data-page-link="terminal">Command Terminal</a>
           <a href="#edge" data-page-link="edge">Edge Suite</a>
@@ -2538,6 +2539,167 @@ TRALI,Aliaga Nemrut Bay,Turkiye,Turkiye,Tanker / Bulk / Container,20</textarea><
           </div>
         </section>
 
+        <section class="saas-core-panel" id="saasCorePanel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Focusea SaaS Core</p>
+              <h2>Hesap, deal room, upload, alarm, admin, client portal ve analytics gercek urun katmaninda</h2>
+            </div>
+            <div class="status-pill">SaaS Ready Layer</div>
+          </div>
+
+          <div class="saas-core-hero">
+            <div>
+              <span>Professional product operating layer</span>
+              <strong>Focusea artik sadece hesap yapan site degil; kullanici, dosya, alarm, rapor ve musteri portali olan isletim sistemi.</strong>
+              <p>Bu sayfa statik GitHub Pages ustunde local workspace ile calisir; Python backend deploy edilince ayni alanlar gercek hesap/veritabani/OCR/API akisini kullanacak sekilde hazirlandi.</p>
+            </div>
+            <button type="button" class="primary-button" id="runSaasCore">Run SaaS Core</button>
+          </div>
+
+          <div class="saas-core-grid">
+            <article class="wide-card saas-main-card">
+              <div class="mini-heading"><span>1. Account + Workspace</span><strong>Kullanici hesabi ve kalici is alani</strong></div>
+              <form class="broker-form" id="saasAccountForm">
+                <label><span>User</span><input name="userName" value="Eyup Broker" /></label>
+                <label><span>Company</span><input name="company" value="Focusea Maritime Desk" /></label>
+                <label><span>Role</span><select name="role"><option>Broker</option><option>Charterer</option><option>Owner</option><option>Operations</option><option>Student</option></select></label>
+                <label><span>Plan</span><select name="plan"><option>Class demo</option><option selected>Broker Pro</option><option>Team workspace</option><option>Admin</option></select></label>
+                <button type="submit">Workspace Kaydet</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-saas="workspace-json">Workspace JSON</button>
+                <button type="button" class="ghost-button small" id="clearSaasWorkspace">Workspace Temizle</button>
+              </div>
+              <div class="broker-output" id="saasAccountResult"></div>
+            </article>
+
+            <article class="wide-card">
+              <div class="mini-heading"><span>2. Document Upload + Safety</span><strong>PDF / Word / EML / SOF dosya kontrolu</strong></div>
+              <form class="broker-form single-column" id="saasDocumentForm">
+                <label><span>Upload file</span><input name="documentFile" type="file" accept=".pdf,.doc,.docx,.txt,.eml,.png,.jpg,.jpeg" /></label>
+                <label><span>Pasted document text</span><textarea name="documentText">From: owner@example.com
+Subject: 50k coal Indonesia India
+NOR tendered 10 Jul 1430. Loading commenced 11 Jul 0800. Rain stopped operations 11 Jul 1300-1700. Clause: time lost waiting berth to count as laytime.</textarea></label>
+                <button type="submit">Dosyayi Tara</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-saas="document-report">Document Report TXT</button>
+              </div>
+              <div class="broker-output" id="saasDocumentResult"></div>
+            </article>
+
+            <article class="wide-card">
+              <div class="mini-heading"><span>3. Full Deal Room Page</span><strong>Overview / Recap / CP / SOF / Claim / Portal</strong></div>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" id="refreshSaasDealRoom">Deal Room Yenile</button>
+                <button type="button" class="ghost-button small" data-download-saas="deal-room-pdf">Deal Room PDF</button>
+              </div>
+              <div class="broker-output" id="saasDealRoomResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>4. Alarm Center + ICS</span><strong>Subject, laycan, time bar, invoice</strong></div>
+              <form class="broker-form" id="saasAlarmForm">
+                <label><span>Subject deadline h</span><input name="subjectHours" type="number" value="18" min="0" step="1" /></label>
+                <label><span>Laycan canceling days</span><input name="cancelingDays" type="number" value="12" min="0" step="1" /></label>
+                <label><span>Claim time bar days</span><input name="timeBarDays" type="number" value="90" min="1" step="1" /></label>
+                <label><span>Invoice due days</span><input name="invoiceDays" type="number" value="21" min="1" step="1" /></label>
+                <button type="submit">Alarm Uret</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-saas="alarms-ics">ICS Takvim Indir</button>
+              </div>
+              <div class="broker-output" id="saasAlarmResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>5. Email / EML Import</span><strong>Mail dosyasindan deal cikar</strong></div>
+              <form class="broker-form single-column" id="saasEmailForm">
+                <label><span>.eml file</span><input name="emailFile" type="file" accept=".eml,.txt" /></label>
+                <label><span>Email text</span><textarea name="emailText">From: owners
+To: brokers
+Subject: Firm offer
+50k coal Indonesia to India laycan 10/15 Jul freight USD 18.50 pmt demurrage USD 18,000/day. Subjects receiver approval by 1700 LT.</textarea></label>
+                <button type="submit">Email Import Et</button>
+              </form>
+              <div class="broker-output" id="saasEmailResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>6. Admin Panel</span><strong>Site parametreleri ve kaynak yonetimi</strong></div>
+              <form class="broker-form" id="saasAdminForm">
+                <label><span>Cargo multiplier</span><input name="cargoMultiplier" type="number" value="1.04" min="0" step="0.01" /></label>
+                <label><span>Default bunker $/t</span><input name="defaultBunker" type="number" value="686.5" min="0" step="0.1" /></label>
+                <label><span>Market mode</span><select name="marketMode"><option>Verified snapshot</option><option>Licensed endpoint</option><option>Simulated demo</option></select></label>
+                <label><span>News policy</span><select name="newsPolicy"><option>Source links required</option><option>Manual approval</option><option>Demo only</option></select></label>
+                <button type="submit">Admin Ayarlarini Kaydet</button>
+              </form>
+              <div class="broker-output" id="saasAdminResult"></div>
+            </article>
+
+            <article class="wide-card">
+              <div class="mini-heading"><span>7. Market Source Manager</span><strong>Haber, bunker, index, license durumu</strong></div>
+              <form class="broker-form" id="saasMarketSourceForm">
+                <label><span>News RSS / API</span><input name="newsSource" value="https://example.com/maritime-rss" /></label>
+                <label><span>Baltic endpoint</span><input name="balticEndpoint" value="Licensed API required" /></label>
+                <label><span>Bunker source</span><select name="bunkerSource"><option>Verified snapshot</option><option>API-ready</option><option>Manual input</option></select></label>
+                <label><span>Refresh min</span><input name="refreshMin" type="number" value="15" min="1" step="1" /></label>
+                <button type="submit">Kaynaklari Kaydet</button>
+              </form>
+              <div class="broker-output" id="saasMarketSourceResult"></div>
+            </article>
+
+            <article class="wide-card">
+              <div class="mini-heading"><span>8. AI Contract Memory</span><strong>Clause gecmisini hatirla</strong></div>
+              <form class="broker-form single-column" id="saasContractMemoryForm">
+                <label><span>Clause text</span><textarea name="clauseText">NOR WIBON/WIPON and time lost waiting for berth shall count as laytime. Weather delays excepted unless used.</textarea></label>
+                <div class="auto-deal-controls">
+                  <label><span>Bias</span><select name="bias"><option>Owner leaning</option><option>Charterer leaning</option><option>Neutral</option></select></label>
+                  <label><span>Outcome</span><select name="outcome"><option>Dispute risk</option><option>Accepted with counter</option><option>Clean</option></select></label>
+                  <label><span>Fixture ref</span><input name="fixtureRef" value="FX-2026-001" /></label>
+                </div>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" id="saveSaasContract">Save clause memory</button>
+                <button type="button" class="ghost-button small" id="clearSaasContracts">Clear memory</button>
+              </div>
+              <div class="broker-output" id="saasContractMemoryResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>9. Real Client Portal</span><strong>Signed-link hazir musteri paneli</strong></div>
+              <form class="broker-form" id="saasClientPortalForm">
+                <label><span>Client</span><input name="client" value="Atlas Commodities" /></label>
+                <label><span>Access</span><select name="access"><option>View summary</option><option>View reports</option><option>Claim evidence</option></select></label>
+                <label><span>Status</span><select name="status"><option>On subjects</option><option>Fixed</option><option>Loading</option><option>Claim review</option></select></label>
+                <label><span>Expiry days</span><input name="expiryDays" type="number" value="7" min="1" step="1" /></label>
+                <button type="submit">Client Portal Guncelle</button>
+              </form>
+              <div class="broker-output" id="saasClientPortalResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>10. Broker Performance Analytics</span><strong>Fix rate, TCE, claim, cargo karliligi</strong></div>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" id="refreshSaasAnalytics">Analytics Yenile</button>
+                <button type="button" class="ghost-button small" data-download-saas="analytics-csv">Analytics CSV</button>
+              </div>
+              <div class="broker-output" id="saasAnalyticsResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>11. Security / File Safety</span><strong>Upload guard, rate limit, policy</strong></div>
+              <div class="broker-output" id="saasSecurityResult"></div>
+            </article>
+
+            <article class="wide-card">
+              <div class="mini-heading"><span>12. SaaS Backend Blueprint</span><strong>Auth, DB, OCR, queues, storage</strong></div>
+              <div class="broker-output" id="saasBackendBlueprintResult"></div>
+            </article>
+          </div>
+        </section>
+
         <section class="super-suite-panel" id="superSuitePanel">
           <div class="panel-heading">
             <div>
@@ -3331,6 +3493,6 @@ TRALI,Aliaga Nemrut Bay,Turkiye,Turkiye,Tanker / Bulk / Container,20</textarea><
       </main>
     </div>
 
-    <script src="script.js?v=workflow-pro-1"></script>
+    <script src="script.js?v=workflow-saas-1"></script>
   </body>
 </html>

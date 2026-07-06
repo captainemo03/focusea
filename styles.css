@@ -167,6 +167,7 @@ a {
 .deal-iq-panel,
 .decision-lab-panel,
 .command-theater-panel,
+.saas-core-panel,
 .super-suite-panel,
 .python-engine-panel,
 .command-deck-panel,
@@ -4220,6 +4221,143 @@ main {
   white-space: pre-wrap;
 }
 
+.saas-core-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+.saas-core-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 12% 12%, rgba(40, 240, 198, 0.13), transparent 28%),
+    radial-gradient(circle at 88% 10%, rgba(100, 97, 255, 0.15), transparent 32%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.04), transparent 48%);
+}
+
+.saas-core-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.saas-core-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 18px;
+  padding: 18px;
+  border: 1px solid rgba(40, 240, 198, 0.18);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.saas-core-hero span {
+  color: #6fffe3;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.saas-core-hero strong {
+  display: block;
+  margin-top: 8px;
+  color: var(--text);
+  font-size: clamp(1.28rem, 2vw, 2rem);
+  line-height: 1.08;
+}
+
+.saas-core-hero p {
+  max-width: 900px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.saas-core-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.saas-core-grid article {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(40, 240, 198, 0.025)),
+    rgba(255, 255, 255, 0.045);
+}
+
+.saas-main-card {
+  border-color: rgba(40, 240, 198, 0.32) !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(40, 240, 198, 0.14), transparent 34%),
+    rgba(255, 255, 255, 0.05) !important;
+}
+
+.saas-tab-grid,
+.saas-blueprint-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr));
+  gap: 10px;
+}
+
+.saas-tab-grid div,
+.saas-blueprint-grid div {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  padding: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(2, 13, 18, 0.32);
+}
+
+.saas-tab-grid strong,
+.saas-blueprint-grid strong {
+  color: var(--text);
+}
+
+.saas-tab-grid span,
+.saas-blueprint-grid span {
+  color: var(--muted);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.saas-analytics-bars {
+  display: grid;
+  gap: 10px;
+}
+
+.saas-analytics-bars div {
+  display: grid;
+  grid-template-columns: minmax(110px, 0.7fr) minmax(120px, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.saas-analytics-bars span,
+.saas-analytics-bars strong {
+  color: #d8edf1;
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.saas-analytics-bars i {
+  display: block;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #28f0c6, #6fffe3);
+}
+
 @keyframes pulse {
   0%, 100% { filter: brightness(1); }
   50% { filter: brightness(1.35); }
@@ -4273,9 +4411,11 @@ main {
   .deal-iq-grid,
   .decision-lab-grid,
   .theater-grid,
+  .saas-core-grid,
   .super-suite-grid,
   .python-engine-grid,
   .theater-stage,
+  .saas-core-hero,
   .super-suite-hero,
   .python-engine-hero,
   .auto-deal-controls,
@@ -4345,6 +4485,7 @@ main {
   .deal-iq-panel,
   .decision-lab-panel,
   .command-theater-panel,
+  .saas-core-panel,
   .super-suite-panel,
   .python-engine-panel,
   .assistant-panel,
@@ -4375,6 +4516,7 @@ main {
   .deal-iq-grid,
   .decision-lab-grid,
   .theater-grid,
+  .saas-core-grid,
   .super-suite-grid,
   .python-engine-grid,
   .broker-os-hero,
@@ -4382,6 +4524,7 @@ main {
   .deal-iq-hero,
   .decision-lab-hero,
   .theater-stage,
+  .saas-core-hero,
   .super-suite-hero,
   .python-engine-hero,
   .export-actions,
@@ -4428,6 +4571,10 @@ main {
   }
 
   .mission-list div {
+    grid-template-columns: 1fr;
+  }
+
+  .saas-analytics-bars div {
     grid-template-columns: 1fr;
   }
 

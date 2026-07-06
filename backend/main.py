@@ -12,10 +12,14 @@ from pydantic import BaseModel, Field
 from .engines import (
     clause_diff,
     agency_workspace,
+    alarm_pack,
     compare_fixtures,
+    client_portal_pack,
+    document_safety,
     evaluate_stability,
     generate_broker_mail,
     make_pdf_bytes,
+    performance_analytics,
     parse_offer_text,
     report_text,
     calculate_laytime,
@@ -116,6 +120,24 @@ class FixtureComparisonRequest(BaseModel):
     deal_c: str = ""
 
 
+class DocumentSafetyRequest(BaseModel):
+    filename: str = "pasted-text.txt"
+    text: str = ""
+
+
+class AlarmRequest(BaseModel):
+    subject_hours: float = 18
+    canceling_days: float = 12
+    time_bar_days: float = 90
+    invoice_days: float = 21
+
+
+class ClientPortalRequest(BaseModel):
+    client: str = "Atlas Commodities"
+    status: str = "On subjects"
+    access: str = "View summary"
+
+
 def load_store() -> dict[str, Any]:
     if not STORE_PATH.exists():
         return {"fixtures": [], "crm": [], "documents": [], "reports": []}
@@ -145,6 +167,10 @@ def health() -> dict[str, Any]:
             "agency-workspace",
             "mail-generator",
             "fixture-comparison",
+            "document-safety",
+            "alarm-ics",
+            "client-portal",
+            "performance-analytics",
             "stability",
             "pdf",
         ],
@@ -194,6 +220,26 @@ def api_mail_generate(request: MailRequest) -> dict[str, Any]:
 @app.post("/api/fixtures/compare")
 def api_fixtures_compare(request: FixtureComparisonRequest) -> dict[str, Any]:
     return compare_fixtures(request.model_dump())
+
+
+@app.post("/api/documents/safety")
+def api_document_safety(request: DocumentSafetyRequest) -> dict[str, Any]:
+    return document_safety(request.model_dump())
+
+
+@app.post("/api/alarms/ics")
+def api_alarms_ics(request: AlarmRequest) -> dict[str, Any]:
+    return alarm_pack(request.model_dump())
+
+
+@app.post("/api/client-portal/pack")
+def api_client_portal_pack(request: ClientPortalRequest) -> dict[str, Any]:
+    return client_portal_pack(request.model_dump())
+
+
+@app.get("/api/analytics/performance")
+def api_performance_analytics() -> dict[str, Any]:
+    return performance_analytics(load_store())
 
 
 @app.post("/api/stability/evaluate")

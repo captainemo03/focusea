@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import math
 import re
 from typing import Any
@@ -339,6 +339,103 @@ def compare_fixtures(payload: dict[str, Any]) -> dict[str, Any]:
         })
     deals.sort(key=lambda item: item["score"], reverse=True)
     return {"winner": deals[0], "deals": deals, "source": "python-fastapi"}
+
+
+def document_safety(payload: dict[str, Any]) -> dict[str, Any]:
+    filename = str(payload.get("filename", "pasted-text"))
+    text = str(payload.get("text", ""))
+    ext = filename.rsplit(".", 1)[-1].lower() if "." in filename else "txt"
+    allowed = {"pdf", "doc", "docx", "txt", "eml", "png", "jpg", "jpeg"}
+    checks = []
+    if ext not in allowed:
+        checks.append(f"Blocked extension: .{ext}")
+    patterns = [
+        (r"javascript:", "javascript URL"),
+        (r"<script", "script tag"),
+        (r"\b(password|api[_-]?key|secret|token)\b", "possible secret"),
+        (r"\.(exe|bat|cmd|ps1|scr)\b", "executable reference"),
+        (r"http://[^\s]+", "non-HTTPS link"),
+    ]
+    for pattern, label in patterns:
+        if re.search(pattern, text, re.I):
+            checks.append(label)
+    score = int(clamp(100 - len(checks) * 18, 0, 100))
+    return {
+        "filename": filename,
+        "extension": ext,
+        "score": score,
+        "verdict": "Clean for parsing" if score >= 82 else "Review before upload" if score >= 58 else "Block until scanned",
+        "findings": checks or ["No rule-based unsafe pattern detected."],
+        "source": "python-fastapi",
+    }
+
+
+def alarm_pack(payload: dict[str, Any]) -> dict[str, Any]:
+    now = datetime.utcnow()
+    alarms = [
+        ("Subject deadline", now + timedelta(hours=number(payload.get("subject_hours"), 18))),
+        ("Laycan canceling", now + timedelta(days=number(payload.get("canceling_days"), 12))),
+        ("Demurrage time bar", now + timedelta(days=number(payload.get("time_bar_days"), 90))),
+        ("Invoice due", now + timedelta(days=number(payload.get("invoice_days"), 21))),
+    ]
+    ics_lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Focusea//Backend//EN"]
+    alarm_rows = []
+    for index, (title, date) in enumerate(alarms):
+        start = date.strftime("%Y%m%dT%H%M%SZ")
+        end = (date + timedelta(minutes=30)).strftime("%Y%m%dT%H%M%SZ")
+        alarm_rows.append({"title": title, "utc": date.isoformat(timespec="seconds") + "Z"})
+        ics_lines.extend([
+            "BEGIN:VEVENT",
+            f"UID:focusea-backend-{index}-{int(now.timestamp())}@focusea",
+            f"DTSTAMP:{now.strftime('%Y%m%dT%H%M%SZ')}",
+            f"DTSTART:{start}",
+            f"DTEND:{end}",
+            f"SUMMARY:{title}",
+            "END:VEVENT",
+        ])
+    ics_lines.append("END:VCALENDAR")
+    return {"alarms": alarm_rows, "ics": "\r\n".join(ics_lines), "source": "python-fastapi"}
+
+
+def client_portal_pack(payload: dict[str, Any]) -> dict[str, Any]:
+    client = str(payload.get("client", "Client"))
+    status = str(payload.get("status", "On subjects"))
+    access = str(payload.get("access", "View summary"))
+    token = re.sub(r"[^a-z0-9]+", "-", f"{client}-{status}".lower()).strip("-")[:48] or "client"
+    return {
+        "client": client,
+        "status": status,
+        "access": access,
+        "token": token,
+        "url_path": f"/portal/{token}",
+        "summary": [
+            f"Client: {client}",
+            f"Status: {status}",
+            f"Access: {access}",
+            "Use signed tokens and expiry validation in production.",
+        ],
+        "source": "python-fastapi",
+    }
+
+
+def performance_analytics(store: dict[str, Any]) -> dict[str, Any]:
+    fixtures = store.get("fixtures", [])
+    reports = store.get("reports", [])
+    documents = store.get("documents", [])
+    fixed = sum(1 for item in fixtures if "fixed" in str(item).lower())
+    failed = sum(1 for item in fixtures if "failed" in str(item).lower())
+    return {
+        "fixtures": len(fixtures),
+        "fix_rate": round(fixed / max(1, fixed + failed) * 100, 2),
+        "documents": len(documents),
+        "reports": len(reports),
+        "top_actions": [
+            "Save every fixture outcome for route/cargo analytics.",
+            "Attach SOF, NOR and CP documents to each deal room.",
+            "Track claim/dispute outcome by counterparty.",
+        ],
+        "source": "python-fastapi",
+    }
 
 
 def evaluate_stability(loads_text: str, vessel: dict[str, Any] | None = None) -> dict[str, Any]:

@@ -2324,6 +2324,32 @@ const workflowComparisonForm = document.querySelector("#workflowComparisonForm")
 const workflowComparisonResult = document.querySelector("#workflowComparisonResult");
 const workflowTrustLedgerResult = document.querySelector("#workflowTrustLedgerResult");
 const workflowBackendConnectorResult = document.querySelector("#workflowBackendConnectorResult");
+const runSaasCore = document.querySelector("#runSaasCore");
+const saasAccountForm = document.querySelector("#saasAccountForm");
+const saasAccountResult = document.querySelector("#saasAccountResult");
+const clearSaasWorkspace = document.querySelector("#clearSaasWorkspace");
+const saasDocumentForm = document.querySelector("#saasDocumentForm");
+const saasDocumentResult = document.querySelector("#saasDocumentResult");
+const refreshSaasDealRoom = document.querySelector("#refreshSaasDealRoom");
+const saasDealRoomResult = document.querySelector("#saasDealRoomResult");
+const saasAlarmForm = document.querySelector("#saasAlarmForm");
+const saasAlarmResult = document.querySelector("#saasAlarmResult");
+const saasEmailForm = document.querySelector("#saasEmailForm");
+const saasEmailResult = document.querySelector("#saasEmailResult");
+const saasAdminForm = document.querySelector("#saasAdminForm");
+const saasAdminResult = document.querySelector("#saasAdminResult");
+const saasMarketSourceForm = document.querySelector("#saasMarketSourceForm");
+const saasMarketSourceResult = document.querySelector("#saasMarketSourceResult");
+const saasContractMemoryForm = document.querySelector("#saasContractMemoryForm");
+const saasContractMemoryResult = document.querySelector("#saasContractMemoryResult");
+const saveSaasContract = document.querySelector("#saveSaasContract");
+const clearSaasContracts = document.querySelector("#clearSaasContracts");
+const saasClientPortalForm = document.querySelector("#saasClientPortalForm");
+const saasClientPortalResult = document.querySelector("#saasClientPortalResult");
+const refreshSaasAnalytics = document.querySelector("#refreshSaasAnalytics");
+const saasAnalyticsResult = document.querySelector("#saasAnalyticsResult");
+const saasSecurityResult = document.querySelector("#saasSecurityResult");
+const saasBackendBlueprintResult = document.querySelector("#saasBackendBlueprintResult");
 let activeNewsQuery = "maritime shipping";
 let generatedOpsEmailText = "";
 let selectedCommandScenarioId = "coal";
@@ -2357,6 +2383,18 @@ let lastWorkflowMailStudio = null;
 let lastWorkflowComparison = null;
 let lastWorkflowTrustLedger = null;
 let lastWorkflowBackendConnector = null;
+let lastSaasAccount = null;
+let lastSaasDocument = null;
+let lastSaasDealRoom = null;
+let lastSaasAlarm = null;
+let lastSaasEmail = null;
+let lastSaasAdmin = null;
+let lastSaasMarketSource = null;
+let lastSaasContractMemory = null;
+let lastSaasClientPortal = null;
+let lastSaasAnalytics = null;
+let lastSaasSecurity = null;
+let lastSaasBackendBlueprint = null;
 let lastParsedOffer = null;
 let lastCopilotReport = null;
 let lastTceOptimization = null;
@@ -2644,6 +2682,7 @@ function applyBunkerDefaultsToForms() {
 const pageGroups = {
   dashboard: ["#command", ".dashboard-strip", ".ops-board", "#commandDeck", "#smartOps"],
   theater: ["#commandTheaterPanel"],
+  saasCore: ["#saasCorePanel"],
   broker: ["#brokerDesk", "#brokerPro", "#brokerOps"],
   terminal: ["#platformCore", "#brokerIntelligence", "#commandTerminal"],
   edge: ["#edgeSuite"],
@@ -11958,6 +11997,540 @@ function handleWorkflowProDownload(type) {
   renderWorkflowReportCenter();
 }
 
+const saasWorkspaceKey = "focusea-saas-workspace-v1";
+const saasContractsKey = "focusea-saas-contract-memory-v1";
+const saasAdminKey = "focusea-saas-admin-v1";
+const saasSourcesKey = "focusea-saas-market-sources-v1";
+
+function saasWorkspace() {
+  const fallback = {
+    account: null,
+    documents: [],
+    alarms: [],
+    emails: [],
+    clientPortals: [],
+    reports: [],
+    updatedAt: ""
+  };
+  const saved = safeLocalGet(saasWorkspaceKey, fallback);
+  return saved && typeof saved === "object" ? { ...fallback, ...saved } : fallback;
+}
+
+function saveSaasWorkspacePatch(patch = {}) {
+  const workspace = { ...saasWorkspace(), ...patch, updatedAt: new Date().toLocaleString() };
+  safeLocalSet(saasWorkspaceKey, workspace);
+  return workspace;
+}
+
+function clearSaasWorkspaceState() {
+  safeLocalSet(saasWorkspaceKey, {
+    account: null,
+    documents: [],
+    alarms: [],
+    emails: [],
+    clientPortals: [],
+    reports: [],
+    updatedAt: new Date().toLocaleString()
+  });
+  renderAllSaasCore();
+}
+
+function saasToken(value = "") {
+  return String(value).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 52) || "focusea";
+}
+
+function saasFileMeta(file) {
+  if (!file || typeof file !== "object" || !("name" in file)) return null;
+  if (!file.name) return null;
+  const ext = String(file.name).split(".").pop()?.toLowerCase() || "";
+  return {
+    name: file.name,
+    size: file.size || 0,
+    ext,
+    sizeLabel: `${((file.size || 0) / 1024 / 1024).toFixed(2)} MB`
+  };
+}
+
+function renderSaasAccount() {
+  if (!saasAccountForm || !saasAccountResult) return;
+  const values = collectFormValues(saasAccountForm);
+  const workspace = saveSaasWorkspacePatch({
+    account: {
+      ...values,
+      userId: `USR-${saasToken(`${values.company}-${values.userName}`).slice(0, 20)}`,
+      savedAt: new Date().toLocaleString()
+    }
+  });
+  lastSaasAccount = workspace.account;
+  const buckets = [
+    ["Documents", workspace.documents.length],
+    ["Alarms", workspace.alarms.length],
+    ["Emails", workspace.emails.length],
+    ["Client portals", workspace.clientPortals.length],
+    ["Reports", getWorkflowReports().length]
+  ];
+  saasAccountResult.innerHTML = `
+    ${metricCards([
+      { label: "User ID", value: escapeHtml(workspace.account.userId) },
+      { label: "Plan", value: escapeHtml(values.plan || "Broker Pro") },
+      { label: "Role", value: escapeHtml(values.role || "Broker") },
+      { label: "Workspace", value: `<em class="source-badge input">Local DB</em>` }
+    ])}
+    <div class="workflow-two-col">
+      <div class="ops-list">${buckets.map(([name, count]) => `<div><strong>${escapeHtml(name)}</strong><span>${count} saved item(s)</span></div>`).join("")}</div>
+      <div class="danger-box"><span>Backend upgrade path</span><p>LocalStorage simulates account persistence. FastAPI auth + database can replace this without changing the UI flow.</p></div>
+    </div>
+  `;
+}
+
+function saasSecurityScan(text = "", fileMeta = null) {
+  const allowed = ["pdf", "doc", "docx", "txt", "eml", "png", "jpg", "jpeg"];
+  const patterns = [
+    [/javascript:/i, "javascript URL"],
+    [/<script/i, "script tag"],
+    [/\b(?:password|api[_-]?key|secret|token)\b/i, "possible secret"],
+    [/\.(?:exe|bat|cmd|ps1|scr)\b/i, "executable reference"],
+    [/data:text\/html/i, "inline HTML payload"],
+    [/http:\/\/[^\s]+/i, "non-HTTPS link"]
+  ];
+  const findings = patterns.filter(([pattern]) => pattern.test(text)).map(([, label]) => label);
+  if (fileMeta && !allowed.includes(fileMeta.ext)) findings.push(`blocked extension .${fileMeta.ext || "unknown"}`);
+  if (fileMeta && fileMeta.size > 10 * 1024 * 1024) findings.push("file larger than 10 MB");
+  const score = clamp(100 - findings.length * 18 - (fileMeta?.size > 5 * 1024 * 1024 ? 8 : 0), 0, 100);
+  const verdict = score >= 82 ? "Clean for local parsing" : score >= 58 ? "Review before upload" : "Block / backend scan required";
+  return { score, verdict, findings };
+}
+
+function renderSaasDocument() {
+  if (!saasDocumentForm || !saasDocumentResult) return;
+  const values = collectFormValues(saasDocumentForm);
+  const fileMeta = saasFileMeta(values.documentFile);
+  const text = String(values.documentText || "");
+  const scan = saasSecurityScan(text, fileMeta);
+  const parsedOffer = parseOfferText(text);
+  const sof = workflowExtractSof(text);
+  const clauseFindings = redTeamFindings(text, "Document upload");
+  const record = {
+    id: `DOC-${Date.now().toString().slice(-6)}`,
+    file: fileMeta,
+    type: fileMeta?.ext || "pasted-text",
+    parsedRoute: parsedOffer.route || "",
+    safetyScore: scan.score,
+    verdict: scan.verdict,
+    savedAt: new Date().toLocaleString()
+  };
+  lastSaasDocument = { values, fileMeta, scan, parsedOffer, sof, clauseFindings, record };
+  saasDocumentResult.innerHTML = `
+    ${metricCards([
+      { label: "Safety", value: `${scan.score}/100` },
+      { label: "Verdict", value: escapeHtml(scan.verdict) },
+      { label: "File", value: escapeHtml(fileMeta?.name || "Pasted text") },
+      { label: "SOF events", value: sof.events.filter((item) => item.found).length },
+      { label: "Clause flags", value: clauseFindings.length }
+    ])}
+    <div class="workflow-two-col">
+      <div class="ops-list">${(scan.findings.length ? scan.findings : ["No browser-side unsafe pattern found"]).map((item) => `<div><strong>Safety</strong><span>${escapeHtml(item)}</span></div>`).join("")}</div>
+      <div class="ops-list">
+        <div><strong>Parsed route</strong><span>${escapeHtml(parsedOffer.route || "Route TBC")}</span></div>
+        <div><strong>Backend note</strong><span>True OCR and antivirus scan require deployed backend worker.</span></div>
+      </div>
+    </div>
+  `;
+  renderSaasSecurity();
+  renderSaasAnalytics();
+}
+
+function saasDealRoomText() {
+  const gate = workflowCurrentGate();
+  return reportLines("FOCUSEA FULL DEAL ROOM", [
+    `Workspace user: ${lastSaasAccount?.userName || saasWorkspace().account?.userName || "Local user"}`,
+    `Decision: ${gate.decision}`,
+    `Cargo: ${gate.cargo.label}`,
+    `Route: ${gate.parsed.route || "TBC"}`,
+    `TCE: ${money(gate.tce)}/day`,
+    `P&L: ${money(gate.netPnl)}`,
+    `Laytime: ${lastWorkflowSof?.verdict || "Pending"}`,
+    `Counterparty: ${lastWorkflowCounterparty?.verdict || lastSaasAccount?.company || "Pending"}`,
+    "",
+    "Deal room tabs:",
+    "- Overview / Inbox / Recap / CP / SOF / Laytime / Claim / Invoice / Client Portal / Notes / Timeline",
+    "",
+    "Open actions:",
+    ...workflowMissionItems().map((item) => `- ${item}`)
+  ]);
+}
+
+function renderSaasDealRoom() {
+  if (!saasDealRoomResult) return;
+  const gate = workflowCurrentGate();
+  const tabs = [
+    ["Overview", gate.decision],
+    ["Inbox", `${getWorkflowInbox().length} saved`],
+    ["Recap", gate.parsed.missing.length ? "Missing terms" : "Ready"],
+    ["CP", lastWorkflowClauseVersion?.verdict || "Diff pending"],
+    ["SOF", lastWorkflowSof?.verdict || "Laytime pending"],
+    ["Claim", lastWorkflowSof?.demurrageAmount ? money(lastWorkflowSof.demurrageAmount) : "No claim"],
+    ["Invoice", lastCarbonDesk ? "ETS attached" : "Draft"],
+    ["Client Portal", lastSaasClientPortal?.portalUrl ? "Live preview" : "Pending"],
+    ["Notes", `${getWorkflowCommunityNotes().length} local`],
+    ["Timeline", lastSaasAlarm ? `${lastSaasAlarm.alarms.length} alarms` : "Pending"]
+  ];
+  lastSaasDealRoom = { tabs, reportText: saasDealRoomText(), gate };
+  saasDealRoomResult.innerHTML = `
+    ${metricCards([
+      { label: "Deal status", value: escapeHtml(gate.decision) },
+      { label: "Focusea score", value: lastFocuseaScore?.score || "-" },
+      { label: "Tabs", value: tabs.length },
+      { label: "Client portal", value: lastSaasClientPortal ? "Ready" : "Pending" }
+    ])}
+    <div class="saas-tab-grid">${tabs.map(([name, status]) => `<div><strong>${escapeHtml(name)}</strong><span>${escapeHtml(status)}</span></div>`).join("")}</div>
+  `;
+}
+
+function saasAlarmDate(hours = 0, days = 0) {
+  return workflowDateAfter({ hours, days });
+}
+
+function saasIcsDate(date) {
+  return date.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
+}
+
+function renderSaasAlarm() {
+  if (!saasAlarmForm || !saasAlarmResult) return;
+  const values = collectFormValues(saasAlarmForm);
+  const alarms = [
+    { title: "Subject deadline", date: saasAlarmDate(Number(values.subjectHours) || 0, 0), severity: Number(values.subjectHours) <= 12 ? "High" : "Watch" },
+    { title: "Laycan canceling", date: saasAlarmDate(0, Number(values.cancelingDays) || 0), severity: Number(values.cancelingDays) <= 5 ? "High" : "Watch" },
+    { title: "Demurrage time bar", date: saasAlarmDate(0, Number(values.timeBarDays) || 90), severity: Number(values.timeBarDays) <= 30 ? "High" : "Normal" },
+    { title: "Invoice due", date: saasAlarmDate(0, Number(values.invoiceDays) || 21), severity: Number(values.invoiceDays) <= 7 ? "High" : "Normal" }
+  ];
+  lastSaasAlarm = { values, alarms };
+  saasAlarmResult.innerHTML = `
+    ${metricCards([
+      { label: "Alarms", value: alarms.length },
+      { label: "High", value: alarms.filter((item) => item.severity === "High").length },
+      { label: "Next", value: workflowDateLabel(alarms[0].date) },
+      { label: "Calendar", value: "ICS ready" }
+    ])}
+    <div class="timebar-list">${alarms.map((alarm) => `<div class="${alarm.severity === "High" ? "high" : "medium"}"><strong>${escapeHtml(alarm.title)}</strong><span>${workflowDateLabel(alarm.date)}</span><em>${escapeHtml(alarm.severity)}</em></div>`).join("")}</div>
+  `;
+  renderSaasAnalytics();
+}
+
+function saasIcsText() {
+  const alarms = lastSaasAlarm?.alarms || [];
+  const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Focusea//SaaS Core//EN"];
+  alarms.forEach((alarm, index) => {
+    const start = alarm.date;
+    const end = new Date(start.getTime() + 30 * 60000);
+    lines.push("BEGIN:VEVENT", `UID:focusea-${Date.now()}-${index}@focusea`, `DTSTAMP:${saasIcsDate(new Date())}`, `DTSTART:${saasIcsDate(start)}`, `DTEND:${saasIcsDate(end)}`, `SUMMARY:${alarm.title}`, `DESCRIPTION:Focusea ${alarm.severity} alarm`, "END:VEVENT");
+  });
+  lines.push("END:VCALENDAR");
+  return lines.join("\r\n");
+}
+
+function renderSaasEmail() {
+  if (!saasEmailForm || !saasEmailResult) return;
+  const values = collectFormValues(saasEmailForm);
+  const fileMeta = saasFileMeta(values.emailFile);
+  const text = String(values.emailText || "");
+  const from = text.match(/^From:\s*(.+)$/im)?.[1] || "sender TBC";
+  const subject = text.match(/^Subject:\s*(.+)$/im)?.[1] || "subject TBC";
+  const parsed = parseOfferText(text);
+  const risk = scoreParsedOffer(parsed);
+  const item = {
+    id: `EML-${Date.now().toString().slice(-6)}`,
+    from,
+    subject,
+    route: parsed.route || "Route TBC",
+    cargoType: parsed.cargoType,
+    risk: risk.score,
+    file: fileMeta,
+    savedAt: new Date().toLocaleString()
+  };
+  lastSaasEmail = { values, fileMeta, from, subject, parsed, risk, item };
+  saasEmailResult.innerHTML = `
+    ${metricCards([
+      { label: "From", value: escapeHtml(from) },
+      { label: "Subject", value: escapeHtml(subject) },
+      { label: "Route", value: escapeHtml(parsed.route || "TBC") },
+      { label: "Risk", value: `${risk.score}/100` }
+    ])}
+    <div class="ops-list">
+      <div><strong>Extracted cargo</strong><span>${escapeHtml(parsed.cargoLabel)} / ${parsed.quantity || "qty TBC"} ${escapeHtml(parsed.unit)}</span></div>
+      <div><strong>Next action</strong><span>${parsed.missing.length ? `Ask missing: ${parsed.missing.join(", ")}` : "Create deal room card and recap draft."}</span></div>
+    </div>
+  `;
+  renderSaasAnalytics();
+}
+
+function renderSaasAdmin() {
+  if (!saasAdminForm || !saasAdminResult) return;
+  const values = collectFormValues(saasAdminForm);
+  safeLocalSet(saasAdminKey, { ...values, savedAt: new Date().toLocaleString() });
+  lastSaasAdmin = values;
+  saasAdminResult.innerHTML = `
+    ${metricCards([
+      { label: "Cargo multiplier", value: Number(values.cargoMultiplier).toFixed(2) },
+      { label: "Default bunker", value: money(values.defaultBunker, 2) },
+      { label: "Market mode", value: escapeHtml(values.marketMode || "-") },
+      { label: "News policy", value: escapeHtml(values.newsPolicy || "-") }
+    ])}
+    <div class="danger-box"><span>Admin note</span><p>These settings are saved locally now. Backend admin endpoint can promote them into real multi-user defaults.</p></div>
+  `;
+}
+
+function renderSaasMarketSource() {
+  if (!saasMarketSourceForm || !saasMarketSourceResult) return;
+  const values = collectFormValues(saasMarketSourceForm);
+  safeLocalSet(saasSourcesKey, { ...values, savedAt: new Date().toLocaleString() });
+  const rows = [
+    ["News", values.newsSource || "No source", "api-ready", values.newsSource ? 74 : 20],
+    ["Baltic", values.balticEndpoint || "Licensed required", /licensed/i.test(values.balticEndpoint || "") ? "licensed" : "api-ready", /licensed/i.test(values.balticEndpoint || "") ? 55 : 78],
+    ["Bunker", values.bunkerSource || "Verified snapshot", values.bunkerSource === "Verified snapshot" ? "verified" : "api-ready", values.bunkerSource === "Verified snapshot" ? 84 : 72],
+    ["Refresh", `${values.refreshMin} min`, "input", 68]
+  ];
+  lastSaasMarketSource = { values, rows };
+  saasMarketSourceResult.innerHTML = `
+    <div class="confidence-list">${rows.map(([name, source, badge, confidence]) => `
+      <div class="confidence-row"><span>${escapeHtml(name)}<small>${escapeHtml(source)}</small></span><em class="source-badge ${badge}">${sourceBadgeText(badge)}</em><strong>${confidence}%</strong></div>
+    `).join("")}</div>
+  `;
+}
+
+function getSaasContracts() {
+  const saved = safeLocalGet(saasContractsKey, []);
+  return Array.isArray(saved) ? saved : [];
+}
+
+function setSaasContracts(items) {
+  safeLocalSet(saasContractsKey, items);
+}
+
+function clauseSimilarity(a = "", b = "") {
+  const one = new Set(String(a).toLowerCase().split(/[^a-z0-9]+/).filter((item) => item.length > 3));
+  const two = new Set(String(b).toLowerCase().split(/[^a-z0-9]+/).filter((item) => item.length > 3));
+  const overlap = [...one].filter((item) => two.has(item)).length;
+  return Math.round((overlap / Math.max(1, Math.min(one.size, two.size))) * 100);
+}
+
+function renderSaasContractMemory() {
+  if (!saasContractMemoryForm || !saasContractMemoryResult) return;
+  const values = collectFormValues(saasContractMemoryForm);
+  const records = getSaasContracts();
+  const matches = records
+    .map((record) => ({ ...record, similarity: clauseSimilarity(values.clauseText, record.clauseText) }))
+    .filter((record) => record.similarity >= 35)
+    .sort((a, b) => b.similarity - a.similarity)
+    .slice(0, 5);
+  const redFlags = redTeamFindings(values.clauseText || "", "Contract memory");
+  lastSaasContractMemory = { values, records, matches, redFlags };
+  saasContractMemoryResult.innerHTML = `
+    ${metricCards([
+      { label: "Saved clauses", value: records.length },
+      { label: "Similar found", value: matches.length },
+      { label: "Current red flags", value: redFlags.length },
+      { label: "Memory", value: `<em class="source-badge input">Local DB</em>` }
+    ])}
+    <div class="workflow-two-col">
+      <div class="ops-list">${(matches.length ? matches : [{ fixtureRef: "No similar clause", outcome: "Save this clause to build memory", similarity: 0 }]).map((item) => `<div><strong>${escapeHtml(item.fixtureRef)}</strong><span>${escapeHtml(item.outcome)} / similarity ${item.similarity}%</span></div>`).join("")}</div>
+      <div class="ops-list">${(redFlags.length ? redFlags : [{ title: "No strong flag", advice: "Still confirm NOR, weather and time-bar wording." }]).map((item) => `<div><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.advice)}</span></div>`).join("")}</div>
+    </div>
+  `;
+}
+
+function saveSaasContractMemory() {
+  if (!saasContractMemoryForm) return;
+  const values = collectFormValues(saasContractMemoryForm);
+  const record = { ...values, savedAt: new Date().toLocaleString(), id: `CL-${Date.now().toString().slice(-6)}` };
+  setSaasContracts([record, ...getSaasContracts()].slice(0, 120));
+  renderSaasContractMemory();
+  renderSaasAnalytics();
+}
+
+function clearSaasContractMemory() {
+  setSaasContracts([]);
+  renderSaasContractMemory();
+  renderSaasAnalytics();
+}
+
+function renderSaasClientPortal() {
+  if (!saasClientPortalForm || !saasClientPortalResult) return;
+  const values = collectFormValues(saasClientPortalForm);
+  const gate = workflowCurrentGate();
+  const token = saasToken(`${values.client}-${values.status}-${gate.risk}-${Date.now().toString().slice(-4)}`);
+  const portalUrl = `https://captainemo03.github.io/focusea/#portal-${token}`;
+  const expiry = workflowDateAfter({ days: Number(values.expiryDays) || 7 });
+  const item = {
+    client: values.client,
+    access: values.access,
+    status: values.status,
+    token,
+    portalUrl,
+    expiry: expiry.toISOString(),
+    updatedAt: new Date().toLocaleString()
+  };
+  lastSaasClientPortal = item;
+  saasClientPortalResult.innerHTML = `
+    ${metricCards([
+      { label: "Client", value: escapeHtml(values.client || "-") },
+      { label: "Status", value: escapeHtml(values.status || "-") },
+      { label: "Access", value: escapeHtml(values.access || "-") },
+      { label: "Expires", value: workflowDateLabel(expiry) }
+    ])}
+    <div class="confidence-row"><span>Signed link pattern</span><em class="source-badge simulated">Static preview</em><a href="${portalUrl}" target="_blank" rel="noopener noreferrer">${escapeHtml(portalUrl)}</a></div>
+    <div class="ops-list">
+      <div><strong>Client-visible</strong><span>${escapeHtml(gate.decision)} / ${escapeHtml(gate.parsed.route || "route TBC")} / TCE ${money(gate.tce)}/day</span></div>
+      <div><strong>Backend note</strong><span>Production portal should use signed token, auth middleware and expiry validation.</span></div>
+    </div>
+  `;
+  renderSaasDealRoom();
+  renderSaasAnalytics();
+}
+
+function saasAnalyticsRows() {
+  const workspace = saasWorkspace();
+  const marketMemory = getMarketMemory();
+  const inbox = getWorkflowInbox();
+  const reports = getWorkflowReports();
+  const avgTce = marketMemory.reduce((sum, item) => sum + Number(item.tce || 0), 0) / Math.max(1, marketMemory.length);
+  const fixed = marketMemory.filter((item) => /fixed/i.test(item.status || "")).length;
+  const failed = marketMemory.filter((item) => /failed/i.test(item.status || "")).length;
+  const claimDocs = workspace.documents.filter((item) => item.verdict && !/clean/i.test(item.verdict)).length;
+  return [
+    ["Saved fixtures", marketMemory.length],
+    ["Fix rate", `${Math.round((fixed / Math.max(1, fixed + failed)) * 100)}%`],
+    ["Average TCE", `${money(avgTce)}/day`],
+    ["Open inbox", inbox.length],
+    ["Uploaded docs", workspace.documents.length],
+    ["Doc safety watch", claimDocs],
+    ["Alarms", workspace.alarms.length],
+    ["Client portals", workspace.clientPortals.length],
+    ["Report history", reports.length],
+    ["Contract clauses", getSaasContracts().length]
+  ];
+}
+
+function renderSaasAnalytics() {
+  if (!saasAnalyticsResult) return;
+  const rows = saasAnalyticsRows();
+  lastSaasAnalytics = { rows, generatedAt: new Date().toLocaleString() };
+  saasAnalyticsResult.innerHTML = `
+    ${metricCards(rows.slice(0, 4).map(([label, value]) => ({ label, value })))}
+    <div class="saas-analytics-bars">
+      ${rows.slice(4).map(([label, value], index) => {
+        const width = clamp(20 + Number.parseFloat(String(value)) * (index === 0 ? 5 : 7), 18, 100);
+        return `<div><span>${escapeHtml(label)}</span><i style="width:${width}%"></i><strong>${escapeHtml(value)}</strong></div>`;
+      }).join("")}
+    </div>
+  `;
+}
+
+function renderSaasSecurity() {
+  if (!saasSecurityResult) return;
+  const docScore = lastSaasDocument?.scan?.score ?? 100;
+  const policies = [
+    ["Allowed upload types", "pdf, doc, docx, txt, eml, png, jpg", "verified"],
+    ["Max file size", "10 MB browser-side guard", "input"],
+    ["Unsafe pattern scan", `${lastSaasDocument?.scan?.findings?.length || 0} finding(s)`, docScore >= 82 ? "verified" : "api-ready"],
+    ["Backend antivirus", "ClamAV / cloud malware scan recommended", "api-ready"],
+    ["Rate limit", "Per-user upload and API quotas required in production", "api-ready"],
+    ["Auth", "Signed URLs + JWT/session cookies in backend", "api-ready"]
+  ];
+  lastSaasSecurity = { docScore, policies };
+  saasSecurityResult.innerHTML = `
+    ${metricCards([
+      { label: "File safety", value: `${docScore}/100` },
+      { label: "Policies", value: policies.length },
+      { label: "Production", value: "Backend scan required" }
+    ])}
+    <div class="confidence-list">${policies.map(([name, detail, badge]) => `<div class="confidence-row"><span>${escapeHtml(name)}<small>${escapeHtml(detail)}</small></span><em class="source-badge ${badge}">${sourceBadgeText(badge)}</em></div>`).join("")}</div>
+  `;
+}
+
+function renderSaasBackendBlueprint() {
+  if (!saasBackendBlueprintResult) return;
+  const modules = [
+    ["Auth", "users, teams, roles, password/session/JWT"],
+    ["Database", "fixtures, documents, alarms, CRM, reports, contract memory"],
+    ["Object storage", "PDF/Word/image upload with signed URLs"],
+    ["OCR worker", "PDF/image -> text extraction queue"],
+    ["Security worker", "file scan, MIME check, size limit, quarantine"],
+    ["Scheduler", "subject/time-bar/laycan/invoice alarms"],
+    ["Market jobs", "news RSS, bunker snapshot, licensed index connector"],
+    ["Client portal", "signed token, expiry, access scope, audit log"],
+    ["Admin", "rates, ports, sources, default assumptions"],
+    ["Audit", "who changed what, when, and why"]
+  ];
+  lastSaasBackendBlueprint = { modules };
+  saasBackendBlueprintResult.innerHTML = `
+    ${metricCards([
+      { label: "Backend modules", value: modules.length },
+      { label: "Current mode", value: "Static + local DB" },
+      { label: "Upgrade", value: "FastAPI + DB + workers" }
+    ])}
+    <div class="saas-blueprint-grid">${modules.map(([name, detail]) => `<div><strong>${escapeHtml(name)}</strong><span>${escapeHtml(detail)}</span></div>`).join("")}</div>
+  `;
+}
+
+function saasWorkspaceExport() {
+  return {
+    generatedAt: new Date().toLocaleString(),
+    workspace: saasWorkspace(),
+    admin: safeLocalGet(saasAdminKey, {}),
+    sources: safeLocalGet(saasSourcesKey, {}),
+    contracts: getSaasContracts(),
+    analytics: lastSaasAnalytics,
+    workflow: workflowFullPack()
+  };
+}
+
+function saasDocumentReportText() {
+  const doc = lastSaasDocument;
+  if (!doc) return "No document scan generated.";
+  return reportLines("FOCUSEA DOCUMENT SAFETY REPORT", [
+    `File: ${doc.fileMeta?.name || "Pasted text"}`,
+    `Safety score: ${doc.scan.score}/100`,
+    `Verdict: ${doc.scan.verdict}`,
+    `Parsed route: ${doc.parsedOffer.route || "TBC"}`,
+    "",
+    "Findings:",
+    ...(doc.scan.findings.length ? doc.scan.findings : ["No browser-side unsafe pattern found"]).map((item) => `- ${item}`)
+  ]);
+}
+
+function saasAnalyticsCsvRows() {
+  return [["Metric", "Value"], ...saasAnalyticsRows()];
+}
+
+function handleSaasDownload(type) {
+  if (!lastSaasAlarm) renderSaasAlarm();
+  if (!lastSaasAnalytics) renderSaasAnalytics();
+  const actions = {
+    "workspace-json": () => downloadJsonFile("focusea-saas-workspace.json", saasWorkspaceExport()),
+    "document-report": () => downloadTextFile("focusea-document-safety-report.txt", saasDocumentReportText()),
+    "deal-room-pdf": () => downloadPdfFile("focusea-full-deal-room.pdf", "Focusea Full Deal Room", saasDealRoomText()),
+    "alarms-ics": () => downloadTextFile("focusea-alarms.ics", saasIcsText()),
+    "analytics-csv": () => downloadCsvFile("focusea-broker-performance-analytics.csv", saasAnalyticsCsvRows())
+  };
+  actions[type]?.();
+}
+
+function renderAllSaasCore() {
+  renderSaasAccount();
+  renderSaasDocument();
+  renderSaasDealRoom();
+  renderSaasAlarm();
+  renderSaasEmail();
+  renderSaasAdmin();
+  renderSaasMarketSource();
+  renderSaasContractMemory();
+  renderSaasClientPortal();
+  renderSaasAnalytics();
+  renderSaasSecurity();
+  renderSaasBackendBlueprint();
+}
+
 function renderAllWorkflowControl() {
   renderWorkflowGate();
   renderDealIntelligenceGraph();
@@ -13901,6 +14474,14 @@ bindBrokerForm(workflowCounterpartyForm, renderWorkflowCounterparty);
 bindBrokerForm(workflowAgencyForm, renderWorkflowAgency);
 bindBrokerForm(workflowMailStudioForm, renderWorkflowMailStudio);
 bindBrokerForm(workflowComparisonForm, renderWorkflowComparison);
+bindBrokerForm(saasAccountForm, renderSaasAccount);
+bindBrokerForm(saasDocumentForm, renderSaasDocument);
+bindBrokerForm(saasAlarmForm, renderSaasAlarm);
+bindBrokerForm(saasEmailForm, renderSaasEmail);
+bindBrokerForm(saasAdminForm, renderSaasAdmin);
+bindBrokerForm(saasMarketSourceForm, renderSaasMarketSource);
+bindBrokerForm(saasContractMemoryForm, renderSaasContractMemory);
+bindBrokerForm(saasClientPortalForm, renderSaasClientPortal);
 bindBrokerForm(superSuiteForm, renderSuperSuite);
 
 if (offerTrackerForm) {
@@ -13951,6 +14532,15 @@ if (saveWorkflowReport) saveWorkflowReport.addEventListener("click", saveWorkflo
 if (clearWorkflowReports) clearWorkflowReports.addEventListener("click", clearWorkflowReportHistory);
 document.querySelectorAll("[data-download-workflow-pro]").forEach((button) => {
   button.addEventListener("click", () => handleWorkflowProDownload(button.dataset.downloadWorkflowPro));
+});
+if (runSaasCore) runSaasCore.addEventListener("click", renderAllSaasCore);
+if (clearSaasWorkspace) clearSaasWorkspace.addEventListener("click", clearSaasWorkspaceState);
+if (refreshSaasDealRoom) refreshSaasDealRoom.addEventListener("click", renderSaasDealRoom);
+if (refreshSaasAnalytics) refreshSaasAnalytics.addEventListener("click", renderSaasAnalytics);
+if (saveSaasContract) saveSaasContract.addEventListener("click", saveSaasContractMemory);
+if (clearSaasContracts) clearSaasContracts.addEventListener("click", clearSaasContractMemory);
+document.querySelectorAll("[data-download-saas]").forEach((button) => {
+  button.addEventListener("click", () => handleSaasDownload(button.dataset.downloadSaas));
 });
 if (superTerminalNoteForm) superTerminalNoteForm.addEventListener("submit", addSuperTerminalNote);
 if (clearSuperNotes) {
@@ -14416,6 +15006,7 @@ runAllBrokerOs();
 runFullDecisionLab();
 renderCommandTheater();
 renderAllWorkflowControl();
+renderAllSaasCore();
 renderAllSuperSuite();
 renderMarketIndexes();
 renderDataTrustLayer();
