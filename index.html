@@ -10,7 +10,7 @@
     <title>Focusea Maritime Platform</title>
     <link rel="icon" href="favicon.svg?v=focusea-badge2" type="image/svg+xml" />
     <link rel="manifest" href="manifest.webmanifest" />
-    <link rel="stylesheet" href="styles.css?v=workflow-front-news-1" />
+    <link rel="stylesheet" href="styles.css?v=workflow-trust-autopilot-1" />
   </head>
   <body>
     <div class="app-shell">
@@ -113,6 +113,125 @@
           </div>
           <div class="news-status" id="newsStatus">Loading real maritime news sources...</div>
           <div class="news-grid" id="newsGrid"></div>
+        </section>
+
+        <section class="trust-autopilot-panel" id="trustAutopilotCenter">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Trust & Autopilot Center</p>
+              <h2>Source-backed broker intelligence, carbon cost and deal automation.</h2>
+            </div>
+            <div class="status-pill">Professional Layer</div>
+          </div>
+
+          <div class="trust-command-hero">
+            <div>
+              <span>One operational layer</span>
+              <strong id="trustAutopilotHeadline">Paste a fixture, verify the data, build the brief.</strong>
+              <p id="trustAutopilotSummary">News, bunker, Baltic-style indexes, weather, port delay, ETS/FuelEU, documents and deadlines stay separated by source confidence.</p>
+            </div>
+            <div class="button-row">
+              <button type="button" class="primary-button small" id="runTrustAutopilot">Run Center</button>
+              <button type="button" class="ghost-button small" data-download-trust="brief-pdf">Brief PDF</button>
+              <button type="button" class="ghost-button small" data-download-trust="pack-json">Pack JSON</button>
+            </div>
+          </div>
+
+          <div class="trust-command-grid">
+            <article class="wide-card">
+              <div class="mini-heading"><span>1. Data Trust Center</span><strong>Source, time, confidence, data type</strong></div>
+              <div class="data-trust-grid" id="frontDataTrustCards"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>2. EU ETS / FuelEU / Carbon Desk</span><strong>Commercial screening</strong></div>
+              <form class="broker-form" id="frontCarbonForm">
+                <label><span>Gross tonnage</span><input name="gt" type="number" value="38000" min="0" step="100" /></label>
+                <label><span>Fuel used mt</span><input name="fuelTons" type="number" value="420" min="0" step="1" /></label>
+                <label><span>Distance nm</span><input name="distance" type="number" value="3150" min="0" step="10" /></label>
+                <label><span>Cargo qty mt</span><input name="cargoQty" type="number" value="50000" min="1" step="100" /></label>
+                <label><span>EU scope share %</span><input name="euShare" type="number" value="50" min="0" max="100" step="1" /></label>
+                <label><span>EUA price EUR/t</span><input name="euaPrice" type="number" value="72" min="0" step="1" /></label>
+                <label><span>Year</span><select name="year"><option>2025</option><option selected>2026</option><option>2027</option></select></label>
+                <button type="submit">Calculate Carbon Desk</button>
+              </form>
+              <div class="broker-output" id="frontCarbonResult"></div>
+            </article>
+
+            <article class="wide-card">
+              <div class="mini-heading"><span>3. Fixture Autopilot</span><strong>Offer, risk, TCE, recap, counter mail</strong></div>
+              <form class="broker-form single-column" id="frontFixtureAutopilotForm">
+                <label><span>Broker mail / WhatsApp text</span><textarea name="fixtureText">Firm offer: 50k coal Indonesia to India laycan 10/15 Jul freight USD 18.50 pmt demurrage USD 18,000/day Supramax. Subjects stem and receiver approval by 1700 LT. NOR WIBON/WIPON, time lost waiting berth to count. Please counter quickly.</textarea></label>
+                <div class="auto-deal-controls">
+                  <label><span>Target TCE $/day</span><input name="targetTce" type="number" value="22000" min="0" step="500" /></label>
+                  <label><span>Bunker $/mt</span><input name="bunkerPrice" type="number" value="686.5" min="0" step="0.1" /></label>
+                  <label><span>Daily hire $</span><input name="dailyHire" type="number" value="14500" min="0" step="100" /></label>
+                </div>
+                <button type="submit">Run Fixture Autopilot</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" id="frontFixtureToInbox">Push to Inbox</button>
+                <button type="button" class="ghost-button small" data-download-trust="recap-txt">Recap TXT</button>
+                <button type="button" class="ghost-button small" data-download-trust="counter-mail">Counter Mail</button>
+              </div>
+              <div class="broker-output" id="frontFixtureAutopilotResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>4. Port Photo Intelligence v2</span><strong>Verified image + operational reading</strong></div>
+              <form class="broker-form" id="frontPortPhotoForm">
+                <label><span>Port</span><select name="portCode"><option value="NLRTM">Rotterdam</option><option value="BEANR">Antwerp</option><option value="DEHAM">Hamburg</option><option value="GRPIR">Piraeus</option><option value="TRMER">Mersin</option><option value="TRIST">Istanbul / Haydarpasa</option><option value="TRIZM">Izmir</option></select></label>
+                <label><span>User agency photo</span><input id="frontPortPhotoUpload" name="portPhoto" type="file" accept="image/*" /></label>
+                <label><span>Review status</span><select name="reviewStatus"><option>Verified source</option><option selected>Needs review</option><option>Client report ready</option></select></label>
+                <button type="submit">Read Port Visual</button>
+              </form>
+              <div class="broker-output" id="frontPortPhotoResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>5. Document AI Room</span><strong>CP + SOF + NOR + invoice contradiction</strong></div>
+              <form class="broker-form single-column" id="frontDocumentRoomForm">
+                <label><span>Paste document pack</span><textarea name="documentPack">RECAP: demurrage USD 18,000/day, NOR 10 Jul 0800. CP: weather delays excepted unless used. SOF: NOR tendered 10 Jul 1000, berthed 10 Jul 1800, loading started 11 Jul 0600, rain stop 12 Jul 0300-0900, completed 14 Jul 2200. INVOICE: demurrage USD 20,000/day, amount USD 45,000.</textarea></label>
+                <button type="submit">Analyze Document Room</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-trust="document-pdf">Document PDF</button>
+                <button type="button" class="ghost-button small" data-download-trust="document-txt">Findings TXT</button>
+              </div>
+              <div class="broker-output" id="frontDocumentRoomResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>6. Claim Deadline / Time Bar Alarm</span><strong>Subject, laycan, invoice, claim</strong></div>
+              <form class="broker-form" id="frontTimeBarForm">
+                <label><span>Subject deadline hours</span><input name="subjectHours" type="number" value="18" min="0" step="1" /></label>
+                <label><span>Laycan canceling days</span><input name="cancelingDays" type="number" value="9" min="-30" step="1" /></label>
+                <label><span>Invoice due days</span><input name="invoiceDays" type="number" value="21" min="-30" step="1" /></label>
+                <label><span>Demurrage time bar days</span><input name="timeBarDays" type="number" value="90" min="-30" step="1" /></label>
+                <button type="submit">Build Alarm Calendar</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-trust="alarms-ics">ICS Calendar</button>
+              </div>
+              <div class="broker-output" id="frontTimeBarResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>7. Real Backend Connector</span><strong>FastAPI-ready workflow</strong></div>
+              <form class="broker-form" id="frontBackendForm">
+                <label><span>API base</span><input name="apiBase" value="http://127.0.0.1:8000" /></label>
+                <label><span>Mode</span><select name="mode"><option selected>Static demo + API-ready</option><option>Local FastAPI</option><option>Cloud backend planned</option></select></label>
+                <button type="submit">Check Backend Plan</button>
+              </form>
+              <div class="broker-output" id="frontBackendResult"></div>
+            </article>
+
+            <article class="wide-card">
+              <div class="mini-heading"><span>8. Broker Daily Brief</span><strong>Today&apos;s 8 commercial actions</strong></div>
+              <button type="button" class="ghost-button small" id="refreshFrontDailyBrief">Refresh Daily Brief</button>
+              <div class="broker-output" id="frontDailyBriefResult"></div>
+            </article>
+          </div>
         </section>
 
         <section class="ops-board" aria-label="Canlı operasyon panosu">
@@ -3825,6 +3944,6 @@ Subject: Firm offer
       </main>
     </div>
 
-    <script src="script.js?v=workflow-front-news-1"></script>
+    <script src="script.js?v=workflow-trust-autopilot-1"></script>
   </body>
 </html>

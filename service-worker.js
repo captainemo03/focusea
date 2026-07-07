@@ -1,4 +1,4 @@
-const FOCUSEA_CACHE = "focusea-front-news-1";
+const FOCUSEA_CACHE = "focusea-trust-autopilot-1";
 const FOCUSEA_ASSETS = [
   "./",
   "./index.html",

@@ -397,6 +397,156 @@ def alarm_pack(payload: dict[str, Any]) -> dict[str, Any]:
     return {"alarms": alarm_rows, "ics": "\r\n".join(ics_lines), "source": "python-fastapi"}
 
 
+def data_trust_center() -> dict[str, Any]:
+    now = datetime.now().isoformat(timespec="seconds")
+    rows = [
+        {
+            "name": "Maritime news",
+            "provider": "Google News RSS / source-linked cards",
+            "data_type": "live",
+            "confidence": 86,
+            "updated": now,
+            "use": "Front-page news bulletin and route/cargo alerts.",
+        },
+        {
+            "name": "Baltic indexes",
+            "provider": "Licensed feed required",
+            "data_type": "licensed required",
+            "confidence": 62,
+            "updated": now,
+            "use": "Broker market confidence, not fake live data.",
+        },
+        {
+            "name": "Bunker prices",
+            "provider": "Verified snapshot / API-ready feed",
+            "data_type": "verified",
+            "confidence": 88,
+            "updated": now,
+            "use": "TCE, ROB, voyage estimate and bunker sensitivity.",
+        },
+        {
+            "name": "NWS weather API",
+            "provider": "weather.gov",
+            "data_type": "api-ready",
+            "confidence": 86,
+            "updated": now,
+            "use": "Forecast, alert and observation layer for port/weather delay.",
+            "url": "https://www.weather.gov/documentation/services-web-api",
+        },
+        {
+            "name": "EU ETS / FuelEU",
+            "provider": "European Commission",
+            "data_type": "verified",
+            "confidence": 92,
+            "updated": now,
+            "use": "ETS surcharge, FuelEU exposure and carbon clause allocation.",
+            "url": "https://climate.ec.europa.eu/eu-action/transport-decarbonisation/reducing-emissions-shipping-sector_en",
+        },
+        {
+            "name": "IMO DCS / CII",
+            "provider": "IMO",
+            "data_type": "verified",
+            "confidence": 90,
+            "updated": now,
+            "use": "Fuel consumption reporting and CII screening evidence.",
+            "url": "https://www.imo.org/en/OurWork/Environment/Pages/Data-Collection-System.aspx",
+        },
+    ]
+    return {"rows": rows, "source": "python-fastapi"}
+
+
+def ets_phase(year: Any) -> float:
+    value = int(number(year, 2026))
+    if value >= 2027:
+        return 1.0
+    if value == 2026:
+        return 0.7
+    return 0.4
+
+
+def carbon_estimate(payload: dict[str, Any]) -> dict[str, Any]:
+    gt = number(payload.get("gt"), 38000)
+    fuel_tons = number(payload.get("fuel_tons"), number(payload.get("fuelTons"), 420))
+    distance = max(number(payload.get("distance"), 3150), 1)
+    cargo_qty = max(number(payload.get("cargo_qty"), number(payload.get("cargoQty"), 50000)), 1)
+    eu_share = clamp(number(payload.get("eu_share"), number(payload.get("euShare"), 50)), 0, 100)
+    eua_price = number(payload.get("eua_price"), number(payload.get("euaPrice"), 72))
+    year = int(number(payload.get("year"), 2026))
+    phase = ets_phase(year)
+    in_scope = gt >= 5000
+    co2 = fuel_tons * 3.114
+    eu_scope_co2 = co2 * eu_share / 100
+    surrender_tons = eu_scope_co2 * phase if in_scope else 0
+    ets_cost_eur = surrender_tons * eua_price
+    co2_per_ton_mile = co2 / (cargo_qty * distance)
+    fueleu_risk = int(clamp(22 + fuel_tons / distance * 120 + (14 if eu_share > 50 else 0), 0, 100))
+    cii_risk = int(clamp(co2_per_ton_mile * 1_000_000 * 0.85, 0, 100))
+    action = "Add ETS allocation clause and surcharge line." if ets_cost_eur > 50000 else "Attach carbon note to voyage estimate."
+    return {
+        "in_scope": in_scope,
+        "co2_tons": round(co2, 2),
+        "eu_scope_co2_tons": round(eu_scope_co2, 2),
+        "surrender_phase": phase,
+        "surrender_tons": round(surrender_tons, 2),
+        "ets_cost_eur": round(ets_cost_eur, 2),
+        "ets_cost_per_cargo_ton": round(ets_cost_eur / cargo_qty, 4),
+        "co2_per_ton_mile": round(co2_per_ton_mile, 8),
+        "fueleu_risk": fueleu_risk,
+        "cii_risk": cii_risk,
+        "action": action,
+        "source": "python-fastapi",
+    }
+
+
+def document_room_analyze(document_pack: str) -> dict[str, Any]:
+    text = document_pack or ""
+    parsed = parse_offer_text(text)
+    laytime = calculate_laytime(text, 72, parsed["parsed"].get("demurrage_rate") or 18000, 9000)
+    dem_rates = [number(match.group(1), 0) for match in re.finditer(r"dem(?:urrage)?[^0-9]*(?:usd|us\$|\$)?\s*([0-9][0-9,]*(?:\.\d+)?)", text, re.I)]
+    dem_rates = sorted({round(rate) for rate in dem_rates if rate})
+    nor_lines = [line for line in text.splitlines() if re.search(r"\bnor\b|notice of readiness", line, re.I)]
+    findings = []
+    if len(dem_rates) > 1:
+        findings.append({"level": "High", "text": f"Demurrage mismatch detected: {dem_rates}."})
+    if len(nor_lines) > 1:
+        findings.append({"level": "High", "text": "Multiple NOR lines detected; compare recap, CP and SOF timing."})
+    if laytime["demurrage_amount"] > 0:
+        findings.append({"level": "Medium", "text": f"Laytime engine estimates demurrage {laytime['demurrage_amount']}."})
+    if re.search(r"weather delays excepted.*unless used|unless used.*weather delays excepted", text, re.I | re.S):
+        findings.append({"level": "Medium", "text": "Weather exception and unless-used wording need reconciliation."})
+    if parsed["missing"]:
+        findings.append({"level": "Medium", "text": f"Missing commercial fields: {', '.join(parsed['missing'])}."})
+    if not findings:
+        findings.append({"level": "Low", "text": "No major contradiction detected by the local rules."})
+    return {
+        "parsed": parsed["parsed"],
+        "missing": parsed["missing"],
+        "laytime": laytime,
+        "demurrage_rates": dem_rates,
+        "nor_lines": nor_lines,
+        "findings": findings,
+        "source": "python-fastapi",
+    }
+
+
+def broker_daily_brief(payload: dict[str, Any] | None = None) -> dict[str, Any]:
+    payload = payload or {}
+    text = str(payload.get("fixture_text") or payload.get("fixtureText") or "")
+    parsed = parse_offer_text(text) if text else {"parsed": {}, "risk": {"score": 0, "label": "No fixture"}, "missing": []}
+    carbon = carbon_estimate(payload.get("carbon", payload))
+    items = [
+        f"Open fixture: {parsed['parsed'].get('cargo_label', 'fixture')} {parsed['parsed'].get('route', 'route TBC')} / {parsed['risk']['label']}.",
+        "News: review front-page source-linked maritime bulletin before countering.",
+        "Bunker: rerun TCE when VLSFO changes beyond your trigger.",
+        "Market: Baltic-style benchmarks must remain licensed-required until a feed is connected.",
+        f"Carbon: ETS screen EUR {carbon['ets_cost_eur']} and FuelEU risk {carbon['fueleu_risk']}/100.",
+        "Documents: compare CP, SOF, NOR and invoice before sending claim or recap.",
+        "Deadlines: check subject, laycan canceling, invoice due and demurrage time bar calendar.",
+        "Backend: save fixture, vault documents and generated reports for user resume/history.",
+    ]
+    return {"items": items, "parsed": parsed, "carbon": carbon, "source": "python-fastapi"}
+
+
 def client_portal_pack(payload: dict[str, Any]) -> dict[str, Any]:
     client = str(payload.get("client", "Client"))
     status = str(payload.get("status", "On subjects"))

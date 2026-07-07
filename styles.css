@@ -164,6 +164,7 @@ a {
 .commercial-suite-panel,
 .broker-os-panel,
 .autopilot-panel,
+.trust-autopilot-panel,
 .deal-iq-panel,
 .decision-lab-panel,
 .command-theater-panel,
@@ -471,6 +472,7 @@ main {
 .edge-grid,
 .commercial-grid,
 .autopilot-grid,
+.trust-command-grid,
 .deal-iq-grid,
 .intelligence-grid,
 .tool-grid,
@@ -533,6 +535,7 @@ main {
 .commercial-suite-panel,
 .broker-os-panel,
 .autopilot-panel,
+.trust-autopilot-panel,
 .deal-iq-panel,
 .decision-lab-panel,
 .academy-center,
@@ -966,6 +969,7 @@ main {
 
 .broker-os-hero,
 .autopilot-hero,
+.trust-command-hero,
 .deal-iq-hero {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -980,7 +984,8 @@ main {
     rgba(2, 13, 18, 0.28);
 }
 
-.autopilot-hero {
+.autopilot-hero,
+.trust-command-hero {
   border-color: rgba(40, 240, 198, 0.28);
   background:
     linear-gradient(135deg, rgba(40, 240, 198, 0.12), transparent 42%),
@@ -1705,6 +1710,8 @@ main {
 .broker-os-hero p,
 .autopilot-hero span,
 .autopilot-hero p,
+.trust-command-hero span,
+.trust-command-hero p,
 .deal-iq-hero span,
 .deal-iq-hero p {
   color: var(--muted);
@@ -1712,6 +1719,7 @@ main {
 
 .broker-os-hero span,
 .autopilot-hero span,
+.trust-command-hero span,
 .deal-iq-hero span {
   display: block;
   font-size: 0.76rem;
@@ -1721,6 +1729,7 @@ main {
 
 .broker-os-hero strong,
 .autopilot-hero strong,
+.trust-command-hero strong,
 .deal-iq-hero strong {
   display: block;
   margin-top: 5px;
@@ -1731,6 +1740,7 @@ main {
 
 .broker-os-hero p,
 .autopilot-hero p,
+.trust-command-hero p,
 .deal-iq-hero p {
   max-width: 820px;
   margin: 6px 0 0;
@@ -1784,6 +1794,13 @@ main {
   align-items: start;
 }
 
+.trust-command-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
 .deal-iq-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
@@ -1815,6 +1832,7 @@ main {
 .commercial-grid article,
 .broker-os-grid article,
 .autopilot-grid article,
+.trust-command-grid article,
 .deal-iq-grid article,
 .decision-lab-grid article,
 .super-suite-grid article {
@@ -1837,6 +1855,7 @@ main {
 .edge-grid .wide-card,
 .broker-os-grid .wide-card,
 .autopilot-grid .wide-card,
+.trust-command-grid .wide-card,
 .deal-iq-grid .wide-card,
 .decision-lab-grid .wide-card,
 .theater-grid .wide-card,
@@ -5053,6 +5072,7 @@ body.ai-presentation-mode .ai-core-hero {
   .commercial-grid,
   .broker-os-grid,
   .autopilot-grid,
+  .trust-command-grid,
   .deal-iq-grid,
   .decision-lab-grid,
   .theater-grid,
@@ -5175,6 +5195,7 @@ body.ai-presentation-mode .ai-core-hero {
   .python-engine-grid,
   .broker-os-hero,
   .autopilot-hero,
+  .trust-command-hero,
   .deal-iq-hero,
   .decision-lab-hero,
   .theater-stage,

@@ -16,9 +16,13 @@ from .engines import (
     clause_diff,
     agency_workspace,
     alarm_pack,
+    broker_daily_brief,
+    carbon_estimate,
     compare_fixtures,
+    data_trust_center,
     client_portal_pack,
     document_safety,
+    document_room_analyze,
     evaluate_stability,
     generate_broker_mail,
     make_pdf_bytes,
@@ -135,6 +139,31 @@ class AlarmRequest(BaseModel):
     invoice_days: float = 21
 
 
+class CarbonRequest(BaseModel):
+    gt: float = 38000
+    fuel_tons: float = 420
+    distance: float = 3150
+    cargo_qty: float = 50000
+    eu_share: float = 50
+    eua_price: float = 72
+    year: int = 2026
+
+
+class DocumentRoomRequest(BaseModel):
+    document_pack: str = ""
+
+
+class DailyBriefRequest(BaseModel):
+    fixture_text: str = ""
+    gt: float = 38000
+    fuel_tons: float = 420
+    distance: float = 3150
+    cargo_qty: float = 50000
+    eu_share: float = 50
+    eua_price: float = 72
+    year: int = 2026
+
+
 class ClientPortalRequest(BaseModel):
     client: str = "Atlas Commodities"
     status: str = "On subjects"
@@ -190,8 +219,12 @@ def health() -> dict[str, Any]:
             "mail-generator",
             "fixture-comparison",
             "document-safety",
+            "document-room",
+            "data-trust-center",
+            "carbon-estimate",
             "alarm-ics",
             "client-portal",
+            "daily-brief",
             "performance-analytics",
             "ai-autopilot",
             "ai-copilot",
@@ -255,6 +288,26 @@ def api_document_safety(request: DocumentSafetyRequest) -> dict[str, Any]:
 @app.post("/api/alarms/ics")
 def api_alarms_ics(request: AlarmRequest) -> dict[str, Any]:
     return alarm_pack(request.model_dump())
+
+
+@app.get("/api/data-trust/center")
+def api_data_trust_center() -> dict[str, Any]:
+    return data_trust_center()
+
+
+@app.post("/api/carbon/estimate")
+def api_carbon_estimate(request: CarbonRequest) -> dict[str, Any]:
+    return carbon_estimate(request.model_dump())
+
+
+@app.post("/api/document-room/analyze")
+def api_document_room_analyze(request: DocumentRoomRequest) -> dict[str, Any]:
+    return document_room_analyze(request.document_pack)
+
+
+@app.post("/api/daily-brief")
+def api_daily_brief(request: DailyBriefRequest) -> dict[str, Any]:
+    return broker_daily_brief(request.model_dump())
 
 
 @app.post("/api/client-portal/pack")

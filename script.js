@@ -2275,6 +2275,26 @@ const balticFeedResult = document.querySelector("#balticFeedResult");
 const dataTrustLayer = document.querySelector("#dataTrustLayer");
 const securityScanForm = document.querySelector("#securityScanForm");
 const securityShieldResult = document.querySelector("#securityShieldResult");
+const runTrustAutopilot = document.querySelector("#runTrustAutopilot");
+const trustAutopilotHeadline = document.querySelector("#trustAutopilotHeadline");
+const trustAutopilotSummary = document.querySelector("#trustAutopilotSummary");
+const frontDataTrustCards = document.querySelector("#frontDataTrustCards");
+const frontCarbonForm = document.querySelector("#frontCarbonForm");
+const frontCarbonResult = document.querySelector("#frontCarbonResult");
+const frontFixtureAutopilotForm = document.querySelector("#frontFixtureAutopilotForm");
+const frontFixtureAutopilotResult = document.querySelector("#frontFixtureAutopilotResult");
+const frontFixtureToInbox = document.querySelector("#frontFixtureToInbox");
+const frontPortPhotoForm = document.querySelector("#frontPortPhotoForm");
+const frontPortPhotoUpload = document.querySelector("#frontPortPhotoUpload");
+const frontPortPhotoResult = document.querySelector("#frontPortPhotoResult");
+const frontDocumentRoomForm = document.querySelector("#frontDocumentRoomForm");
+const frontDocumentRoomResult = document.querySelector("#frontDocumentRoomResult");
+const frontTimeBarForm = document.querySelector("#frontTimeBarForm");
+const frontTimeBarResult = document.querySelector("#frontTimeBarResult");
+const frontBackendForm = document.querySelector("#frontBackendForm");
+const frontBackendResult = document.querySelector("#frontBackendResult");
+const refreshFrontDailyBrief = document.querySelector("#refreshFrontDailyBrief");
+const frontDailyBriefResult = document.querySelector("#frontDailyBriefResult");
 const redFlagForm = document.querySelector("#redFlagForm");
 const redFlagResult = document.querySelector("#redFlagResult");
 const recapBuilderForm = document.querySelector("#recapBuilderForm");
@@ -2701,6 +2721,13 @@ let lastCopilotReport = null;
 let lastTceOptimization = null;
 let lastRiskRadar = null;
 let lastMarketBrief = null;
+let lastFrontCarbon = null;
+let lastFrontFixtureAutopilot = null;
+let lastFrontPortPhoto = null;
+let lastFrontDocumentRoom = null;
+let lastFrontTimeBar = null;
+let lastFrontBackend = null;
+let lastFrontDailyBrief = null;
 let selectedMarketIndexId = "bdi";
 let lastRedFlagReport = null;
 let lastRecapReport = null;
@@ -2981,7 +3008,7 @@ function applyBunkerDefaultsToForms() {
 }
 
 const pageGroups = {
-  dashboard: ["#command", ".dashboard-strip", ".ops-board", "#commandDeck", "#smartOps", "#newsBulletin"],
+  dashboard: ["#command", ".dashboard-strip", "#newsBulletin", "#trustAutopilotCenter", ".ops-board", "#commandDeck", "#smartOps"],
   theater: ["#commandTheaterPanel"],
   saasCore: ["#saasCorePanel"],
   aiCore: ["#aiCorePanel"],
@@ -5534,6 +5561,564 @@ function renderDataTrustLayer() {
       <small>${row.confidence}% confidence · updated ${escapeHtml(row.updated)} · ${escapeHtml(row.usage)}</small>
     </article>
   `).join("");
+}
+
+function officialTrustSourceRows() {
+  return [
+    {
+      name: "NWS API weather alerts",
+      provider: "weather.gov API",
+      badge: "api-ready",
+      confidence: 86,
+      updated: "official docs checked",
+      value: "Forecasts, alerts and observations",
+      usage: "Weather delay, port risk and laytime exception watch.",
+      url: "https://www.weather.gov/documentation/services-web-api"
+    },
+    {
+      name: "EU ETS maritime",
+      provider: "European Commission",
+      badge: "verified",
+      confidence: 92,
+      updated: "official docs checked",
+      value: "5,000 GT+ / 2026 70% surrender phase",
+      usage: "Voyage ETS surcharge, clause allocation and client cost note.",
+      url: "https://climate.ec.europa.eu/eu-action/transport-decarbonisation/reducing-emissions-shipping-sector_en"
+    },
+    {
+      name: "FuelEU Maritime",
+      provider: "European Commission Mobility and Transport",
+      badge: "verified",
+      confidence: 90,
+      updated: "official docs checked",
+      value: "GHG intensity limits for 5,000 GT+ ships",
+      usage: "Fuel compliance exposure and green route cost warning.",
+      url: "https://transport.ec.europa.eu/transport-modes/maritime/decarbonising-maritime-transport-fueleu-maritime_en"
+    },
+    {
+      name: "IMO DCS / CII",
+      provider: "International Maritime Organization",
+      badge: "verified",
+      confidence: 90,
+      updated: "official docs checked",
+      value: "5,000 GT+ fuel data / CII from 2023",
+      usage: "CII screening and emissions evidence layer.",
+      url: "https://www.imo.org/en/OurWork/Environment/Pages/Data-Collection-System.aspx"
+    }
+  ];
+}
+
+function renderFrontDataTrustCenter() {
+  if (!frontDataTrustCards) return;
+  const rows = [
+    ...dataTrustRows().filter((row) => /news|Market|Bunker|Weather|Port congestion|Fixture/.test(row.name)),
+    ...officialTrustSourceRows()
+  ];
+  frontDataTrustCards.innerHTML = rows.map((row) => `
+    <article class="data-trust-card">
+      <div>
+        <strong>${escapeHtml(row.name)}</strong>
+        <em class="source-badge ${row.badge}">${sourceBadgeText(row.badge)}</em>
+      </div>
+      <span>${escapeHtml(row.provider)}</span>
+      <b>${escapeHtml(row.value)}</b>
+      <div class="trust-meter"><span style="width:${clamp(row.confidence, 0, 100)}%"></span></div>
+      <small>${row.confidence}% confidence | updated ${escapeHtml(row.updated)} | ${escapeHtml(row.usage)}</small>
+      ${row.url ? `<a href="${escapeHtml(row.url)}" target="_blank" rel="noopener noreferrer">Open source</a>` : ""}
+    </article>
+  `).join("");
+}
+
+function etsSurrenderPhase(yearValue) {
+  const year = Number(yearValue) || 2026;
+  if (year >= 2027) return 1;
+  if (year === 2026) return 0.7;
+  if (year === 2025) return 0.4;
+  return 0.4;
+}
+
+function renderFrontCarbonDesk() {
+  if (!frontCarbonForm || !frontCarbonResult) return;
+  const values = collectFormValues(frontCarbonForm);
+  const gt = Number(values.gt) || 0;
+  const fuelTons = Number(values.fuelTons) || 0;
+  const distance = Number(values.distance) || 0;
+  const cargoQty = Number(values.cargoQty) || 1;
+  const euShare = clamp(Number(values.euShare) || 0, 0, 100);
+  const euaPrice = Number(values.euaPrice) || 0;
+  const phase = etsSurrenderPhase(values.year);
+  const inScope = gt >= 5000;
+  const co2 = fuelTons * 3.114;
+  const euScopeCo2 = co2 * euShare / 100;
+  const surrenderTons = inScope ? euScopeCo2 * phase : 0;
+  const etsCostEur = surrenderTons * euaPrice;
+  const etsCostPerTon = etsCostEur / Math.max(cargoQty, 1);
+  const co2PerTonMile = co2 / Math.max(cargoQty * distance, 1);
+  const fueleuRisk = clamp(Math.round(22 + fuelTons / Math.max(distance, 1) * 120 + (euShare > 50 ? 14 : 0) + (Number(values.year) >= 2027 ? 8 : 0)), 0, 100);
+  const ciiRisk = clamp(Math.round(co2PerTonMile * 1000000 * 0.85), 0, 100);
+  const action = etsCostEur > 50000
+    ? "Add ETS allocation clause and surcharge line before recap."
+    : fueleuRisk > 55
+      ? "Check FuelEU / fuel quality exposure before subjects lifted."
+      : "Attach carbon note to voyage estimate.";
+  lastFrontCarbon = {
+    values,
+    inScope,
+    co2,
+    euScopeCo2,
+    surrenderTons,
+    etsCostEur,
+    etsCostPerTon,
+    co2PerTonMile,
+    fueleuRisk,
+    ciiRisk,
+    action,
+    reportText: [
+      "FOCUSEA EU ETS / FUELEU / CARBON DESK",
+      `Generated: ${new Date().toLocaleString()}`,
+      `GT: ${gt} / ${inScope ? "in EU ETS large-ship scope" : "below 5,000 GT screen"}`,
+      `CO2 estimate: ${co2.toFixed(0)} t`,
+      `EU scope CO2: ${euScopeCo2.toFixed(0)} t`,
+      `Surrender phase ${values.year}: ${(phase * 100).toFixed(0)}%`,
+      `ETS cost: EUR ${etsCostEur.toLocaleString("en-US", { maximumFractionDigits: 0 })}`,
+      `CO2 per ton-mile: ${co2PerTonMile.toFixed(6)} t`,
+      `FuelEU risk: ${fueleuRisk}/100`,
+      `CII screen: ${ciiRisk}/100`,
+      `Action: ${action}`
+    ].join("\n")
+  };
+  frontCarbonResult.innerHTML = `
+    ${metricCards([
+      { label: "Scope", value: inScope ? "5,000 GT+ covered" : "Below 5,000 GT" },
+      { label: "CO2", value: `${co2.toFixed(0)} t` },
+      { label: "EU scope", value: `${euScopeCo2.toFixed(0)} t` },
+      { label: "Surrender", value: `${(phase * 100).toFixed(0)}%` },
+      { label: "ETS cost", value: `EUR ${etsCostEur.toLocaleString("en-US", { maximumFractionDigits: 0 })}` },
+      { label: "FuelEU risk", value: `${fueleuRisk}/100` }
+    ])}
+    <div class="confidence-row"><span>European Commission EU ETS shipping</span><em class="source-badge verified">verified</em><a href="https://climate.ec.europa.eu/eu-action/transport-decarbonisation/reducing-emissions-shipping-sector_en" target="_blank" rel="noopener noreferrer">EU ETS source</a></div>
+    <div class="confidence-row"><span>FuelEU Maritime and IMO DCS / CII</span><em class="source-badge verified">verified</em><a href="https://transport.ec.europa.eu/transport-modes/maritime/decarbonising-maritime-transport-fueleu-maritime_en" target="_blank" rel="noopener noreferrer">FuelEU source</a><a href="https://www.imo.org/en/OurWork/Environment/Pages/Data-Collection-System.aspx" target="_blank" rel="noopener noreferrer">IMO DCS source</a></div>
+    <small>${escapeHtml(action)} Commercial screen only; final compliance depends on verified MRV/DCS data and charter party allocation.</small>
+  `;
+}
+
+function renderFrontFixtureAutopilot() {
+  if (!frontFixtureAutopilotForm || !frontFixtureAutopilotResult) return;
+  const values = collectFormValues(frontFixtureAutopilotForm);
+  const text = String(values.fixtureText || "");
+  const parsed = parseOfferText(text);
+  const risk = scoreParsedOffer(parsed);
+  const distance = estimateAutoDealDistance(parsed, text);
+  const estimate = calculateVoyageEstimate({
+    cargoType: parsed.cargoType,
+    distance,
+    speed: autoDealSpeedFor(parsed.cargoType),
+    cargoQty: parsed.quantity || (parsed.unit === "TEU" ? 2400 : 50000),
+    freightRate: parsed.freight || getCargoProfile(parsed.cargoType).baseFreight,
+    seaCons: parsed.cargoType === "container" ? 42 : ["crudeOil", "lng", "chemicals"].includes(parsed.cargoType) ? 36 : 28,
+    portCons: parsed.cargoType === "lng" ? 9 : parsed.cargoType === "container" ? 7 : 4,
+    portDays: 5 + (risk.score > 60 ? 1.5 : 0.5),
+    bunkerPrice: Number(values.bunkerPrice) || liveFeedState.bunker,
+    portCosts: autoDealPortCost(parsed.cargoType),
+    canalCosts: /suez|panama|canal/i.test(text) ? 220000 : 0,
+    dailyHire: Number(values.dailyHire) || autoDealDailyHire(parsed.cargoType),
+    commission: parsed.commission || 2.5
+  });
+  const targetTce = Number(values.targetTce) || 22000;
+  const clause = analyzeClauseText(text);
+  const decisionScore = clamp(Math.round(risk.score * 0.48 + clause.ownerRisk * 0.18 + (estimate.tce < targetTce ? 18 : -6) + liveFeedState.congestion * 0.12), 0, 100);
+  const decision = decisionScore >= 72 ? "AVOID / senior review" : decisionScore >= 50 ? "WATCH / counter with guards" : "FIX with guards";
+  const recap = buildAutoDealRecap(parsed, estimate, decision);
+  const counterMail = [
+    "Subject: Counter offer - Focusea reviewed",
+    "",
+    "Dear all,",
+    "",
+    `Basis ${parsed.route || "route TBC"}, ${parsed.quantity ? parsed.quantity.toLocaleString("en-US") : "TBC"} ${parsed.unit} ${parsed.cargoLabel}.`,
+    `Our indication is ${decision}. Estimated TCE is ${money(estimate.tce)}/day against target ${money(targetTce)}/day.`,
+    "Please clarify missing fields, NOR validity, waiting time, weather exceptions, subject deadline and evidence requirements before clean recap.",
+    "",
+    "Best regards,"
+  ].join("\n");
+  lastFrontFixtureAutopilot = {
+    values,
+    parsed,
+    risk,
+    estimate,
+    clause,
+    decisionScore,
+    decision,
+    recap,
+    counterMail,
+    reportText: [
+      "FOCUSEA FIXTURE AUTOPILOT",
+      `Decision: ${decision}`,
+      `Risk: ${decisionScore}/100`,
+      `Route: ${parsed.route || "TBC"}`,
+      `Cargo: ${parsed.quantity ? parsed.quantity.toLocaleString("en-US") : "TBC"} ${parsed.unit} ${parsed.cargoLabel}`,
+      `TCE: ${money(estimate.tce)}/day`,
+      `P&L: ${money(estimate.netPnl)}`,
+      "",
+      "Missing fields:",
+      parsed.missing.length ? parsed.missing.map((item) => `- ${item}`).join("\n") : "- None",
+      "",
+      "Risk factors:",
+      ...risk.factors.map((item) => `- ${item}`)
+    ].join("\n")
+  };
+  frontFixtureAutopilotResult.innerHTML = `
+    ${metricCards([
+      { label: "Decision", value: decision },
+      { label: "Risk", value: `${decisionScore}/100` },
+      { label: "Cargo", value: parsed.cargoLabel },
+      { label: "Route", value: parsed.route || "TBC" },
+      { label: "TCE", value: `${money(estimate.tce)}/day` },
+      { label: "P&L", value: money(estimate.netPnl) }
+    ])}
+    <div class="deal-file-grid">
+      <article class="action"><span>Offer card</span><strong>${escapeHtml(parsed.laycan || "Laycan TBC")}</strong><p>${escapeHtml(parsed.freight ? `${money(parsed.freight, 2)}/${parsed.unit}` : "Freight TBC")}</p></article>
+      <article class="review"><span>Missing info</span><strong>${parsed.missing.length}</strong><p>${escapeHtml(parsed.missing.join(", ") || "None")}</p></article>
+      <article class="review"><span>Clause risk</span><strong>${escapeHtml(clause.riskOwner)}</strong><p>NOR/weather/waiting time need review.</p></article>
+    </div>
+    <pre class="template-preview">${escapeHtml(counterMail)}</pre>
+  `;
+}
+
+function pushFrontFixtureToInbox() {
+  if (!lastFrontFixtureAutopilot) renderFrontFixtureAutopilot();
+  const pack = lastFrontFixtureAutopilot;
+  if (!pack) return;
+  terminalInboxItems.unshift({
+    id: `FRONT-${Date.now().toString().slice(-5)}`,
+    status: pack.decision.includes("WATCH") ? "Counter needed" : pack.decision.includes("AVOID") ? "Senior review" : "New offer",
+    priority: pack.decisionScore >= 72 ? "High" : pack.decisionScore >= 50 ? "Medium" : "Low",
+    cargo: pack.parsed.cargoLabel,
+    route: pack.parsed.route || "TBC",
+    laycan: pack.parsed.laycan || "TBC",
+    freight: pack.parsed.freight ? `${money(pack.parsed.freight, 2)}/${pack.parsed.unit}` : "TBC",
+    demurrage: pack.parsed.demurrage ? `${money(pack.parsed.demurrage)}/day` : "TBC",
+    subject: pack.parsed.subjects || pack.decision,
+    note: pack.risk.factors.join(" ")
+  });
+  renderBrokerInbox();
+  renderOsKanban();
+  frontFixtureAutopilotResult?.insertAdjacentHTML("beforeend", `<small class="download-confirm">Pushed to Broker Inbox with ${escapeHtml(pack.decision)} status.</small>`);
+}
+
+function renderFrontPortPhoto() {
+  if (!frontPortPhotoForm || !frontPortPhotoResult) return;
+  const values = collectFormValues(frontPortPhotoForm);
+  const code = String(values.portCode || "NLRTM").toUpperCase();
+  const visual = globalPortVisualSeed[code] || getGlobalPortVisual({ code, name: code, typeGroup: "Port", region: "Europe" });
+  const primary = visual.images?.[0] || null;
+  const file = frontPortPhotoUpload?.files?.[0] || null;
+  const uploadUrl = file ? URL.createObjectURL(file) : "";
+  const uploadConfidence = file ? (values.reviewStatus === "Client report ready" ? 76 : 42) : 0;
+  const confidence = Math.max(Number(visual.confidence) || 0, uploadConfidence);
+  const reportFit = confidence >= 85 ? "Client-report ready" : confidence >= 60 ? "Use with source note" : "Needs source review";
+  lastFrontPortPhoto = {
+    code,
+    visual: {
+      status: visual.status,
+      sourceBadge: visual.sourceBadge,
+      confidence: visual.confidence,
+      terminalType: visual.terminalType,
+      impression: visual.impression,
+      bestUse: visual.bestUse
+    },
+    uploaded: file ? { name: file.name, size: file.size, reviewStatus: values.reviewStatus, confidence: uploadConfidence } : null,
+    reportFit,
+    reportText: [
+      "FOCUSEA PORT PHOTO INTELLIGENCE V2",
+      `Port code: ${code}`,
+      `Visual status: ${visual.status}`,
+      `Terminal type visible: ${visual.terminalType}`,
+      `Operational impression: ${visual.impression}`,
+      `Best use: ${visual.bestUse}`,
+      `User upload: ${file ? `${file.name} / ${values.reviewStatus}` : "none"}`,
+      `Report fit: ${reportFit}`
+    ].join("\n")
+  };
+  frontPortPhotoResult.innerHTML = `
+    ${metricCards([
+      { label: "Port code", value: code },
+      { label: "Visual status", value: visual.status },
+      { label: "Confidence", value: `${confidence}%` },
+      { label: "Report fit", value: reportFit }
+    ])}
+    <div class="port-visual-gallery">
+      ${primary ? renderPortVisualCard({ ...primary, portName: code }) : ""}
+      ${uploadUrl ? renderPortVisualCard({ label: "User uploaded", url: uploadUrl, source: "User upload", license: values.reviewStatus, credit: file.name, portName: code }) : ""}
+      ${!primary && !uploadUrl ? renderPortVisualCard({ label: "Verified image needed", intent: "Attach official port, Wikimedia/Openverse or reviewed agency photo.", source: "", license: "" }) : ""}
+    </div>
+    <ul class="compact-list">
+      <li>Terminal type visible: ${escapeHtml(visual.terminalType)}</li>
+      <li>Operational impression: ${escapeHtml(visual.impression)}</li>
+      <li>Best use: ${escapeHtml(visual.bestUse)}</li>
+    </ul>
+  `;
+}
+
+function renderFrontDocumentRoom() {
+  if (!frontDocumentRoomForm || !frontDocumentRoomResult) return;
+  const values = collectFormValues(frontDocumentRoomForm);
+  const text = String(values.documentPack || "");
+  const parsed = parseOfferText(text);
+  const clause = analyzeClauseText(text);
+  const statement = parseSofStatement(text, 72, parsed.demurrage || 18000);
+  const rates = extractAutopilotRates(text, "demurrage");
+  const uniqueRates = [...new Set(rates.map((rate) => Math.round(rate)))];
+  const norLines = sofLines(text).filter((line) => /nor|notice of readiness/i.test(line));
+  const findings = [
+    uniqueRates.length > 1 && { level: "High", text: `Demurrage mismatch: ${uniqueRates.map((rate) => money(rate)).join(" vs ")}.` },
+    norLines.length > 1 && { level: "High", text: "NOR timing appears in more than one version; check recap vs SOF." },
+    /invoice/i.test(text) && /recap/i.test(text) && statement.status === "Demurrage" && { level: "Medium", text: `Laytime engine detects ${money(statement.demurrageAmount)} demurrage exposure.` },
+    clause.dangerousSentences.length && { level: "Medium", text: `${clause.dangerousSentences.length} clause sentence(s) need negotiation review.` },
+    parsed.missing.length && { level: "Medium", text: `Missing commercial fields: ${parsed.missing.join(", ")}.` }
+  ].filter(Boolean);
+  if (!findings.length) findings.push({ level: "Low", text: "No major contradiction detected by local document rules." });
+  lastFrontDocumentRoom = {
+    values,
+    parsed,
+    clause,
+    statement,
+    findings,
+    reportText: [
+      "FOCUSEA DOCUMENT AI ROOM",
+      `Generated: ${new Date().toLocaleString()}`,
+      "",
+      "Findings:",
+      ...findings.map((item) => `- [${item.level}] ${item.text}`),
+      "",
+      `Used laytime: ${statement.usedHours.toFixed(1)}h`,
+      `Balance: ${statement.balanceHours.toFixed(1)}h`,
+      `Clause risk owner: ${clause.riskOwner}`
+    ].join("\n")
+  };
+  frontDocumentRoomResult.innerHTML = `
+    ${metricCards([
+      { label: "Findings", value: findings.length },
+      { label: "Dem rates", value: uniqueRates.length ? uniqueRates.map((rate) => money(rate)).join(" / ") : "Not found" },
+      { label: "NOR lines", value: norLines.length },
+      { label: "Laytime result", value: statement.status },
+      { label: "Balance", value: `${statement.balanceHours.toFixed(1)}h` }
+    ])}
+    <div class="danger-box">
+      ${findings.map((item) => `<p><span>${escapeHtml(item.level)}</span>${escapeHtml(item.text)}</p>`).join("")}
+    </div>
+  `;
+}
+
+function buildFrontTimeBarAlarms(values = {}) {
+  const now = new Date();
+  const rows = [
+    { label: "Subject deadline", date: new Date(now.getTime() + (Number(values.subjectHours) || 0) * 36e5), type: "subject" },
+    { label: "Laycan canceling", date: new Date(now.getTime() + (Number(values.cancelingDays) || 0) * 864e5), type: "laycan" },
+    { label: "Invoice due", date: new Date(now.getTime() + (Number(values.invoiceDays) || 0) * 864e5), type: "invoice" },
+    { label: "Demurrage time bar", date: new Date(now.getTime() + (Number(values.timeBarDays) || 0) * 864e5), type: "claim" }
+  ];
+  return rows.map((row) => {
+    const hoursLeft = (row.date - now) / 36e5;
+    const urgency = hoursLeft < 0 ? "Overdue" : hoursLeft <= 24 ? "Red" : hoursLeft <= 168 ? "Amber" : "Green";
+    return { ...row, hoursLeft, urgency };
+  });
+}
+
+function frontIcsText() {
+  const alarms = lastFrontTimeBar?.alarms || [];
+  const stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  return [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Focusea//Trust Center//EN",
+    ...alarms.flatMap((alarm, index) => {
+      const start = alarm.date.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+      const end = new Date(alarm.date.getTime() + 30 * 60000).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+      return [
+        "BEGIN:VEVENT",
+        `UID:focusea-trust-${index}-${Date.now()}@focusea`,
+        `DTSTAMP:${stamp}`,
+        `DTSTART:${start}`,
+        `DTEND:${end}`,
+        `SUMMARY:${alarm.label}`,
+        `DESCRIPTION:Focusea ${alarm.urgency} alarm`,
+        "END:VEVENT"
+      ];
+    }),
+    "END:VCALENDAR"
+  ].join("\r\n");
+}
+
+function renderFrontTimeBar() {
+  if (!frontTimeBarForm || !frontTimeBarResult) return;
+  const values = collectFormValues(frontTimeBarForm);
+  const alarms = buildFrontTimeBarAlarms(values);
+  const redCount = alarms.filter((alarm) => ["Overdue", "Red"].includes(alarm.urgency)).length;
+  lastFrontTimeBar = {
+    values,
+    alarms,
+    reportText: [
+      "FOCUSEA CLAIM DEADLINE / TIME BAR ALARM",
+      ...alarms.map((alarm) => `- ${alarm.label}: ${alarm.date.toLocaleString()} / ${alarm.urgency}`)
+    ].join("\n")
+  };
+  frontTimeBarResult.innerHTML = `
+    ${metricCards([
+      { label: "Alarms", value: alarms.length },
+      { label: "Red/overdue", value: redCount },
+      { label: "Next", value: alarms[0]?.date.toLocaleString() || "-" },
+      { label: "Calendar", value: "ICS ready" }
+    ])}
+    <div class="deal-file-grid">
+      ${alarms.map((alarm) => `<article class="${["Overdue", "Red"].includes(alarm.urgency) ? "review" : "action"}"><span>${escapeHtml(alarm.label)}</span><strong>${escapeHtml(alarm.urgency)}</strong><p>${escapeHtml(alarm.date.toLocaleString())}</p></article>`).join("")}
+    </div>
+  `;
+}
+
+function renderFrontBackendPlan() {
+  if (!frontBackendForm || !frontBackendResult) return;
+  const values = collectFormValues(frontBackendForm);
+  const endpoints = [
+    "/health",
+    "/api/broker/parse-offer",
+    "/api/laytime/sof",
+    "/api/voyage/estimate",
+    "/api/data-trust/center",
+    "/api/carbon/estimate",
+    "/api/document-room/analyze",
+    "/api/daily-brief"
+  ];
+  lastFrontBackend = {
+    values,
+    endpoints,
+    reportText: [
+      "FOCUSEA REAL BACKEND PLAN",
+      `API base: ${values.apiBase}`,
+      `Mode: ${values.mode}`,
+      "",
+      "Endpoints:",
+      ...endpoints.map((endpoint) => `- ${endpoint}`)
+    ].join("\n")
+  };
+  frontBackendResult.innerHTML = `
+    ${metricCards([
+      { label: "Mode", value: values.mode },
+      { label: "API base", value: values.apiBase },
+      { label: "Endpoints", value: endpoints.length },
+      { label: "Storage", value: "users / deals / reports / vault" }
+    ])}
+    <table class="mini-table">
+      <thead><tr><th>Endpoint</th><th>Purpose</th></tr></thead>
+      <tbody>
+        ${endpoints.map((endpoint) => `<tr><td>${escapeHtml(endpoint)}</td><td>${endpoint.includes("carbon") ? "ETS/FuelEU cost" : endpoint.includes("data-trust") ? "source badges" : endpoint.includes("document") ? "document contradictions" : endpoint.includes("daily") ? "morning brief" : "workflow API"}</td></tr>`).join("")}
+      </tbody>
+    </table>
+    <small>GitHub Pages serves the static site. FastAPI should be deployed separately for real accounts, API keys, file upload, scheduled news/index jobs and report history.</small>
+  `;
+}
+
+function buildFrontDailyBriefItems() {
+  const fixture = lastFrontFixtureAutopilot || lastAutopilotInbox;
+  const carbon = lastFrontCarbon || lastAutopilotCarbon;
+  const doc = lastFrontDocumentRoom || lastAutopilotDocumentPack;
+  const timeBar = lastFrontTimeBar || lastTimeBarCalendar;
+  return [
+    fixture ? `${fixture.decision || fixture.status}: ${fixture.parsed?.cargoLabel || "fixture"} ${fixture.parsed?.route || "route TBC"}.` : "Run Fixture Autopilot for today's open offer.",
+    `News: ${activeNewsQuery} feed has source-linked cards on the front page.`,
+    `Bunker: Singapore VLSFO ${bunkerPriceLabel(liveFeedState.vlsfoSingapore)}; rerun TCE if price changes.`,
+    `Market: Baltic-style indexes are ${balticFeedState.connected ? "licensed feed connected" : "locked as licensed-required"}; do not label placeholders as live.`,
+    carbon ? `Carbon: ETS cost ${money(carbon.etsCostEur || carbon.cost || 0)} equivalent screen; add allocation clause.` : "Run Carbon Desk for EU voyage cost exposure.",
+    doc ? `Document AI: ${(doc.findings || []).length} finding(s); resolve CP/SOF/invoice contradictions.` : "Paste CP/SOF/NOR/invoice into Document AI Room.",
+    timeBar ? `Deadlines: ${(timeBar.alarms || []).filter((alarm) => ["Overdue", "Red"].includes(alarm.urgency)).length} red/overdue alarm(s).` : "Build time-bar calendar before claim or subject deadline.",
+    "Backend: FastAPI layer is API-ready for users, document vault, cron jobs and report history."
+  ];
+}
+
+function renderFrontDailyBrief() {
+  if (!frontDailyBriefResult) return;
+  const items = buildFrontDailyBriefItems();
+  lastFrontDailyBrief = {
+    items,
+    reportText: [
+      "FOCUSEA BROKER DAILY BRIEF",
+      `Generated: ${new Date().toLocaleString()}`,
+      "",
+      ...items.map((item, index) => `${index + 1}. ${item}`)
+    ].join("\n")
+  };
+  frontDailyBriefResult.innerHTML = `
+    <div class="deal-file-grid">
+      ${items.map((item, index) => `<article class="${index < 3 ? "review" : "action"}"><span>Action ${index + 1}</span><strong>${escapeHtml(item.split(":")[0])}</strong><p>${escapeHtml(item)}</p></article>`).join("")}
+    </div>
+  `;
+}
+
+function renderTrustAutopilotHeader() {
+  if (!trustAutopilotHeadline || !trustAutopilotSummary) return;
+  const decision = lastFrontFixtureAutopilot?.decision || "Run Center";
+  const carbon = lastFrontCarbon ? `ETS ${money(lastFrontCarbon.etsCostEur)}` : "carbon pending";
+  const docFindings = lastFrontDocumentRoom ? `${lastFrontDocumentRoom.findings.length} doc findings` : "document pending";
+  trustAutopilotHeadline.textContent = `${decision} | ${carbon} | ${docFindings}`;
+  trustAutopilotSummary.textContent = buildFrontDailyBriefItems().slice(0, 3).join(" ");
+}
+
+function runAllTrustAutopilot() {
+  renderFrontDataTrustCenter();
+  renderFrontCarbonDesk();
+  renderFrontFixtureAutopilot();
+  renderFrontPortPhoto();
+  renderFrontDocumentRoom();
+  renderFrontTimeBar();
+  renderFrontBackendPlan();
+  renderFrontDailyBrief();
+  renderTrustAutopilotHeader();
+}
+
+function frontTrustPack() {
+  return {
+    carbon: lastFrontCarbon,
+    fixture: lastFrontFixtureAutopilot,
+    portPhoto: lastFrontPortPhoto,
+    documentRoom: lastFrontDocumentRoom,
+    timeBar: lastFrontTimeBar,
+    backend: lastFrontBackend,
+    dailyBrief: lastFrontDailyBrief,
+    generatedAt: new Date().toISOString()
+  };
+}
+
+function frontTrustReportText() {
+  if (!lastFrontDailyBrief) renderFrontDailyBrief();
+  return [
+    "FOCUSEA TRUST & AUTOPILOT CENTER",
+    `Generated: ${new Date().toLocaleString()}`,
+    "",
+    lastFrontDailyBrief?.reportText || "Daily brief not generated.",
+    "",
+    lastFrontFixtureAutopilot?.reportText || "Fixture autopilot not generated.",
+    "",
+    lastFrontCarbon?.reportText || "Carbon desk not generated.",
+    "",
+    lastFrontDocumentRoom?.reportText || "Document room not generated.",
+    "",
+    lastFrontTimeBar?.reportText || "Time bar alarms not generated.",
+    "",
+    lastFrontBackend?.reportText || "Backend plan not generated."
+  ].join("\n");
+}
+
+function handleTrustDownload(type) {
+  if (!lastFrontDailyBrief) runAllTrustAutopilot();
+  const actions = {
+    "brief-pdf": () => downloadPdfFile("focusea-trust-autopilot-brief.pdf", "Focusea Trust & Autopilot Brief", frontTrustReportText()),
+    "pack-json": () => downloadJsonFile("focusea-trust-autopilot-pack.json", frontTrustPack()),
+    "recap-txt": () => downloadTextFile("focusea-fixture-autopilot-recap.txt", lastFrontFixtureAutopilot?.recap || "No recap."),
+    "counter-mail": () => downloadTextFile("focusea-fixture-counter-mail.txt", lastFrontFixtureAutopilot?.counterMail || "No counter mail."),
+    "document-pdf": () => downloadPdfFile("focusea-document-ai-room.pdf", "Focusea Document AI Room", lastFrontDocumentRoom?.reportText || "No document room."),
+    "document-txt": () => downloadTextFile("focusea-document-ai-room.txt", lastFrontDocumentRoom?.reportText || "No document room."),
+    "alarms-ics": () => downloadTextFile("focusea-timebar-alarms.ics", frontIcsText())
+  };
+  actions[type]?.();
 }
 
 function renderAllPlatformCore() {
@@ -16927,6 +17512,12 @@ bindBrokerForm(brokerCopilotForm, renderBrokerCopilot);
 bindBrokerForm(offerParserForm, renderOfferParser);
 bindBrokerForm(tceOptimizerForm, renderTceOptimizer);
 bindBrokerForm(riskRadarForm, renderRiskRadar);
+bindBrokerForm(frontCarbonForm, renderFrontCarbonDesk);
+bindBrokerForm(frontFixtureAutopilotForm, renderFrontFixtureAutopilot);
+bindBrokerForm(frontPortPhotoForm, renderFrontPortPhoto);
+bindBrokerForm(frontDocumentRoomForm, renderFrontDocumentRoom);
+bindBrokerForm(frontTimeBarForm, renderFrontTimeBar);
+bindBrokerForm(frontBackendForm, renderFrontBackendPlan);
 bindBrokerForm(redFlagForm, renderRedFlagSystem);
 bindBrokerForm(recapBuilderForm, renderRecapBuilder);
 bindBrokerForm(evidencePackForm, renderEvidencePack);
@@ -17078,6 +17669,9 @@ if (pushImportToInbox) pushImportToInbox.addEventListener("click", pushImportedO
 if (refreshTerminalAlarms) refreshTerminalAlarms.addEventListener("click", renderTerminalAlarms);
 if (pushFixtureProToInbox) pushFixtureProToInbox.addEventListener("click", pushFixtureImportProToInbox);
 if (refreshMarketConfidence) refreshMarketConfidence.addEventListener("click", renderMarketConfidence);
+if (runTrustAutopilot) runTrustAutopilot.addEventListener("click", runAllTrustAutopilot);
+if (frontFixtureToInbox) frontFixtureToInbox.addEventListener("click", pushFrontFixtureToInbox);
+if (refreshFrontDailyBrief) refreshFrontDailyBrief.addEventListener("click", renderFrontDailyBrief);
 if (refreshEdgeAlarms) refreshEdgeAlarms.addEventListener("click", renderEdgeAlarms);
 if (refreshDailyBriefPro) refreshDailyBriefPro.addEventListener("click", renderDailyBriefPro);
 if (runBrokerOs) runBrokerOs.addEventListener("click", runAllBrokerOs);
@@ -17181,6 +17775,10 @@ document.querySelectorAll("[data-download-terminal]").forEach((button) => {
 
 document.querySelectorAll("[data-download-edge]").forEach((button) => {
   button.addEventListener("click", () => handleEdgeDownload(button.dataset.downloadEdge));
+});
+
+document.querySelectorAll("[data-download-trust]").forEach((button) => {
+  button.addEventListener("click", () => handleTrustDownload(button.dataset.downloadTrust));
 });
 
 document.querySelectorAll("[data-download-commercial]").forEach((button) => {
@@ -17617,6 +18215,7 @@ renderAllProOps();
 renderAllSuperSuite();
 renderMarketIndexes();
 renderDataTrustLayer();
+runAllTrustAutopilot();
 renderBalticFeedPanel();
 renderSecurityShield();
 renderPythonHistory();
