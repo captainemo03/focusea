@@ -2370,6 +2370,7 @@ const clientPortalForm = document.querySelector("#clientPortalForm");
 const clientPortalResult = document.querySelector("#clientPortalResult");
 const memberSignupForm = document.querySelector("#memberSignupForm");
 const memberLoginForm = document.querySelector("#memberLoginForm");
+const memberSignupHint = document.querySelector("#memberSignupHint");
 const memberAuthStatus = document.querySelector("#memberAuthStatus");
 const memberSessionPill = document.querySelector("#memberSessionPill");
 const memberResumeLast = document.querySelector("#memberResumeLast");
@@ -3296,6 +3297,47 @@ function validMemberUsername(username = "") {
   return /^[a-z0-9._-]{3,32}$/.test(normalizeMemberUsername(username));
 }
 
+function memberUsernameAvailability(username = "") {
+  const normalized = normalizeMemberUsername(username);
+  if (!normalized) {
+    return {
+      ok: false,
+      status: "empty",
+      message: "Choose a unique username."
+    };
+  }
+  if (!validMemberUsername(normalized)) {
+    return {
+      ok: false,
+      status: "invalid",
+      message: "Use 3-32 characters: lowercase letters, numbers, dot, dash or underscore."
+    };
+  }
+  if (getMemberAccounts()[normalized]) {
+    return {
+      ok: false,
+      status: "taken",
+      message: "This username is already taken. Log in or choose another one."
+    };
+  }
+  return {
+    ok: true,
+    status: "available",
+    message: "Username available. It will be reserved for this account."
+  };
+}
+
+function renderMemberSignupHint() {
+  if (!memberSignupForm || !memberSignupHint) return true;
+  const username = memberSignupForm.elements.signupUsername?.value || "";
+  const availability = memberUsernameAvailability(username);
+  const submit = memberSignupForm.querySelector('button[type="submit"]');
+  memberSignupHint.textContent = availability.message;
+  memberSignupHint.dataset.status = availability.status;
+  if (submit) submit.disabled = Boolean(username) && !availability.ok;
+  return availability.ok;
+}
+
 function passwordRuleChecks(password = "") {
   return {
     lower: /[a-z]/.test(password),
@@ -3463,8 +3505,10 @@ async function handleMemberSignup(event) {
   const values = collectFormValues(memberSignupForm);
   const username = normalizeMemberUsername(values.signupUsername);
   const password = String(values.signupPassword || "");
-  if (!validMemberUsername(username)) {
-    renderMemberAuthStatus("Username must be 3-32 characters and use only letters, numbers, dot, dash or underscore.");
+  const availability = memberUsernameAvailability(username);
+  renderMemberSignupHint();
+  if (!availability.ok) {
+    renderMemberAuthStatus(availability.message);
     return;
   }
   const passwordProblem = passwordRuleMessage(password);
@@ -3473,10 +3517,6 @@ async function handleMemberSignup(event) {
     return;
   }
   const accounts = getMemberAccounts();
-  if (accounts[username]) {
-    renderMemberAuthStatus("This username already exists. Log in instead.");
-    return;
-  }
   const salt = randomMemberSalt();
   accounts[username] = {
     username,
@@ -3495,6 +3535,7 @@ async function handleMemberSignup(event) {
   }
   saveWorkspaceState("Account created. Workspace saved to your user profile.");
   memberSignupForm.reset();
+  renderMemberSignupHint();
   renderMemberAuthStatus("Account created. Focusea will now remember your last page on this browser.");
 }
 
@@ -17028,6 +17069,8 @@ if (saveWorkspace) saveWorkspace.addEventListener("click", saveWorkspaceState);
 if (loadWorkspace) loadWorkspace.addEventListener("click", loadWorkspaceState);
 if (clearWorkspace) clearWorkspace.addEventListener("click", clearWorkspaceState);
 if (memberSignupForm) memberSignupForm.addEventListener("submit", handleMemberSignup);
+if (memberSignupForm) memberSignupForm.addEventListener("input", renderMemberSignupHint);
+if (memberSignupForm) memberSignupForm.addEventListener("change", renderMemberSignupHint);
 if (memberLoginForm) memberLoginForm.addEventListener("submit", handleMemberLogin);
 if (memberResumeLast) memberResumeLast.addEventListener("click", resumeMemberLastPage);
 if (memberLogout) memberLogout.addEventListener("click", logoutMember);
@@ -17581,6 +17624,7 @@ renderCommandDeck();
 initializeSmartOps();
 updateLiveFeed();
 setupPageSections();
+renderMemberSignupHint();
 renderMemberAuthStatus();
 activatePage(initialPageForSession(), false);
 setInterval(updateLiveFeed, 1000);
