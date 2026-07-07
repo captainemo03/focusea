@@ -75,6 +75,86 @@ function riskBadge(level, note) {
   return `<div class="risk ${riskClass(level)}">${level}: ${note}</div>`;
 }
 
+const stabilityEnglishSnippets = [
+  [" ve ", " and "],
+  ["Komur / Coal", "Coal"],
+  ["Tahil / Grain", "Grain"],
+  ["Demir cevheri / Iron ore", "Iron ore"],
+  ["Konteyner / Containers", "Containers"],
+  ["stability criteria ve ballast", "stability criteria and ballast"],
+  ["ve warning", "and warning"],
+  ["Sistem hesap sonucuna gore operasyonel tavsiye uretir.", "The system generates operational recommendations from the calculation result."],
+  ["Trim, heel, GM ve tanktop riskine gore uygulanabilir duzeltme onerisi.", "Actionable correction suggestions based on trim, heel, GM and tanktop risk."],
+  ["Plan major limit icinde.", "The plan is inside the major limit."],
+  ["Ballast tanklari ile kucuk trim/heel fine-tune yap.", "Use ballast tanks for small trim/heel fine-tuning."],
+  ["Risk neden olustu?", "Why did the risk appear?"],
+  ["GM, trim, heel, tanktop ve draft sebebini sade aciklar.", "Plain explanation of GM, trim, heel, tanktop and draft causes."],
+  ["GM dengeli.", "GM is balanced."],
+  ["Trim operasyonel bantta:", "Trim is inside the operating band:"],
+  ["Sancak-iskele dengesi iyi:", "Port-starboard balance is good:"],
+  ["Ballast tank haritasi", "Ballast tank map"],
+  ["Fore/aft, double bottom ve wing tank doluluklarini tek planda izle.", "Track fore/aft, double bottom and wing tank filling in one plan."],
+  ["Egitim ve demo icin hazir operasyon senaryolari.", "Ready operation scenarios for training and demos."],
+  ["Plan riskini acikla, trim azalt, rapor veya broker notu hazirla.", "Explain plan risk, reduce trim, prepare a report or broker note."],
+  ["Bu plan neden riskli?", "Why is this plan risky?"],
+  ["Trim'i azalt", "Reduce trim"],
+  ["Load plan raporu hazirla", "Prepare load plan report"],
+  ["Broker maili yaz", "Write broker mail"],
+  ["PDF indirildikce rapor kaydi, risk sonucu ve tekrar indirme.", "Every PDF download is logged with risk result and re-download access."],
+  ["ve ruzgar momentini gir", "and enter wind moment"],
+  ["Kullanım Koşulları", "Terms of Use"],
+  ["Gizlilik", "Privacy"],
+  ["Güvenlik", "Security"],
+  ["yük", "cargo"],
+  ["Yük", "Cargo"],
+  ["gemi", "vessel"],
+  ["Gemi", "Vessel"],
+  ["stabilite", "stability"],
+  ["Stabilite", "Stability"]
+];
+
+let stabilityEnglishObserverReady = false;
+let stabilityEnglishNormalizing = false;
+
+function translateStabilityEnglish(value = "") {
+  let text = String(value);
+  stabilityEnglishSnippets.forEach(([snippet, replacement]) => {
+    text = text.split(snippet).join(replacement);
+  });
+  return text;
+}
+
+function normalizeStabilityEnglish(root = document.body) {
+  if (!root || stabilityEnglishNormalizing) return;
+  stabilityEnglishNormalizing = true;
+  try {
+    document.documentElement.lang = "en";
+    const walker = document.createTreeWalker(root, 4);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach((node) => {
+      const tag = node.parentElement?.tagName;
+      if (["SCRIPT", "STYLE", "TEXTAREA", "INPUT", "CANVAS", "SVG"].includes(tag)) return;
+      const translated = translateStabilityEnglish(node.nodeValue);
+      if (translated !== node.nodeValue) node.nodeValue = translated;
+    });
+  } finally {
+    stabilityEnglishNormalizing = false;
+  }
+}
+
+function setupStabilityEnglishObserver() {
+  if (stabilityEnglishObserverReady || !document.body) return;
+  stabilityEnglishObserverReady = true;
+  let pending = 0;
+  const observer = new MutationObserver(() => {
+    if (stabilityEnglishNormalizing) return;
+    clearTimeout(pending);
+    pending = setTimeout(() => normalizeStabilityEnglish(), 50);
+  });
+  observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+}
+
 function setStatus(valueElement, noteElement, value, note) {
   if (!valueElement || !noteElement) return;
   valueElement.textContent = value;
@@ -388,3 +468,5 @@ calculateTrim();
 calculateDraft();
 calculateHold();
 calculateHeel();
+normalizeStabilityEnglish();
+setupStabilityEnglishObserver();

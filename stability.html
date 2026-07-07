@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="tr">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,7 +9,7 @@
   </head>
   <body>
     <header class="lab-header">
-      <a class="lab-brand" href="index.html" aria-label="Focusea ana site">
+      <a class="lab-brand" href="index.html" aria-label="Focusea main site">
         <img src="assets/brand/focusea-mark.svg?v=focusea-badge2" alt="Focusea logo" />
         <span>
           <strong>Focusea</strong>
@@ -22,8 +22,8 @@
         <a href="#trimLab">Trim</a>
         <a href="#draftLab">Draft Survey</a>
         <a href="#holdLab">Hold Plan</a>
-        <a href="#stabilityResources">Kaynaklar</a>
-        <a href="index.html">Ana Site</a>
+        <a href="#stabilityResources">Resources</a>
+        <a href="index.html">Main Site</a>
       </nav>
     </header>
 
@@ -31,16 +31,16 @@
       <section class="lab-hero">
         <div>
           <p class="eyebrow">Side Window / Technical Desk</p>
-          <h1>Yuk, draft, trim ve stabilite hesaplarini tek teknik pencerede topla.</h1>
+          <h1>Bring cargo, draft, trim and stability calculations into one technical desk.</h1>
           <p>
-            Bu alan broker panelinden ayri calisir. Cargo intake, corrected GM, trim effect,
+            This side window runs separately from the broker panel. Cargo intake, corrected GM, trim effect,
             draft survey cargo estimate, hold distribution, stowage factor ve heel angle
-            hesaplarini hizli operasyon kontrolu olarak verir.
+            calculations are presented as fast operational checks.
           </p>
           <div class="hero-actions">
             <a href="#loadicator3d" class="primary-button">3D Loadicator</a>
             <a href="#gmLab" class="primary-button">Stability Check</a>
-            <button type="button" class="ghost-button" id="downloadStabilityReport">Rapor Indir</button>
+            <button type="button" class="ghost-button" id="downloadStabilityReport">Download Report</button>
           </div>
         </div>
         <aside class="safety-note">
@@ -79,10 +79,10 @@
         <div class="panel-heading">
           <div>
             <p class="eyebrow">Interactive 3D Loadicator</p>
-            <h2>Gemi tipini ve yuku sec, stabiliteyi canli gor.</h2>
+            <h2>Select vessel and cargo type, then watch stability change live.</h2>
             <p>
-              Bulker, tanker, container veya LNG presetini sec; komur, tahil, konteyner,
-              crude oil, LNG ve proje yukleri icin trim, GM, heel ve compatibility anlik degissin.
+              Choose a bulker, tanker, container or LNG preset; trim, GM, heel and compatibility update
+              live for coal, grain, containers, crude oil, LNG and project cargo.
             </p>
           </div>
           <div class="scene-status" id="loadicatorRisk">Initializing</div>
@@ -356,16 +356,16 @@
           <div class="engineering-heading">
             <div>
               <p class="eyebrow">Professional Cargo Plan Editor</p>
-              <h3>Coklu yuk, hold bazli stress, ballast ve otomatik tavsiye.</h3>
+              <h3>Multi-cargo planning, hold stress, ballast and automatic recommendations.</h3>
               <p>
-                Yuk kartini sec veya surukleyip ambara birak; sistem hold load, volume,
+                Select a cargo card or drag it into a hold; the system evaluates hold load, volume,
                 tanktop stress, shear force, bending moment, stability criteria ve ballast
-                etkisini tek panelde degerlendirir.
+                impact in one engineering panel.
               </p>
             </div>
             <div class="plan-actions">
               <div class="scene-status" id="professionalPlanStatus">Plan initializing</div>
-              <button type="button" class="primary-button" id="downloadLoadPlanReport">Load Plan PDF Indir</button>
+              <button type="button" class="primary-button" id="downloadLoadPlanReport">Download Load Plan PDF</button>
             </div>
           </div>
 
@@ -375,7 +375,7 @@
                 <span>01</span>
                 <div>
                   <h4>Cargo library</h4>
-                  <p>Sec, tikla veya ambara surukle.</p>
+                  <p>Select, click or drag into a hold.</p>
                 </div>
               </div>
               <div class="parcel-tool-grid" id="parcelToolGrid">
@@ -422,7 +422,7 @@
                 <span>02</span>
                 <div>
                   <h4>Drag & drop hold plan</h4>
-                  <p>Yuk kartini H1-H5'e birak, sonra tonaj/KG/SF/offset duzenle.</p>
+                  <p>Drop the cargo card into H1-H5, then edit tonnage, KG, SF and offset.</p>
                 </div>
               </div>
               <div class="hold-drop-grid" id="holdDropGrid">
@@ -439,7 +439,7 @@
                 <span>03</span>
                 <div>
                   <h4>Selected parcel</h4>
-                  <p>Secili yuk kartini operasyonel parametrelerle duzenle.</p>
+                  <p>Edit the selected cargo card with operational parameters.</p>
                 </div>
               </div>
               <form class="parcel-editor-form" id="parcelEditorForm">
@@ -463,7 +463,7 @@
                 <span>04</span>
                 <div>
                   <h4>Cargo list</h4>
-                  <p>Her yuk icin hold, tonaj, KG, SF ve offset.</p>
+                  <p>Hold, tonnage, KG, SF and offset for each cargo item.</p>
                 </div>
               </div>
               <div class="cargo-plan-table" id="cargoPlanTable"></div>
@@ -578,7 +578,7 @@
                 <span>12</span>
                 <div>
                   <h4>Loading sequence</h4>
-                  <p>Yukleme sirasi, ballast adimi ve her adimda GM/trim/heel etkisi.</p>
+                  <p>Loading sequence, ballast steps and GM/trim/heel impact at each stage.</p>
                 </div>
               </div>
               <div class="sequence-list" id="loadingSequenceList"></div>
@@ -600,7 +600,7 @@
                 <span>14</span>
                 <div>
                   <h4>Cargo compatibility matrix</h4>
-                  <p>Yuk tipi, gemi tipi, dokuman ve operasyonel risk uyumu.</p>
+                  <p>Cargo type, vessel type, documentation and operational risk compatibility.</p>
                 </div>
               </div>
               <div class="compatibility-matrix" id="cargoCompatibilityMatrix"></div>
@@ -634,7 +634,7 @@
               <div class="copilot-quick-actions">
                 <button type="button" data-copilot-action="whyRisk">Bu plan neden riskli?</button>
                 <button type="button" data-copilot-action="reduceTrim">Trim'i azalt</button>
-                <button type="button" data-copilot-action="cargoFit">Bu yuk icin uygun gemi ne?</button>
+                <button type="button" data-copilot-action="cargoFit">Which vessel suits this cargo?</button>
                 <button type="button" data-copilot-action="report">Load plan raporu hazirla</button>
                 <button type="button" data-copilot-action="brokerMail">Broker maili yaz</button>
               </div>
@@ -658,7 +658,7 @@
           <div class="engineering-heading">
             <div>
               <p class="eyebrow">Port / Starboard Engineering</p>
-              <h3>Sancak-iskele yuk dengesi, GZ curve ve draft farki.</h3>
+              <h3>Port-starboard balance, GZ curve and draft difference.</h3>
               <p>
                 Wing cargo, ballast ve ruzgar momentini gir; sistem heeling moment,
                 equilibrium heel, port/stbd draft difference ve downflooding margin hesaplar.
@@ -728,7 +728,7 @@
             <span>01</span>
             <div>
               <h2>Cargo Intake Planner</h2>
-              <p>DWT, bunkers, stores ve constant ile kalan yuk kapasitesi.</p>
+              <p>Remaining cargo capacity from DWT, bunkers, stores and constants.</p>
             </div>
           </div>
           <form class="calc-form" id="cargoForm">
@@ -738,7 +738,7 @@
             <label><span>Bunkers ROB (mt)</span><input name="bunkers" type="number" value="1450" step="10" /></label>
             <label><span>Fresh water / stores (mt)</span><input name="stores" type="number" value="280" step="10" /></label>
             <label><span>Constants / slops (mt)</span><input name="constants" type="number" value="350" step="10" /></label>
-            <button type="submit">Cargo Intake Hesapla</button>
+            <button type="submit">Calculate Cargo Intake</button>
           </form>
           <div class="result-box" id="cargoResult"></div>
         </article>
@@ -748,7 +748,7 @@
             <span>02</span>
             <div>
               <h2>Corrected GM Calculator</h2>
-              <p>KG, KM, free surface correction ve minimum GM kontrolu.</p>
+              <p>KG, KM, free surface correction and minimum GM check.</p>
             </div>
           </div>
           <form class="calc-form" id="gmForm">
@@ -763,7 +763,7 @@
             <label><span>KM at draft (m)</span><input name="km" type="number" value="11.4" step="0.01" /></label>
             <label><span>Free surface correction (m)</span><input name="fsc" type="number" value="0.28" step="0.01" /></label>
             <label><span>Minimum GM required (m)</span><input name="minGm" type="number" value="0.55" step="0.01" /></label>
-            <button type="submit">GM Hesapla</button>
+            <button type="submit">Calculate GM</button>
           </form>
           <div class="result-box" id="gmResult"></div>
         </article>
@@ -773,7 +773,7 @@
             <span>03</span>
             <div>
               <h2>Trim & Cargo Shift</h2>
-              <p>Draft farki, MCTC ve longitudinal cargo shift etkisi.</p>
+              <p>Draft difference, MCTC and longitudinal cargo shift effect.</p>
             </div>
           </div>
           <form class="calc-form" id="trimForm">
@@ -784,7 +784,7 @@
             <label><span>MCTC (mt-m / cm)</span><input name="mctc" type="number" value="820" step="1" /></label>
             <label><span>Shift weight (mt)</span><input name="shiftWeight" type="number" value="1800" step="10" /></label>
             <label><span>Shift distance (+aft m)</span><input name="shiftDistance" type="number" value="18" step="0.1" /></label>
-            <button type="submit">Trim Etkisini Hesapla</button>
+            <button type="submit">Calculate Trim Effect</button>
           </form>
           <div class="result-box" id="trimResult"></div>
         </article>
@@ -794,7 +794,7 @@
             <span>04</span>
             <div>
               <h2>Draft Survey Cargo Estimate</h2>
-              <p>Mean draft, density correction ve net cargo tahmini.</p>
+              <p>Mean draft, density correction and net cargo estimate.</p>
             </div>
           </div>
           <form class="calc-form" id="draftForm">
@@ -810,7 +810,7 @@
             <label><span>TPC (mt/cm)</span><input name="tpc" type="number" value="62" step="0.1" /></label>
             <label><span>Lightship + constants (mt)</span><input name="deductions" type="number" value="13450" step="10" /></label>
             <label><span>Bunkers / ballast / stores (mt)</span><input name="otherWeights" type="number" value="6380" step="10" /></label>
-            <button type="submit">Draft Survey Hesapla</button>
+            <button type="submit">Calculate Draft Survey</button>
           </form>
           <div class="result-box" id="draftResult"></div>
         </article>
@@ -820,7 +820,7 @@
             <span>05</span>
             <div>
               <h2>Hold Distribution & Stowage</h2>
-              <p>Hold bazli yuk dagilimi, izin verilen limitler ve hacim kontrolu.</p>
+              <p>Hold-based cargo distribution, allowable limits and volume control.</p>
             </div>
           </div>
           <form class="calc-form hold-form" id="holdForm">
@@ -832,7 +832,7 @@
             <label><span>Stowage factor (m3/mt)</span><input name="sf" type="number" value="1.32" step="0.01" /></label>
             <label><span>Bale capacity (m3)</span><input name="capacity" type="number" value="72000" step="100" /></label>
             <label><span>Broken stowage (%)</span><input name="broken" type="number" value="4" step="0.1" /></label>
-            <button type="submit">Hold Plan Analiz Et</button>
+            <button type="submit">Analyze Hold Plan</button>
           </form>
           <div class="result-box" id="holdResult"></div>
         </article>
@@ -842,7 +842,7 @@
             <span>06</span>
             <div>
               <h2>Heel Angle Quick Check</h2>
-              <p>Transverse shift veya wind moment ile yaklasik heel angle.</p>
+              <p>Approximate heel angle from transverse shift or wind moment.</p>
             </div>
           </div>
           <form class="calc-form" id="heelForm">
@@ -851,7 +851,7 @@
             <label><span>Shifted weight (mt)</span><input name="shiftWeight" type="number" value="650" step="10" /></label>
             <label><span>Transverse shift (m)</span><input name="shiftDistance" type="number" value="7.5" step="0.1" /></label>
             <label><span>Other heeling moment (mt-m)</span><input name="otherMoment" type="number" value="1800" step="10" /></label>
-            <button type="submit">Heel Hesapla</button>
+            <button type="submit">Calculate Heel</button>
           </form>
           <div class="result-box" id="heelResult"></div>
         </article>
@@ -861,13 +861,13 @@
             <span>07</span>
             <div>
               <h2>Load Master Report</h2>
-              <p>Son calistirilan hesaplari tek teknik raporda birlestirir.</p>
+              <p>Combines the latest calculations into one technical report.</p>
             </div>
           </div>
           <div class="report-output" id="stabilityReport">
             Run calculators to generate a report.
           </div>
-          <button type="button" class="primary-button full" id="downloadStabilityReportBottom">TXT Rapor Indir</button>
+          <button type="button" class="primary-button full" id="downloadStabilityReportBottom">Download TXT Report</button>
         </article>
       </section>
 
@@ -875,11 +875,11 @@
         <div class="panel-heading">
           <div>
             <p class="eyebrow">Stability Reading Library</p>
-            <h2>GM, trim, damage stability ve free-surface icin kaynak kutuphanesi.</h2>
+            <h2>Resource library for GM, trim, damage stability and free-surface topics.</h2>
             <p>
-              Loadicator sonucunu yorumlarken elinin altinda resmi IMO sayfalari ve ileri seviye
-              acik akademik okumalar dursun. Hesap motoru sahada pratik verir; bu bolum kavramlari
-              dogru kaynaktan calismak icin.
+              Keep official IMO pages and advanced open academic readings close while interpreting loadicator
+              results. The calculation engine gives field practice; this section keeps the concepts tied to
+              reliable sources.
             </p>
           </div>
           <div class="scene-status">Official + open research</div>
@@ -889,65 +889,65 @@
           <a class="stability-resource-card" href="https://www.imo.org/en/ourwork/safety/pages/shipdesignandstability-default.aspx" target="_blank" rel="noopener noreferrer">
             <span>Official / IMO</span>
             <strong>Ship Design & Stability</strong>
-            <p>SOLAS II-1, 2008 Intact Stability Code, Load Line Convention ve second generation intact stability kriterlerine resmi giris.</p>
+            <p>Official entry point for SOLAS II-1, the 2008 Intact Stability Code, Load Line Convention and second generation intact stability criteria.</p>
             <small>Use for: GM, GZ, intact stability, load line context</small>
           </a>
           <a class="stability-resource-card" href="https://www.imo.org/en/ourwork/safety/pages/damagestability.aspx" target="_blank" rel="noopener noreferrer">
             <span>Official / IMO</span>
             <strong>Damage Stability</strong>
-            <p>Subdivision, probabilistic damage stability, damage control booklet ve SOLAS damage stability mantigi.</p>
+            <p>Subdivision, probabilistic damage stability, damage control booklet and SOLAS damage stability logic.</p>
             <small>Use for: flooding risk, subdivision, survivability</small>
           </a>
           <a class="stability-resource-card" href="https://www.imo.org/en/ourwork/safety/pages/default.aspx" target="_blank" rel="noopener noreferrer">
             <span>Official / Safety</span>
             <strong>Maritime Safety Framework</strong>
-            <p>SOLAS, load lines, dangerous cargo, ship design/construction ve IMO safety komitelerine genel bakis.</p>
+            <p>Overview of SOLAS, load lines, dangerous cargo, ship design/construction and IMO safety committees.</p>
             <small>Use for: regulatory map and safety background</small>
           </a>
           <a class="stability-resource-card" href="https://arxiv.org/abs/1410.2240" target="_blank" rel="noopener noreferrer">
             <span>Open Paper</span>
             <strong>Free-Surface Hydrodynamics</strong>
-            <p>Free-surface, breaking wave, VOF formulation ve ship hull cevresindeki akiskan davranisi icin teknik okuma.</p>
+            <p>Technical reading on free-surface behavior, breaking waves, VOF formulation and fluid behavior around a ship hull.</p>
             <small>Use for: free-surface and wave interaction theory</small>
           </a>
           <a class="stability-resource-card" href="https://arxiv.org/abs/2407.11601" target="_blank" rel="noopener noreferrer">
             <span>Open Paper</span>
             <strong>Surf-Riding Threshold / SGISC</strong>
-            <p>IMO Second Generation Intact Stability Criteria icinde surf-riding ve broaching esigi uzerine ileri matematiksel calisma.</p>
+            <p>Advanced mathematical study of surf-riding and broaching thresholds in the IMO Second Generation Intact Stability Criteria.</p>
             <small>Use for: following sea dynamic stability</small>
           </a>
           <a class="stability-resource-card" href="https://arxiv.org/abs/2406.12853" target="_blank" rel="noopener noreferrer">
             <span>Open Review</span>
             <strong>Following Sea Stability Review</strong>
-            <p>Broaching, following sea ve surf-riding prediction methodunun IMO SGISC ile baglantisini anlatan inceleme.</p>
+            <p>Review explaining broaching, following seas and surf-riding prediction methods in relation to IMO SGISC.</p>
             <small>Use for: advanced dynamic stability reading</small>
           </a>
         </div>
       </section>
 
-      <footer class="lab-footer" aria-label="Focusea stability lab yasal bilgileri">
+      <footer class="lab-footer" aria-label="Focusea stability lab legal information">
         <div>
           <strong>Focusea Stability Lab</strong>
           <span>Planning calculations for cargo, draft, trim, GM, heel and loadicator-style checks.</span>
         </div>
         <div class="lab-footer-grid">
           <article>
-            <span>Gizlilik</span>
-            <p>Girilen yük, draft, trim ve stabilite değerleri demo/local hesaplama amacıyla kullanılır. Gerçek gemi belgeleri veya gizli planlar paylaşılmadan önce hassas bilgiler maskelenmelidir.</p>
+            <span>Privacy</span>
+            <p>Entered cargo, draft, trim and stability values are used for demo/local calculation only. Mask sensitive information before sharing real vessel documents or confidential plans.</p>
           </article>
           <article>
-            <span>Kullanım Koşulları</span>
-            <p>Bu sonuçlar planlama desteğidir. Nihai yükleme ve stabilite kararları onaylı loading computer, stability booklet, klas ve kaptan onayıyla verilmelidir.</p>
+            <span>Terms of Use</span>
+            <p>These outputs are planning support only. Final loading and stability decisions must be made with the approved loading computer, stability booklet, class guidance and master approval.</p>
           </article>
           <article>
-            <span>Güvenlik</span>
-            <p>Güvenlik bildirimi için <a href=".well-known/security.txt">security.txt</a> veya <a href="https://github.com/captainemo03/focusea/issues" target="_blank" rel="noopener noreferrer">GitHub Issues</a> kullanılabilir.</p>
+            <span>Security</span>
+            <p>For security reporting, use <a href=".well-known/security.txt">security.txt</a> or <a href="https://github.com/captainemo03/focusea/issues" target="_blank" rel="noopener noreferrer">GitHub Issues</a>.</p>
           </article>
         </div>
       </footer>
     </main>
 
-    <script src="stability.js?v=stability-lab-2"></script>
+    <script src="stability.js?v=stability-english-1"></script>
     <script src="stability-loadicator-basic.js?v=stability-lab-16"></script>
     <script type="module" src="stability-3d.js?v=stability-lab-9"></script>
   </body>
