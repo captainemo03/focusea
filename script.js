@@ -2368,6 +2368,12 @@ const sustainabilityDeskForm = document.querySelector("#sustainabilityDeskForm")
 const sustainabilityDeskResult = document.querySelector("#sustainabilityDeskResult");
 const clientPortalForm = document.querySelector("#clientPortalForm");
 const clientPortalResult = document.querySelector("#clientPortalResult");
+const memberSignupForm = document.querySelector("#memberSignupForm");
+const memberLoginForm = document.querySelector("#memberLoginForm");
+const memberAuthStatus = document.querySelector("#memberAuthStatus");
+const memberSessionPill = document.querySelector("#memberSessionPill");
+const memberResumeLast = document.querySelector("#memberResumeLast");
+const memberLogout = document.querySelector("#memberLogout");
 const runBrokerOs = document.querySelector("#runBrokerOs");
 const brokerOsHeadline = document.querySelector("#brokerOsHeadline");
 const brokerOsSummary = document.querySelector("#brokerOsSummary");
@@ -3232,6 +3238,7 @@ function activatePage(pageName = "dashboard", updateHash = true) {
   if (updateHash && window.location.hash !== `#${activePage}`) {
     history.pushState(null, "", `#${activePage}`);
   }
+  recordMemberLocation(activePage);
   window.scrollTo({ top: 0, behavior: "auto" });
 }
 
@@ -3275,6 +3282,260 @@ function safeLocalSet(key, value) {
   } catch {
     return false;
   }
+}
+
+const memberAccountsKey = "focusea-member-accounts-v1";
+const memberSessionKey = "focusea-member-session-v1";
+const guestWorkspaceKey = "focusea-workspace-v2";
+
+function normalizeMemberUsername(username = "") {
+  return String(username).trim().toLowerCase();
+}
+
+function validMemberUsername(username = "") {
+  return /^[a-z0-9._-]{3,32}$/.test(normalizeMemberUsername(username));
+}
+
+function passwordRuleChecks(password = "") {
+  return {
+    lower: /[a-z]/.test(password),
+    upper: /[A-Z]/.test(password),
+    number: /\d/.test(password),
+    star: /\*/.test(password)
+  };
+}
+
+function passwordRuleMessage(password = "") {
+  const checks = passwordRuleChecks(password);
+  const missing = [
+    !checks.lower && "lowercase letter",
+    !checks.upper && "uppercase letter",
+    !checks.number && "number",
+    !checks.star && "* character"
+  ].filter(Boolean);
+  return missing.length ? `Password missing: ${missing.join(", ")}.` : "";
+}
+
+function randomMemberSalt() {
+  const values = new Uint32Array(4);
+  if (window.crypto?.getRandomValues) {
+    window.crypto.getRandomValues(values);
+    return [...values].map((value) => value.toString(16).padStart(8, "0")).join("");
+  }
+  return `${Date.now().toString(16)}${Math.random().toString(16).slice(2)}`;
+}
+
+async function hashMemberText(text = "") {
+  if (window.crypto?.subtle && window.TextEncoder) {
+    const data = new TextEncoder().encode(text);
+    const digest = await window.crypto.subtle.digest("SHA-256", data);
+    return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+  }
+  let hash = 2166136261;
+  for (let index = 0; index < text.length; index += 1) {
+    hash ^= text.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return `fallback-${(hash >>> 0).toString(16)}`;
+}
+
+function getMemberAccounts() {
+  return safeLocalGet(memberAccountsKey, {}) || {};
+}
+
+function setMemberAccounts(accounts = {}) {
+  return safeLocalSet(memberAccountsKey, accounts);
+}
+
+function getMemberSession() {
+  const session = safeLocalGet(memberSessionKey, null);
+  if (!session?.username) return null;
+  return session;
+}
+
+function setMemberSession(username) {
+  const normalized = normalizeMemberUsername(username);
+  const accounts = getMemberAccounts();
+  const account = accounts[normalized];
+  if (!account) return false;
+  const session = {
+    username: normalized,
+    signedInAt: new Date().toISOString(),
+    lastPage: account.lastPage || pageFromHash()
+  };
+  return safeLocalSet(memberSessionKey, session);
+}
+
+function clearMemberSession() {
+  try {
+    localStorage.removeItem(memberSessionKey);
+  } catch {
+    // Ignore restricted storage modes.
+  }
+}
+
+function currentMemberAccount() {
+  const session = getMemberSession();
+  if (!session) return null;
+  return getMemberAccounts()[session.username] || null;
+}
+
+function memberWorkspaceKey(username = "") {
+  const normalized = normalizeMemberUsername(username);
+  return normalized ? `${guestWorkspaceKey}:${normalized}` : guestWorkspaceKey;
+}
+
+function currentWorkspaceKey() {
+  const session = getMemberSession();
+  return session?.username ? memberWorkspaceKey(session.username) : guestWorkspaceKey;
+}
+
+function updateCurrentMember(updater) {
+  const session = getMemberSession();
+  if (!session?.username) return false;
+  const accounts = getMemberAccounts();
+  const account = accounts[session.username];
+  if (!account) return false;
+  accounts[session.username] = updater({ ...account }) || account;
+  safeLocalSet(memberSessionKey, {
+    ...session,
+    lastPage: accounts[session.username].lastPage || session.lastPage
+  });
+  return setMemberAccounts(accounts);
+}
+
+function recordMemberLocation(pageName) {
+  if (!pageGroups[pageName]) return;
+  updateCurrentMember((account) => ({
+    ...account,
+    lastPage: pageName,
+    lastSeenAt: new Date().toISOString()
+  }));
+}
+
+function memberPageLabel(pageName = "dashboard") {
+  const link = [...pageNavLinks].find((item) => item.dataset.pageLink === pageName);
+  return link?.textContent?.trim() || pageName;
+}
+
+function initialPageForSession() {
+  if (window.location.hash) return pageFromHash();
+  const account = currentMemberAccount();
+  return account?.lastPage && pageGroups[account.lastPage] ? account.lastPage : "dashboard";
+}
+
+function renderMemberAuthStatus(message = "") {
+  if (!memberAuthStatus && !memberSessionPill) return;
+  const session = getMemberSession();
+  const account = currentMemberAccount();
+  const signedIn = Boolean(session && account);
+  if (memberSessionPill) {
+    memberSessionPill.textContent = signedIn ? `Signed in: ${account.displayName || account.username}` : "Guest Mode";
+  }
+  if (memberResumeLast) memberResumeLast.disabled = !signedIn;
+  if (memberLogout) memberLogout.disabled = !signedIn;
+  if (!memberAuthStatus) return;
+  if (!signedIn) {
+    memberAuthStatus.innerHTML = `
+      ${metricCards([
+        { label: "Session", value: "Guest" },
+        { label: "Resume", value: "Sign in first" },
+        { label: "Storage", value: "Browser local" }
+      ])}
+      <small>${escapeHtml(message || "Create an account or log in to resume your last Focusea page on this browser.")}</small>
+    `;
+    return;
+  }
+  const lastPage = account.lastPage || "dashboard";
+  memberAuthStatus.innerHTML = `
+    ${metricCards([
+      { label: "User", value: escapeHtml(account.displayName || account.username) },
+      { label: "Last page", value: escapeHtml(memberPageLabel(lastPage)) },
+      { label: "Workspace", value: "User-scoped" },
+      { label: "Password", value: "Salted hash stored" }
+    ])}
+    <small>${escapeHtml(message || `Welcome back. Resume will open ${memberPageLabel(lastPage)}.`)}</small>
+  `;
+}
+
+async function handleMemberSignup(event) {
+  event.preventDefault();
+  const values = collectFormValues(memberSignupForm);
+  const username = normalizeMemberUsername(values.signupUsername);
+  const password = String(values.signupPassword || "");
+  if (!validMemberUsername(username)) {
+    renderMemberAuthStatus("Username must be 3-32 characters and use only letters, numbers, dot, dash or underscore.");
+    return;
+  }
+  const passwordProblem = passwordRuleMessage(password);
+  if (passwordProblem) {
+    renderMemberAuthStatus(passwordProblem);
+    return;
+  }
+  const accounts = getMemberAccounts();
+  if (accounts[username]) {
+    renderMemberAuthStatus("This username already exists. Log in instead.");
+    return;
+  }
+  const salt = randomMemberSalt();
+  accounts[username] = {
+    username,
+    displayName: username,
+    salt,
+    passwordHash: await hashMemberText(`${salt}:${username}:${password}`),
+    createdAt: new Date().toISOString(),
+    lastSeenAt: new Date().toISOString(),
+    lastPage: pageFromHash(),
+    workspaceKey: memberWorkspaceKey(username)
+  };
+  setMemberAccounts(accounts);
+  setMemberSession(username);
+  if (profileForm?.elements.profileName && !profileForm.elements.profileName.value) {
+    profileForm.elements.profileName.value = username;
+  }
+  saveWorkspaceState("Account created. Workspace saved to your user profile.");
+  memberSignupForm.reset();
+  renderMemberAuthStatus("Account created. Focusea will now remember your last page on this browser.");
+}
+
+async function handleMemberLogin(event) {
+  event.preventDefault();
+  const values = collectFormValues(memberLoginForm);
+  const username = normalizeMemberUsername(values.loginUsername);
+  const password = String(values.loginPassword || "");
+  const account = getMemberAccounts()[username];
+  if (!account) {
+    renderMemberAuthStatus("Account not found. Create an account first.");
+    return;
+  }
+  const passwordHash = await hashMemberText(`${account.salt}:${username}:${password}`);
+  if (passwordHash !== account.passwordHash) {
+    renderMemberAuthStatus("Wrong password. Check uppercase/lowercase, number and * character.");
+    return;
+  }
+  setMemberSession(username);
+  updateCurrentMember((item) => ({ ...item, lastSeenAt: new Date().toISOString() }));
+  memberLoginForm.reset();
+  loadWorkspaceState("Signed in. No saved workspace found for this user yet.");
+  const destination = currentMemberAccount()?.lastPage || "dashboard";
+  renderMemberAuthStatus(`Signed in. Opening ${memberPageLabel(destination)}.`);
+  activatePage(destination);
+}
+
+function resumeMemberLastPage() {
+  const account = currentMemberAccount();
+  if (!account?.lastPage || !pageGroups[account.lastPage]) {
+    renderMemberAuthStatus("No saved page yet. Browse the site while signed in first.");
+    return;
+  }
+  activatePage(account.lastPage);
+  renderMemberAuthStatus(`Resumed ${memberPageLabel(account.lastPage)}.`);
+}
+
+function logoutMember() {
+  clearMemberSession();
+  renderMemberAuthStatus("Logged out. Guest workspace is active.");
+  renderWorkspaceStatus("Guest mode active.");
 }
 
 const uiMojibakeMap = [
@@ -4957,15 +5218,17 @@ function workspaceForms() {
   };
 }
 
-function saveWorkspaceState() {
-  const ok = safeLocalSet("focusea-workspace-v2", workspaceForms());
-  renderWorkspaceStatus(ok ? "Workspace saved locally." : "Local storage unavailable.");
+function saveWorkspaceState(successMessage = "Workspace saved locally.") {
+  if (typeof successMessage !== "string") successMessage = "Workspace saved locally.";
+  const ok = safeLocalSet(currentWorkspaceKey(), workspaceForms());
+  renderWorkspaceStatus(ok ? successMessage : "Local storage unavailable.");
 }
 
-function loadWorkspaceState() {
-  const data = safeLocalGet("focusea-workspace-v2");
+function loadWorkspaceState(missingMessage = "No saved workspace found yet.") {
+  if (typeof missingMessage !== "string") missingMessage = "No saved workspace found yet.";
+  const data = safeLocalGet(currentWorkspaceKey());
   if (!data) {
-    renderWorkspaceStatus("No saved workspace found yet.");
+    renderWorkspaceStatus(missingMessage);
     return;
   }
   writeFormValues(profileForm, data.profile);
@@ -4981,7 +5244,7 @@ function loadWorkspaceState() {
 
 function clearWorkspaceState() {
   try {
-    localStorage.removeItem("focusea-workspace-v2");
+    localStorage.removeItem(currentWorkspaceKey());
   } catch {
     // Ignore restricted storage modes.
   }
@@ -4991,14 +5254,16 @@ function clearWorkspaceState() {
 function renderWorkspaceStatus(message = "Local account ready.") {
   if (!workspaceStatus) return;
   const profile = profileForm ? collectFormValues(profileForm) : {};
+  const account = currentMemberAccount();
   workspaceStatus.innerHTML = `
     ${metricCards([
-      { label: "User", value: profile.profileName || "No profile" },
-      { label: "Company", value: profile.profileCompany || "-" },
-      { label: "Role", value: profile.profileRole || "-" },
-      { label: "Status", value: message }
+      { label: "User", value: escapeHtml(profile.profileName || "No profile") },
+      { label: "Company", value: escapeHtml(profile.profileCompany || "-") },
+      { label: "Role", value: escapeHtml(profile.profileRole || "-") },
+      { label: "Account", value: account ? `Signed in: ${escapeHtml(account.displayName || account.username)}` : "Guest local mode" },
+      { label: "Status", value: escapeHtml(message) }
     ])}
-    <small>Data is saved in this browser with localStorage. Backend login can be added later.</small>
+    <small>Data is saved in this browser with localStorage. Signed-in users get a separate local workspace; production-grade auth still requires a backend.</small>
   `;
 }
 
@@ -16762,6 +17027,10 @@ if (disputeRiskForm) {
 if (saveWorkspace) saveWorkspace.addEventListener("click", saveWorkspaceState);
 if (loadWorkspace) loadWorkspace.addEventListener("click", loadWorkspaceState);
 if (clearWorkspace) clearWorkspace.addEventListener("click", clearWorkspaceState);
+if (memberSignupForm) memberSignupForm.addEventListener("submit", handleMemberSignup);
+if (memberLoginForm) memberLoginForm.addEventListener("submit", handleMemberLogin);
+if (memberResumeLast) memberResumeLast.addEventListener("click", resumeMemberLastPage);
+if (memberLogout) memberLogout.addEventListener("click", logoutMember);
 if (pushImportToInbox) pushImportToInbox.addEventListener("click", pushImportedOfferToInbox);
 if (refreshTerminalAlarms) refreshTerminalAlarms.addEventListener("click", renderTerminalAlarms);
 if (pushFixtureProToInbox) pushFixtureProToInbox.addEventListener("click", pushFixtureImportProToInbox);
@@ -16941,7 +17210,7 @@ if (databaseForm) {
     const values = collectFormValues(databaseForm);
     if (values.newCompany) {
       focuseaDb.companies.push({ name: values.newCompany, type: values.newCompanyType });
-      safeLocalSet("focusea-workspace-v2", workspaceForms());
+      safeLocalSet(currentWorkspaceKey(), workspaceForms());
     }
     renderDatabase();
     renderAnalytics();
@@ -17312,7 +17581,8 @@ renderCommandDeck();
 initializeSmartOps();
 updateLiveFeed();
 setupPageSections();
-activatePage(pageFromHash(), false);
+renderMemberAuthStatus();
+activatePage(initialPageForSession(), false);
 setInterval(updateLiveFeed, 1000);
 setInterval(refreshBalticLicensedFeed, 1000);
 refreshBalticLicensedFeed();
