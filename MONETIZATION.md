@@ -39,7 +39,7 @@ Open `index.html?adpreview=1#dashboard`. Preview blocks are clearly labelled and
 
 ## Important deployment note
 
-AdSense account setup expects a site URL without a path. The current GitHub project URL contains `/focusea/`, so a custom domain or root-level deployment is the reliable production route. GitHub Pages should also not become the long-term host for a commercial SaaS product.
+Focusea is deployed at the root-level `https://captainemo03.github.io/` URL so AdSense can review a path-free site address. GitHub Pages should not become the long-term host for a commercial SaaS product.
 
 Google documents nonce-based strict CSP as the supported AdSense CSP approach because advertising domains can change. The current static deployment uses a constrained Google-domain allowlist. Before production activation, move CSP to a host that can issue a fresh nonce per response, or test the final AdSense code against Google's current CSP guidance.
 
