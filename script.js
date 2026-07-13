@@ -16913,7 +16913,11 @@ function pythonEngineRoute(jobType) {
 
 async function callPythonEngineApi(values) {
   const base = String(values.apiBase || "").replace(/\/+$/, "");
-  if (!base) throw new Error("API base empty");
+  if (!base) {
+    const error = new Error("API base empty");
+    error.code = "FOCUSEA_API_BASE_EMPTY";
+    throw error;
+  }
   const response = await fetch(`${base}${pythonEngineRoute(values.jobType)}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -16967,11 +16971,16 @@ async function runPythonEngine(event) {
   let mode = "api";
   let data;
   try {
-    data = await callPythonEngineApi(values);
+    if (!values.apiBase) {
+      mode = "local-demo";
+      data = simulatePythonJob(values.jobType, values.inputText || "");
+    } else {
+      data = await callPythonEngineApi(values);
+    }
   } catch (error) {
     mode = "local-demo";
     data = simulatePythonJob(values.jobType, values.inputText || "");
-    data.api_error = error.message;
+    if (error.code !== "FOCUSEA_API_BASE_EMPTY") data.api_error = error.message;
   }
   lastPythonEngineResult = {
     jobType: values.jobType,
