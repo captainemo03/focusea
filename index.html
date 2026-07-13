@@ -15,7 +15,7 @@
     <link rel="icon" href="favicon.svg?v=focusea-badge2" type="image/svg+xml" />
     <link rel="manifest" href="manifest.webmanifest" />
     <script src="theme.js?v=theme-1"></script>
-    <link rel="stylesheet" href="styles.css?v=theme-2" />
+    <link rel="stylesheet" href="styles.css?v=enterprise-1" />
   </head>
   <body>
     <div class="app-shell">
@@ -43,6 +43,7 @@
           <a href="#dealIQ" data-page-link="dealIQ">Deal IQ</a>
           <a href="#decisionLab" data-page-link="decisionLab">Decision Lab</a>
           <a href="#superSuite" data-page-link="superSuite">Super Suite</a>
+          <a href="#enterprise" data-page-link="enterprise">Enterprise Command</a>
           <a href="#pythonEngine" data-page-link="pythonEngine">Python Engine</a>
           <a href="#market" data-page-link="market">Market & News</a>
           <a href="#tools" data-page-link="tools">Tools</a>
@@ -3330,6 +3331,80 @@ Subject: Firm offer
           </div>
         </section>
 
+        <section class="enterprise-command-panel" id="enterpriseCommandPanel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Focusea Enterprise Command</p>
+              <h2>One professional workspace for deal, document, market, port, client and report decisions</h2>
+            </div>
+            <div class="status-pill">Product OS Layer</div>
+          </div>
+
+          <div class="enterprise-command-hero">
+            <div>
+              <span>Paste once, operate the whole workflow</span>
+              <strong id="enterpriseCommandHeadline">Fixture intelligence, document risk, market confidence and client output in one screen.</strong>
+              <p id="enterpriseCommandSummary">This layer connects the strongest Focusea modules into a single broker-grade workflow with traceable scores and downloadable outputs.</p>
+            </div>
+            <div class="enterprise-command-actions">
+              <button type="button" class="primary-button" id="runEnterpriseCommand">Run Command</button>
+              <a class="ghost-button" href="stability.html" target="_blank" rel="noopener">Open 3D Loadicator</a>
+            </div>
+          </div>
+
+          <div class="enterprise-command-grid">
+            <article class="wide-card">
+              <div class="mini-heading"><span>1. Deal Engine</span><strong>Offer parser, TCE, Focusea Score and next action</strong></div>
+              <form class="broker-form single-column" id="enterpriseCommandForm">
+                <label><span>Fixture / SOF / clause / client note</span><textarea name="dealText">Firm offer: 50k coal Indonesia to India laycan 10/15 Jul freight USD 18.50 pmt demurrage USD 18,000/day Supramax. NOR WIBON/WIPON and time lost waiting berth to count as laytime. Subjects receiver approval by 1700 LT. SOF: NOR tendered 10 Jul 0800, berthed 10 Jul 1800, loading started 11 Jul 0600, rain stop 12 Jul 0300-0900, completed 14 Jul 2200.</textarea></label>
+                <div class="auto-deal-controls">
+                  <label><span>Cargo</span><select name="cargoType"><option value="coal">Coal</option><option value="grain">Grain</option><option value="container">Container</option><option value="ironOre">Iron Ore</option><option value="crudeOil">Crude Oil</option><option value="lng">LNG</option><option value="chemicals">Chemicals</option><option value="projectCargo">Project Cargo</option></select></label>
+                  <label><span>Port desk</span><select name="turkiyePortId"><option value="mersin">Mersin</option><option value="ambarli">Ambarli / Kumport</option><option value="izmir">Izmir / Alsancak</option><option value="aliaga">Aliaga / Nemrut</option><option value="gemlik">Gemlik</option><option value="izmit">Kocaeli / Izmit</option><option value="iskenderun">Iskenderun</option><option value="samsun">Samsun</option></select></label>
+                  <label><span>Target TCE</span><input name="targetTce" type="number" value="22000" step="500" /></label>
+                  <label><span>Daily hire</span><input name="dailyHire" type="number" value="14500" step="100" /></label>
+                  <label><span>Port delay days</span><input name="portDelay" type="number" value="2" min="0" step="0.1" /></label>
+                  <label><span>Bunker $/t</span><input name="bunkerPrice" type="number" value="686.5" min="0" step="0.1" /></label>
+                  <label><span>Draft m</span><input name="draft" type="number" value="12.8" min="0" step="0.1" /></label>
+                  <label><span>Client</span><input name="clientName" value="ABC Chartering Desk" /></label>
+                </div>
+                <button type="submit">Run Enterprise Workflow</button>
+              </form>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" data-download-enterprise="pdf">Download PDF</button>
+                <button type="button" class="ghost-button small" data-download-enterprise="client">Client Summary</button>
+                <button type="button" class="ghost-button small" data-download-enterprise="json">JSON Pack</button>
+                <button type="button" class="ghost-button small" data-download-enterprise="csv">Risk CSV</button>
+              </div>
+              <div class="broker-output enterprise-command-output" id="enterpriseCommandResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>2. Document Room</span><strong>Clause, SOF, NOR and invoice red flags</strong></div>
+              <div class="broker-output" id="enterpriseDocumentRoom"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>3. Market Terminal</span><strong>Data confidence and source transparency</strong></div>
+              <div class="broker-output" id="enterpriseMarketTerminal"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>4. Port Intelligence</span><strong>Draft, docs, waiting and PDA notes</strong></div>
+              <div class="broker-output" id="enterprisePortIntel"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>5. Client Portal Preview</span><strong>Shareable status pack concept</strong></div>
+              <div class="broker-output" id="enterpriseClientPortal"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>6. Report Center</span><strong>Saved Enterprise outputs</strong></div>
+              <div class="broker-output" id="enterpriseReportCenter"></div>
+            </article>
+          </div>
+        </section>
+
         <section class="python-engine-panel" id="pythonEngineSuite">
           <div class="panel-heading">
             <div>
@@ -4129,7 +4204,7 @@ Subject: Firm offer
     </dialog>
 
     <script src="monetization-config.js?v=monetization-ready-3"></script>
-    <script src="script.js?v=monetization-ready-1"></script>
+    <script src="script.js?v=enterprise-1"></script>
     <script src="monetization.js?v=monetization-ready-3"></script>
   </body>
 </html>

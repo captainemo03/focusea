@@ -6424,9 +6424,114 @@ main article,
   transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
 }
 
+.enterprise-command-panel {
+  border: 1px solid rgba(91, 255, 220, 0.18);
+}
+
+.enterprise-command-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 20px;
+  align-items: center;
+  margin: 20px 0;
+  padding: 22px;
+  border: 1px solid rgba(91, 255, 220, 0.18);
+  background:
+    linear-gradient(135deg, rgba(91, 255, 220, 0.12), transparent 42%),
+    rgba(255, 255, 255, 0.035);
+}
+
+.enterprise-command-hero span,
+.enterprise-command-hero p {
+  color: var(--text-soft);
+}
+
+.enterprise-command-hero strong {
+  display: block;
+  margin: 8px 0;
+  font-size: clamp(1.15rem, 2vw, 2rem);
+  line-height: 1.1;
+}
+
+.enterprise-command-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.enterprise-command-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.enterprise-command-grid .wide-card {
+  grid-column: 1 / -1;
+}
+
+.enterprise-command-output pre,
+#enterpriseClientPortal pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.enterprise-risk-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.enterprise-risk-grid > div {
+  min-height: 116px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.enterprise-risk-grid span,
+.enterprise-risk-grid small {
+  display: block;
+  color: var(--text-soft);
+}
+
+.enterprise-risk-grid strong {
+  display: block;
+  margin: 8px 0;
+  font-size: 1.25rem;
+}
+
+.enterprise-risk-grid .high {
+  border-color: rgba(255, 107, 156, 0.46);
+}
+
+.enterprise-risk-grid .medium {
+  border-color: rgba(255, 203, 114, 0.42);
+}
+
+.enterprise-risk-grid .low {
+  border-color: rgba(91, 255, 220, 0.34);
+}
+
+html[data-theme="light"] .enterprise-command-hero {
+  background:
+    linear-gradient(135deg, rgba(8, 127, 114, 0.08), transparent 42%),
+    var(--surface-inset);
+}
+
+html[data-theme="light"] .enterprise-risk-grid > div {
+  background: var(--surface-soft);
+  border-color: rgba(76, 80, 214, 0.12);
+}
+
 @media (max-width: 1120px) {
   .theme-switcher {
     max-width: 320px;
+  }
+
+  .enterprise-risk-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -6434,6 +6539,23 @@ main article,
   .theme-switcher {
     width: 100%;
     max-width: none;
+  }
+
+  .enterprise-command-hero,
+  .enterprise-command-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .enterprise-command-actions {
+    justify-content: stretch;
+  }
+
+  .enterprise-command-actions > * {
+    flex: 1 1 100%;
+  }
+
+  .enterprise-risk-grid {
+    grid-template-columns: 1fr;
   }
 }
 

@@ -2524,6 +2524,16 @@ const clearSuperNotes = document.querySelector("#clearSuperNotes");
 const superReportHistory = document.querySelector("#superReportHistory");
 const superFeatureGrid = document.querySelector("#superFeatureGrid");
 const superBuildQueue = document.querySelector("#superBuildQueue");
+const enterpriseCommandHeadline = document.querySelector("#enterpriseCommandHeadline");
+const enterpriseCommandSummary = document.querySelector("#enterpriseCommandSummary");
+const enterpriseCommandForm = document.querySelector("#enterpriseCommandForm");
+const enterpriseCommandResult = document.querySelector("#enterpriseCommandResult");
+const enterpriseDocumentRoom = document.querySelector("#enterpriseDocumentRoom");
+const enterpriseMarketTerminal = document.querySelector("#enterpriseMarketTerminal");
+const enterprisePortIntel = document.querySelector("#enterprisePortIntel");
+const enterpriseClientPortal = document.querySelector("#enterpriseClientPortal");
+const enterpriseReportCenter = document.querySelector("#enterpriseReportCenter");
+const runEnterpriseCommand = document.querySelector("#runEnterpriseCommand");
 const theaterScenarioButtons = document.querySelectorAll("[data-theater-scenario]");
 const theaterHeadline = document.querySelector("#theaterHeadline");
 const theaterSummary = document.querySelector("#theaterSummary");
@@ -3039,6 +3049,7 @@ const pageGroups = {
   dealIQ: ["#dealIqSuite"],
   decisionLab: ["#decisionLabSuite"],
   superSuite: ["#superSuitePanel"],
+  enterprise: ["#enterpriseCommandPanel"],
   pythonEngine: ["#pythonEngineSuite"],
   market: ["#intelligence", "#newsBulletin"],
   tools: ["#route", "#assistantCareer", "#vesselFinder"],
@@ -16375,6 +16386,277 @@ function renderAllSuperSuite() {
   renderSuperBuildQueue();
 }
 
+let lastEnterpriseCommand = null;
+
+function enterpriseHistory() {
+  return safeLocalGet("focusea-enterprise-history-v1", []) || [];
+}
+
+function saveEnterpriseHistory(entry) {
+  safeLocalSet("focusea-enterprise-history-v1", [entry, ...enterpriseHistory()].slice(0, 20));
+}
+
+function enterpriseSourceBadge(source) {
+  if (source === "verified") return "verified";
+  if (source === "licensed") return "licensed";
+  if (source === "api-ready") return "api-ready";
+  return "simulated";
+}
+
+function enterpriseDocumentFlags(text = "") {
+  const checks = [
+    {
+      title: "NOR / waiting time",
+      active: /wibon|wipon|waiting berth|time lost waiting/i.test(text),
+      severity: "High",
+      action: "Clarify when NOR is valid and whether waiting time counts as laytime."
+    },
+    {
+      title: "Weather exception",
+      active: /weather|rain|unless used|wwd|weather working/i.test(text),
+      severity: "Medium",
+      action: "Separate weather stoppage evidence from laytime exceptions."
+    },
+    {
+      title: "Subject deadline",
+      active: /subject|subjects|approval|stem/i.test(text),
+      severity: "Medium",
+      action: "Keep the deadline in the time-bar calendar before lifting subjects."
+    },
+    {
+      title: "SOF chronology",
+      active: /nor tendered|berthed|loading started|completed|sof/i.test(text),
+      severity: "Medium",
+      action: "Convert SOF events into laytime statement and claim evidence pack."
+    },
+    {
+      title: "Invoice / recap mismatch",
+      active: /invoice|recap|claim|demurrage/i.test(text),
+      severity: "Low",
+      action: "Compare recap demurrage rate, invoice amount and SOF dates."
+    }
+  ];
+  const active = checks.filter((item) => item.active);
+  return active.length ? active : [{
+    title: "Document pack incomplete",
+    severity: "Low",
+    action: "Add CP clause, SOF, NOR or invoice text for deeper red-flag extraction."
+  }];
+}
+
+function enterpriseRiskRows(context, documentFlags) {
+  return [
+    ["Commercial", clamp(Math.round(100 - Math.max(-15000, context.netPnl) / 900 + (context.tce < context.targetTce ? 18 : 0)), 0, 100), context.tce < context.targetTce ? "TCE is below target." : "TCE is commercially workable."],
+    ["Legal", context.legalRisk, documentFlags[0]?.action || "Review clause wording."],
+    ["Operations", context.portRisk, `Port delay and draft margin at ${context.portProfile.port.name}.`],
+    ["Claim", clamp(context.legalRisk + documentFlags.length * 5, 0, 100), "SOF, NOR and rain evidence determine claim strength."],
+    ["Market", context.marketRisk, "Bunker, congestion and cargo sentiment affect negotiation."],
+    ["Compliance", clamp(context.cargo.risk + (/sanction|russia|iran|syria/i.test(context.values.dealText || "") ? 28 : 6), 0, 100), "Screen cargo origin, counterparty and route before fixing."],
+    ["Data confidence", context.parsed.missing?.length ? 58 : 82, context.parsed.missing?.length ? `Missing: ${context.parsed.missing.join(", ")}.` : "Core fixture fields parsed."]
+  ];
+}
+
+function enterpriseScoreFromRows(rows) {
+  const risk = Math.round(rows.reduce((sum, row) => sum + row[1], 0) / Math.max(rows.length, 1));
+  const score = clamp(100 - risk, 0, 100);
+  const decision = risk >= 72 ? "AVOID / senior review" : risk >= 54 ? "WATCH / counter first" : "FIX with guards";
+  return { risk, score, decision };
+}
+
+function enterpriseMarketRows(context) {
+  return [
+    ["Bunker VLSFO", bunkerPriceLabel(context.values.bunkerPrice || liveFeedState.bunker), "verified", bunkerSourceNote()],
+    ["Baltic dry indexes", "Licensed feed required", "licensed", "BDI/BCI/BPI/BHSI are industry-standard licensed signals."],
+    ["SCFI / container", "API-ready", "api-ready", "Connect a licensed or official source before calling it live."],
+    ["Port congestion", `${Math.round(liveFeedState.congestion)}%`, "simulated", "Generated from Focusea local risk model until live feed is connected."],
+    ["Weather risk", `${Math.round(liveFeedState.weather)} alert`, "simulated", "API-ready for official weather routing integration."]
+  ];
+}
+
+function enterpriseClientText(result = lastEnterpriseCommand) {
+  if (!result) return "No Enterprise Command report generated.";
+  const c = result.context;
+  return [
+    `Client: ${c.values.clientName || "Client"}`,
+    `Fixture status: ${result.score.decision}`,
+    `Cargo / port: ${c.cargo.label} / ${c.portProfile.port.name}`,
+    `Commercial: estimated P&L ${money(c.netPnl)}, TCE ${money(c.tce)}/day vs target ${money(c.targetTce)}/day.`,
+    `Risk: Focusea Score ${result.score.score}/100, overall risk ${result.score.risk}/100.`,
+    `Top action: ${result.actions[0]}`,
+    `Data note: market values show source labels; licensed feeds are not presented as live until connected.`
+  ].join("\n");
+}
+
+function enterpriseReportText(result = lastEnterpriseCommand) {
+  if (!result) return "No Enterprise Command report generated.";
+  const c = result.context;
+  return reportLines("FOCUSEA ENTERPRISE COMMAND REPORT", [
+    `Generated: ${result.generatedAt}`,
+    `Decision: ${result.score.decision}`,
+    `Focusea Score: ${result.score.score}/100`,
+    `Overall risk: ${result.score.risk}/100`,
+    `Cargo: ${c.cargo.label}`,
+    `Port: ${c.portProfile.port.name}`,
+    `Net P&L: ${money(c.netPnl)}`,
+    `TCE: ${money(c.tce)}/day`,
+    `Draft margin: ${c.draftMargin.toFixed(1)} m`,
+    "",
+    "Risk rows:",
+    ...result.riskRows.map((row) => `- ${row[0]}: ${row[1]}/100 | ${row[2]}`),
+    "",
+    "Document flags:",
+    ...result.documentFlags.map((flag) => `- ${flag.severity}: ${flag.title} | ${flag.action}`),
+    "",
+    "Market confidence:",
+    ...result.marketRows.map((row) => `- ${row[0]}: ${row[1]} | ${row[2]} | ${row[3]}`),
+    "",
+    "Actions:",
+    ...result.actions.map((item) => `- ${item}`),
+    "",
+    "Client summary:",
+    enterpriseClientText(result)
+  ]);
+}
+
+function renderEnterpriseReportCenter() {
+  if (!enterpriseReportCenter) return;
+  const history = enterpriseHistory();
+  enterpriseReportCenter.innerHTML = history.length ? `
+    ${metricCards([
+      { label: "Saved reports", value: history.length },
+      { label: "Latest score", value: `${history[0].score}/100` },
+      { label: "Latest decision", value: escapeHtml(history[0].decision) }
+    ])}
+    <div class="ops-list">${history.slice(0, 8).map((item) => `
+      <div>
+        <strong>${escapeHtml(item.id)} · ${escapeHtml(item.decision)}</strong>
+        <span>${escapeHtml(item.time)} · ${escapeHtml(item.cargo)} · ${escapeHtml(item.port)} · ${money(item.pnl)} P&L</span>
+      </div>
+    `).join("")}</div>
+  ` : `<small>No Enterprise reports yet. Run the workflow to save the first report.</small>`;
+}
+
+function renderEnterpriseCommand(saveHistory = false) {
+  if (!enterpriseCommandForm || !enterpriseCommandResult) return;
+  const values = collectFormValues(enterpriseCommandForm);
+  const context = superSuiteContext({ ...values, mode: "Enterprise Command" });
+  const documentFlags = enterpriseDocumentFlags(values.dealText || "");
+  const riskRows = enterpriseRiskRows(context, documentFlags);
+  const score = enterpriseScoreFromRows(riskRows);
+  const marketRows = enterpriseMarketRows(context);
+  const actions = [
+    score.risk >= 72 ? "Do not lift subjects before senior commercial/legal review." : score.risk >= 54 ? "Counter freight or wording before accepting the deal." : "Proceed only with clear recap, evidence and subject controls.",
+    context.parsed.missing?.length ? `Ask for missing terms: ${context.parsed.missing.join(", ")}.` : "Core fixture fields are usable for recap drafting.",
+    context.portRisk >= 60 ? `Ask ${context.portProfile.port.name} agent for berth line-up, PDA and rain evidence process.` : "Keep port call updates linked to SOF and laytime.",
+    "Open the 3D Loadicator if cargo distribution, draft, GM, trim or heel changes.",
+    "Export the client summary and keep the PDF in Report Center."
+  ];
+  lastEnterpriseCommand = {
+    generatedAt: new Date().toLocaleString(),
+    context,
+    documentFlags,
+    riskRows,
+    score,
+    marketRows,
+    actions
+  };
+  if (saveHistory) {
+    saveEnterpriseHistory({
+      id: `ENT-${Date.now().toString().slice(-6)}`,
+      time: lastEnterpriseCommand.generatedAt,
+      decision: score.decision,
+      score: score.score,
+      cargo: context.cargo.label,
+      port: context.portProfile.port.name,
+      pnl: Math.round(context.netPnl)
+    });
+  }
+  if (enterpriseCommandHeadline) enterpriseCommandHeadline.textContent = `${score.decision}: ${context.cargo.label} / ${context.portProfile.port.name}`;
+  if (enterpriseCommandSummary) enterpriseCommandSummary.textContent = `Focusea Score ${score.score}/100, risk ${score.risk}/100, TCE ${money(context.tce)}/day, P&L ${money(context.netPnl)}.`;
+  enterpriseCommandResult.innerHTML = `
+    ${metricCards([
+      { label: "Focusea Score", value: `${score.score}/100` },
+      { label: "Decision", value: escapeHtml(score.decision) },
+      { label: "Risk", value: `${score.risk}/100` },
+      { label: "Net P&L", value: `<em class="${context.netPnl >= 0 ? "positive" : "negative"}">${money(context.netPnl)}</em>` },
+      { label: "TCE", value: `${money(context.tce)}/day` },
+      { label: "Draft margin", value: `${context.draftMargin.toFixed(1)} m` }
+    ])}
+    <div class="enterprise-risk-grid">${riskRows.map((row) => `
+      <div class="${riskBand(row[1])}">
+        <span>${escapeHtml(row[0])}</span>
+        <strong>${row[1]}/100</strong>
+        <small>${escapeHtml(row[2])}</small>
+      </div>
+    `).join("")}</div>
+    <ul class="compact-list">${actions.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+  `;
+  if (enterpriseDocumentRoom) {
+    enterpriseDocumentRoom.innerHTML = `
+      ${metricCards([
+        { label: "Flags", value: documentFlags.length },
+        { label: "Highest severity", value: escapeHtml(documentFlags[0]?.severity || "Low") }
+      ])}
+      <div class="ops-list">${documentFlags.map((flag) => `
+        <div>
+          <strong>${escapeHtml(flag.severity)} · ${escapeHtml(flag.title)}</strong>
+          <span>${escapeHtml(flag.action)}</span>
+        </div>
+      `).join("")}</div>
+    `;
+  }
+  if (enterpriseMarketTerminal) {
+    enterpriseMarketTerminal.innerHTML = `
+      <table class="mini-table">
+        <thead><tr><th>Signal</th><th>Value</th><th>Trust</th></tr></thead>
+        <tbody>${marketRows.map((row) => `<tr><td>${escapeHtml(row[0])}</td><td>${escapeHtml(row[1])}</td><td><span class="source-badge ${enterpriseSourceBadge(row[2])}">${escapeHtml(row[2])}</span><br><small>${escapeHtml(row[3])}</small></td></tr>`).join("")}</tbody>
+      </table>
+    `;
+  }
+  if (enterprisePortIntel) {
+    const port = context.portProfile.port;
+    enterprisePortIntel.innerHTML = `
+      ${metricCards([
+        { label: "Port", value: escapeHtml(port.name) },
+        { label: "Draft margin", value: `${context.draftMargin.toFixed(1)} m` },
+        { label: "Waiting risk", value: `${context.portRisk}/100` },
+        { label: "PDA estimate", value: money(context.portCost) }
+      ])}
+      <ul class="compact-list">
+        ${(port.documents || ["Cargo manifest", "Crew list", "Port clearance"]).slice(0, 4).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
+        ${(port.risks || []).slice(0, 3).map((item) => `<li>Risk: ${escapeHtml(item)}</li>`).join("")}
+      </ul>
+    `;
+  }
+  if (enterpriseClientPortal) {
+    enterpriseClientPortal.innerHTML = `
+      <pre>${escapeHtml(enterpriseClientText(lastEnterpriseCommand))}</pre>
+      <small>Portal token: ${escapeHtml(decisionPassportTrace(`${context.values.clientName}-${context.cargo.label}-${score.score}`))}</small>
+    `;
+  }
+  renderEnterpriseReportCenter();
+}
+
+function renderAllEnterpriseCommand() {
+  renderEnterpriseCommand(false);
+  renderEnterpriseReportCenter();
+}
+
+function handleEnterpriseDownload(type) {
+  if (!lastEnterpriseCommand) renderEnterpriseCommand(false);
+  const rows = [["bucket", "score", "note"], ...(lastEnterpriseCommand?.riskRows || []).map((row) => row)];
+  const actions = {
+    pdf: () => downloadPdfFile("focusea-enterprise-command-report.pdf", "Focusea Enterprise Command Report", enterpriseReportText(lastEnterpriseCommand)),
+    client: () => downloadTextFile("focusea-client-portal-summary.txt", enterpriseClientText(lastEnterpriseCommand)),
+    json: () => downloadJsonFile("focusea-enterprise-command-pack.json", lastEnterpriseCommand || {}),
+    csv: () => downloadCsvFile("focusea-enterprise-risk-matrix.csv", rows)
+  };
+  actions[type]?.();
+  renderEnterpriseCommand(true);
+  enterpriseCommandResult?.querySelector(".download-confirm")?.remove();
+  enterpriseCommandResult?.insertAdjacentHTML("beforeend", `<small class="download-confirm">Downloaded: ${escapeHtml(window.focuseaLastDownload?.filename || type)}</small>`);
+}
+
 let lastPythonEngineResult = null;
 
 const pythonEngineSamples = {
@@ -18337,6 +18619,15 @@ bindBrokerForm(proOpsLoadicatorForm, renderProOpsLoadicator);
 bindBrokerForm(proOpsClientForm, renderProOpsClient);
 bindBrokerForm(superSuiteForm, renderSuperSuite);
 
+if (enterpriseCommandForm) {
+  enterpriseCommandForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    renderEnterpriseCommand(true);
+  });
+  enterpriseCommandForm.addEventListener("input", () => renderEnterpriseCommand(false));
+  enterpriseCommandForm.addEventListener("change", () => renderEnterpriseCommand(false));
+}
+
 if (offerTrackerForm) {
   offerTrackerForm.addEventListener("input", renderKanbanBoard);
   offerTrackerForm.addEventListener("change", renderKanbanBoard);
@@ -18378,6 +18669,7 @@ if (addRateMemory) addRateMemory.addEventListener("click", addRateMemoryEntry);
 if (pushSimulatedEmail) pushSimulatedEmail.addEventListener("click", pushSimulatedEmailToInbox);
 if (addWatchlistCompany) addWatchlistCompany.addEventListener("click", addWatchlistEntry);
 if (runSuperSuite) runSuperSuite.addEventListener("click", renderAllSuperSuite);
+if (runEnterpriseCommand) runEnterpriseCommand.addEventListener("click", () => renderEnterpriseCommand(true));
 if (saveMarketMemory) saveMarketMemory.addEventListener("click", addMarketMemoryEntry);
 if (clearMarketMemory) {
   clearMarketMemory.addEventListener("click", () => {
@@ -18530,6 +18822,20 @@ document.addEventListener("click", (event) => {
   const button = event.target.closest("[data-download-super]");
   if (!button) return;
   handleSuperDownload(button.dataset.downloadSuper);
+});
+
+document.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-download-enterprise]");
+  if (!button) return;
+  handleEnterpriseDownload(button.dataset.downloadEnterprise);
+});
+
+document.querySelectorAll("[data-download-enterprise]").forEach((button) => {
+  button.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    handleEnterpriseDownload(button.dataset.downloadEnterprise);
+  });
 });
 
 document.addEventListener("click", (event) => {
@@ -18933,6 +19239,7 @@ renderAllSaasCore();
 renderAllAiCore();
 renderAllProOps();
 renderAllSuperSuite();
+renderAllEnterpriseCommand();
 renderMarketIndexes();
 renderDataTrustLayer();
 runAllTrustAutopilot();
