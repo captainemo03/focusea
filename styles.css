@@ -6152,10 +6152,15 @@ body.ai-presentation-mode .ai-core-hero {
   outline-offset: 2px;
 }
 
-.mission-card-copy {
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid var(--line);
+.sidebar-utility {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  margin-top: 16px;
+}
+
+.sidebar-utility .mission-card {
+  margin-top: 0;
 }
 
 html[data-theme="light"] {
