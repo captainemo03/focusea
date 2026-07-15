@@ -1,13 +1,19 @@
-const FOCUSEA_CACHE = "focusea-seo-domain-1";
+const FOCUSEA_CACHE = "focusea-trust-pages-1";
 const FOCUSEA_ASSETS = [
   "./",
   "./index.html",
   "./styles.css",
+  "./landing.css",
   "./script.js",
   "./theme.js",
   "./monetization-config.js",
   "./monetization.js",
   "./stability.html",
+  "./laytime-calculator.html",
+  "./demurrage-calculator.html",
+  "./voyage-estimate.html",
+  "./port-intelligence.html",
+  "./maritime-broker-tools.html",
   "./stability.css",
   "./stability.js",
   "./stability-3d.js",

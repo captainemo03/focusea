@@ -26,7 +26,7 @@
     <link rel="icon" href="favicon.svg?v=focusea-badge2" type="image/svg+xml" />
     <link rel="manifest" href="manifest.webmanifest" />
     <script src="theme.js?v=theme-1"></script>
-    <link rel="stylesheet" href="styles.css?v=seo-domain-1" />
+    <link rel="stylesheet" href="styles.css?v=trust-pages-1" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -195,6 +195,47 @@
           </div>
         </section>
 
+        <section class="data-source-panel" aria-labelledby="dataSourceTitle">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Data Source Transparency</p>
+              <h2 id="dataSourceTitle">Every market number is labelled as live, simulated, licensed required or user input.</h2>
+            </div>
+            <div class="status-pill">Trust Layer</div>
+          </div>
+          <p>
+            Focusea separates verified public data, demo values, licensed market indexes and user-entered assumptions.
+            This keeps broker calculations honest and helps visitors understand which numbers are operational signals
+            and which ones are placeholders until a paid or official data source is connected.
+          </p>
+          <div class="data-source-grid" aria-label="Focusea data source labels">
+            <article>
+              <span class="source-chip live">Live</span>
+              <strong>Maritime news and public web sources</strong>
+              <small>Displayed with source links and refresh status when available.</small>
+            </article>
+            <article>
+              <span class="source-chip simulated">Simulated</span>
+              <strong>Demo traffic, port congestion and training values</strong>
+              <small>Used for education, UX demos and scenarios. Not sold as real market data.</small>
+            </article>
+            <article>
+              <span class="source-chip licensed">Licensed required</span>
+              <strong>Baltic-style indexes and paid market feeds</strong>
+              <small>Shown as API-ready fields until a licensed provider is connected.</small>
+            </article>
+            <article>
+              <span class="source-chip user-input">User input</span>
+              <strong>Fixture terms, SOF events, cargo details and assumptions</strong>
+              <small>Calculations depend on the values entered by the broker or student.</small>
+            </article>
+          </div>
+          <div class="data-source-note">
+            <strong>Current rule:</strong>
+            <span>Focusea does not claim Baltic, bunker or port-delay values are real-time unless the card explicitly says live and includes a current source.</span>
+          </div>
+        </section>
+
         <section class="seo-tools-panel" aria-labelledby="brokerToolsTitle">
           <div class="panel-heading">
             <div>
@@ -207,26 +248,32 @@
             <article>
               <span>Voyage Estimate</span>
               <p>Freight, bunker cost, port cost, canal dues, commission, demurrage exposure, dispatch and TCE.</p>
+              <a href="voyage-estimate.html">Open voyage estimate page</a>
             </article>
             <article>
               <span>Laytime & Claims</span>
               <p>NOR, SOF events, allowed time, used time, demurrage, dispatch, claim letter and evidence checklist.</p>
+              <a href="laytime-calculator.html">Open laytime calculator</a>
             </article>
             <article>
               <span>Port Intelligence</span>
               <p>Draft, pilotage, tug, berth, documents, waiting risk, local notes and client-ready port briefing.</p>
+              <a href="port-intelligence.html">Open port intelligence page</a>
             </article>
             <article>
               <span>Market Watch</span>
               <p>Shipping news, bunker watch, Baltic index placeholders, source labels, confidence and update status.</p>
+              <a href="maritime-broker-tools.html">Open broker tools page</a>
             </article>
             <article>
               <span>Load-Stability Lab</span>
               <p>Hold planning, ballast thinking, trim, heel, GM, draft, shear force and bending moment training view.</p>
+              <a href="stability.html">Open load-stability lab</a>
             </article>
             <article>
               <span>Document AI Room</span>
               <p>CP clauses, SOF, NOR, LOI, recap, invoice, claim notes and broker email drafting workflow.</p>
+              <a href="demurrage-calculator.html">Open demurrage calculator</a>
             </article>
           </div>
         </section>
@@ -4357,7 +4404,7 @@ Subject: Firm offer
     </dialog>
 
     <script src="monetization-config.js?v=monetization-ready-3"></script>
-    <script src="script.js?v=seo-domain-1"></script>
+    <script src="script.js?v=trust-pages-1"></script>
     <script src="monetization.js?v=monetization-ready-3"></script>
   </body>
 </html>

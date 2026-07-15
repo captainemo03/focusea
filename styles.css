@@ -25,11 +25,13 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
+  overflow-x: hidden;
   background:
     radial-gradient(circle at 78% 6%, rgba(100, 97, 255, 0.26), transparent 31%),
     radial-gradient(circle at 14% 18%, rgba(162, 145, 255, 0.16), transparent 28%),
@@ -41,6 +43,13 @@ body {
 button,
 input {
   font: inherit;
+}
+
+input,
+select,
+textarea,
+button {
+  max-width: 100%;
 }
 
 a {
@@ -266,6 +275,7 @@ a {
 main {
   display: grid;
   gap: 22px;
+  min-width: 0;
   padding: 28px;
 }
 
@@ -522,7 +532,8 @@ main {
 
 .seo-intro-panel,
 .seo-tools-panel,
-.domain-readiness-panel {
+.domain-readiness-panel,
+.data-source-panel {
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 24px;
@@ -547,14 +558,16 @@ main {
 
 .seo-intro-copy p,
 .domain-readiness-panel p,
-.seo-tools-grid p {
+.seo-tools-grid p,
+.data-source-panel p {
   color: var(--text-soft);
   line-height: 1.65;
 }
 
 .seo-proof-grid,
 .seo-tools-grid,
-.domain-card-grid {
+.domain-card-grid,
+.data-source-grid {
   display: grid;
   gap: 16px;
 }
@@ -572,9 +585,14 @@ main {
   margin-top: 18px;
 }
 
+.data-source-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .seo-proof-grid article,
 .seo-tools-grid article,
-.domain-card-grid article {
+.domain-card-grid article,
+.data-source-grid article {
   min-width: 0;
   border: 1px solid rgba(111, 255, 227, 0.16);
   border-radius: 8px;
@@ -585,13 +603,15 @@ main {
 .seo-proof-grid span,
 .seo-tools-grid span,
 .domain-card-grid span,
-.domain-card-grid small {
+.domain-card-grid small,
+.data-source-grid small {
   display: block;
   color: var(--muted);
 }
 
 .seo-proof-grid strong,
-.domain-card-grid strong {
+.domain-card-grid strong,
+.data-source-grid strong {
   display: block;
   margin-top: 8px;
   overflow-wrap: anywhere;
@@ -600,6 +620,68 @@ main {
 .seo-tools-grid span {
   color: var(--cyan);
   font-weight: 800;
+}
+
+.seo-tools-grid a {
+  display: inline-flex;
+  margin-top: 12px;
+  color: var(--cyan);
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.source-chip {
+  display: inline-flex;
+  width: max-content;
+  max-width: 100%;
+  padding: 5px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.source-chip.live {
+  color: #6fffe3;
+  background: rgba(40, 240, 198, 0.12);
+  border-color: rgba(40, 240, 198, 0.28);
+}
+
+.source-chip.simulated {
+  color: #ffd166;
+  background: rgba(255, 209, 102, 0.1);
+  border-color: rgba(255, 209, 102, 0.25);
+}
+
+.source-chip.licensed {
+  color: #a291ff;
+  background: rgba(162, 145, 255, 0.12);
+  border-color: rgba(162, 145, 255, 0.3);
+}
+
+.source-chip.user-input {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.data-source-note {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-top: 18px;
+  padding: 14px 16px;
+  border: 1px solid rgba(111, 255, 227, 0.18);
+  border-radius: 8px;
+  background: rgba(2, 13, 18, 0.28);
+  color: var(--text-soft);
+}
+
+.data-source-note strong {
+  flex: 0 0 auto;
+  color: var(--cyan);
 }
 
 .ops-board article,
@@ -5896,6 +5978,7 @@ body.ai-presentation-mode .ai-core-hero {
   .seo-proof-grid,
   .seo-tools-grid,
   .domain-card-grid,
+  .data-source-grid,
   .footer-legal-grid,
   .ops-board,
   .command-deck-hero,
@@ -6030,6 +6113,7 @@ body.ai-presentation-mode .ai-core-hero {
   .seo-proof-grid,
   .seo-tools-grid,
   .domain-card-grid,
+  .data-source-grid,
   .footer-legal-grid,
   .ops-board,
   .command-deck-hero,
@@ -6115,6 +6199,30 @@ body.ai-presentation-mode .ai-core-hero {
   .pro-load-grid,
   .heatmap-row {
     grid-template-columns: 1fr;
+  }
+
+  .data-source-note {
+    flex-direction: column;
+  }
+
+  .mini-table,
+  .market-index-grid,
+  .global-port-list,
+  .news-toolbar,
+  .button-row {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mini-table {
+    display: block;
+  }
+
+  .mini-table th,
+  .mini-table td {
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   .passport-hero,
