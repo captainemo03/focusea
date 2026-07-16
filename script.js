@@ -2563,6 +2563,14 @@ const growthDocumentForm = document.querySelector("#growthDocumentForm");
 const growthDocumentResult = document.querySelector("#growthDocumentResult");
 const growthReportCenter = document.querySelector("#growthReportCenter");
 const growthDownloadReport = document.querySelector("#growthDownloadReport");
+const insuranceQuoteForm = document.querySelector("#insuranceQuoteForm");
+const insuranceQuoteResult = document.querySelector("#insuranceQuoteResult");
+const insuranceCoverageResult = document.querySelector("#insuranceCoverageResult");
+const insuranceClaimRiskResult = document.querySelector("#insuranceClaimRiskResult");
+const insuranceGlossaryResult = document.querySelector("#insuranceGlossaryResult");
+const insuranceDownloadTxt = document.querySelector("#insuranceDownloadTxt");
+const insuranceDownloadPdf = document.querySelector("#insuranceDownloadPdf");
+const insuranceExportStatus = document.querySelector("#insuranceExportStatus");
 const redFlagForm = document.querySelector("#redFlagForm");
 const redFlagResult = document.querySelector("#redFlagResult");
 const recapBuilderForm = document.querySelector("#recapBuilderForm");
@@ -3326,6 +3334,7 @@ const pageGroups = {
   decisionLab: ["#decisionLabSuite"],
   superSuite: ["#superSuitePanel"],
   growthSuite: ["#growthSuitePanel"],
+  insuranceDesk: ["#insuranceDeskPanel"],
   enterprise: ["#enterpriseCommandPanel"],
   pythonEngine: ["#pythonEngineSuite"],
   market: ["#intelligence", "#newsBulletin"],
@@ -7855,6 +7864,185 @@ function renderGrowthSuite() {
   renderGrowthCargo();
   renderGrowthDocumentAi();
   renderGrowthReportCenter();
+}
+
+let lastInsuranceQuote = null;
+
+function insuranceCoverageProfile(type = "") {
+  const profiles = {
+    "Hull & Machinery": { baseRate: 0.0065, risk: 22, note: "Covers physical loss/damage to hull, machinery and equipment, subject to class and survey conditions." },
+    "P&I": { baseRate: 0.0042, risk: 18, note: "Third-party liabilities, crew, pollution and collision exposures normally reviewed by P&I club rules." },
+    "Cargo Insurance": { baseRate: 0.0038, risk: 20, note: "Cargo loss/damage terms depend on Institute Cargo Clauses, packaging, stowage and transit risk." },
+    "War Risk": { baseRate: 0.0085, risk: 36, note: "War, piracy and hostile act exposure. Breach areas and additional premium must be checked." },
+    "Kidnap & Ransom": { baseRate: 0.0078, risk: 34, note: "Security-focused extension for piracy/kidnap exposure; route and BMP compliance matter." },
+    "Charterers Liability": { baseRate: 0.0028, risk: 16, note: "Charterer exposures: cargo, bunkers, port damage, demurrage disputes and indemnities." },
+    "Freight, Demurrage & Defence": { baseRate: 0.0019, risk: 14, note: "Legal cost support for freight, demurrage, charter party and claim disputes." },
+    "Pollution Liability": { baseRate: 0.0055, risk: 30, note: "Pollution exposure depends on cargo, bunker quantity, trading area and local regulation." },
+    "Port Risk Cover": { baseRate: 0.0035, risk: 18, note: "Useful for port stay, repair period, lay-up or restricted movement exposure." }
+  };
+  return profiles[type] || profiles["Hull & Machinery"];
+}
+
+function insuranceRiskZoneProfile(zone = "") {
+  const text = String(zone).toLowerCase();
+  if (text.includes("sanctions")) return { multiplier: 1.9, score: 34, note: "Sanctions-sensitive route: compliance review and counterparty screening required." };
+  if (text.includes("war") || text.includes("piracy")) return { multiplier: 1.75, score: 32, note: "War/piracy watch: underwriter referral likely." };
+  if (text.includes("weather")) return { multiplier: 1.28, score: 18, note: "Weather-exposed voyage: routing, lashing and delay evidence matter." };
+  if (text.includes("congested") || text.includes("strait")) return { multiplier: 1.18, score: 14, note: "Congested strait/port exposure: collision, delay and port damage risk." };
+  return { multiplier: 1, score: 6, note: "Normal trading area based on user input." };
+}
+
+function insuranceVesselTypeMultiplier(type = "") {
+  const text = String(type).toLowerCase();
+  if (text.includes("lng")) return 1.45;
+  if (text.includes("tanker")) return 1.32;
+  if (text.includes("container")) return 1.14;
+  if (text.includes("ro-ro")) return 1.12;
+  if (text.includes("general")) return 1.08;
+  return 1;
+}
+
+function insuranceCargoMultiplier(cargoType = "grain") {
+  const cargo = getCargoProfile(cargoType);
+  const label = cargo.label;
+  const multipliers = {
+    Coal: 1.16,
+    Grain: 1.1,
+    "Iron ore": 1.22,
+    Container: 1.12,
+    "Crude oil": 1.42,
+    LNG: 1.5,
+    Chemicals: 1.58,
+    "Project cargo": 1.72
+  };
+  return multipliers[label] || 1.14;
+}
+
+function calculateInsuranceQuote(values = {}) {
+  const coverage = insuranceCoverageProfile(values.coverageType);
+  const cargo = getCargoProfile(values.cargoType || "grain");
+  const zone = insuranceRiskZoneProfile(values.riskZone);
+  const currentYear = new Date().getFullYear();
+  const age = Math.max(currentYear - (Number(values.buildYear) || currentYear), 0);
+  const ageMultiplier = age > 25 ? 1.42 : age > 18 ? 1.24 : age > 10 ? 1.1 : 1;
+  const typeMultiplier = insuranceVesselTypeMultiplier(values.vesselType);
+  const cargoMultiplier = insuranceCargoMultiplier(values.cargoType);
+  const claimMultiplier = 1 + Math.min(Number(values.claims) || 0, 5) * 0.12;
+  const deductibleRatio = (Number(values.deductible) || 0) / Math.max(Number(values.insuredValue) || 1, 1);
+  const deductibleCredit = deductibleRatio >= 0.02 ? 0.88 : deductibleRatio >= 0.01 ? 0.94 : 1;
+  const premium = (Number(values.insuredValue) || 0) * coverage.baseRate * zone.multiplier * ageMultiplier * typeMultiplier * cargoMultiplier * claimMultiplier * deductibleCredit;
+  const riskScore = clamp(Math.round(coverage.risk + zone.score + cargo.risk * 0.26 + age * 0.9 + (Number(values.claims) || 0) * 8), 0, 100);
+  const referral = riskScore >= 72 ? "Refer to Underwriter" : riskScore >= 48 ? "Medium / review terms" : "Low / quoteable";
+  const recommendedDeductible = Math.max(Number(values.deductible) || 0, (Number(values.insuredValue) || 0) * (riskScore >= 70 ? 0.012 : riskScore >= 45 ? 0.008 : 0.005));
+  return {
+    coverage,
+    cargo,
+    zone,
+    age,
+    premium,
+    riskScore,
+    referral,
+    recommendedDeductible,
+    multipliers: { ageMultiplier, typeMultiplier, cargoMultiplier, claimMultiplier, deductibleCredit }
+  };
+}
+
+function insuranceClaimRisks(values = {}, quote = calculateInsuranceQuote(values)) {
+  const cargo = quote.cargo.label;
+  return [
+    { name: "Cargo damage", score: clamp(quote.riskScore * 0.62 + (cargo === "Project cargo" ? 24 : 8), 0, 100), note: "Packaging, stowage, survey and cargo nature drive exposure." },
+    { name: "Machinery breakdown", score: clamp(quote.age * 3 + (values.vesselType === "LNG" ? 18 : 10), 0, 100), note: "Age, maintenance records and class status must be checked." },
+    { name: "Pollution", score: /tanker|lng/i.test(values.vesselType || "") || ["Crude oil", "Chemicals", "LNG"].includes(cargo) ? 76 : 34, note: "Cargo/bunker pollution exposure and local law sensitivity." },
+    { name: "War / piracy", score: quote.zone.score * 2.2, note: quote.zone.note },
+    { name: "General average", score: clamp(30 + quote.riskScore * 0.42, 0, 100), note: "High-value cargo and casualty response can trigger GA contributions." },
+    { name: "Demurrage / delay dispute", score: clamp(24 + quote.riskScore * 0.36, 0, 100), note: "FDD or charterers liability may be relevant for dispute cost." }
+  ];
+}
+
+function insuranceQuoteText(values = collectFormValues(insuranceQuoteForm), quote = calculateInsuranceQuote(values)) {
+  const risks = insuranceClaimRisks(values, quote);
+  return [
+    "FOCUSEA MARINE INSURANCE QUOTE",
+    `Generated: ${new Date().toLocaleString()}`,
+    "",
+    "ASSURED / VESSEL",
+    `Vessel: ${values.vesselName || "-"} / IMO ${values.imo || "-"}`,
+    `Type: ${values.vesselType || "-"} / Flag: ${values.flag || "-"} / Class: ${values.classSociety || "-"}`,
+    `Build year: ${values.buildYear || "-"} / Age: ${quote.age} years / DWT: ${values.dwt || "-"} / GT: ${values.gt || "-"}`,
+    "",
+    "VOYAGE / COVER",
+    `Route: ${values.route || "-"}`,
+    `Cargo: ${quote.cargo.label}`,
+    `Coverage: ${values.coverageType || "-"}`,
+    `Risk zone: ${values.riskZone || "-"}`,
+    "",
+    "INDICATION",
+    `Insured value: ${money(values.insuredValue || 0)}`,
+    `Estimated premium: ${money(quote.premium)}`,
+    `Recommended deductible: ${money(quote.recommendedDeductible)}`,
+    `Risk score: ${quote.riskScore}/100`,
+    `Decision: ${quote.referral}`,
+    "",
+    "UNDERWRITER NOTES",
+    quote.coverage.note,
+    quote.zone.note,
+    `Cargo note: ${quote.cargo.note}`,
+    "",
+    "CLAIM RISK PANEL",
+    ...risks.map((risk) => `- ${risk.name}: ${Math.round(risk.score)}/100 - ${risk.note}`),
+    "",
+    "DISCLAIMER",
+    "This is an educational indication only. Binding insurance terms require licensed insurer/underwriter approval."
+  ].join("\n");
+}
+
+function renderInsuranceDesk() {
+  if (!insuranceQuoteForm || !insuranceQuoteResult) return;
+  const values = collectFormValues(insuranceQuoteForm);
+  const quote = calculateInsuranceQuote(values);
+  lastInsuranceQuote = { values, quote, reportText: insuranceQuoteText(values, quote) };
+  insuranceQuoteResult.innerHTML = `
+    ${metricCards([
+      { label: "Estimated premium", value: money(quote.premium) },
+      { label: "Risk score", value: `${quote.riskScore}/100` },
+      { label: "Decision", value: quote.referral },
+      { label: "Recommended deductible", value: money(quote.recommendedDeductible) },
+      { label: "Coverage rate", value: `${(quote.coverage.baseRate * 100).toFixed(2)}%` },
+      { label: "Cargo", value: quote.cargo.label }
+    ])}
+    <div class="confidence-row"><span>Quote type</span><em class="source-badge simulated">educational estimate</em><span>Requires licensed underwriter for binding terms.</span></div>
+  `;
+  if (insuranceCoverageResult) {
+    insuranceCoverageResult.innerHTML = `
+      <div class="ops-list">
+        <div><strong>${escapeHtml(values.coverageType || "Coverage")}</strong><span>${escapeHtml(quote.coverage.note)}</span></div>
+        <div><strong>Route watch</strong><span>${escapeHtml(quote.zone.note)}</span></div>
+        <div><strong>Exclusions to review</strong><span>War breach, sanctions, wear and tear, unseaworthiness, improper packing, late notice, undeclared dangerous cargo.</span></div>
+      </div>
+    `;
+  }
+  if (insuranceClaimRiskResult) {
+    const risks = insuranceClaimRisks(values, quote);
+    insuranceClaimRiskResult.innerHTML = `<div class="insurance-risk-bars">${risks.map((risk) => `
+      <div><span>${escapeHtml(risk.name)}</span><strong>${Math.round(risk.score)}/100</strong><em style="width:${clamp(risk.score, 0, 100)}%"></em><small>${escapeHtml(risk.note)}</small></div>
+    `).join("")}</div>`;
+  }
+  renderInsuranceGlossary();
+}
+
+function renderInsuranceGlossary() {
+  if (!insuranceGlossaryResult) return;
+  const terms = [
+    ["Institute Cargo Clauses", "Standard cargo insurance wording sets for cargo risks."],
+    ["Deductible", "Amount retained by assured before insurer pays."],
+    ["Constructive Total Loss", "Loss where recovery/repair cost may exceed insured value threshold."],
+    ["General Average", "Shared contribution after extraordinary sacrifice or expenditure for common safety."],
+    ["Salvage", "Reward/cost related to saving ship or cargo from peril."],
+    ["Subrogation", "Insurer's right to recover from responsible third parties after paying claim."],
+    ["Sue and Labour", "Assured's duty/costs to minimize loss after casualty."],
+    ["Breach Area", "War-risk area requiring notice or additional premium."]
+  ];
+  insuranceGlossaryResult.innerHTML = terms.map(([term, detail]) => `<div><strong>${escapeHtml(term)}</strong><span>${escapeHtml(detail)}</span></div>`).join("");
 }
 
 function renderFrontFixtureAutopilot() {
@@ -20033,6 +20221,21 @@ if (growthDownloadReport) {
     downloadTextFile("focusea-broker-growth-suite-report.txt", report);
   });
 }
+bindBrokerForm(insuranceQuoteForm, renderInsuranceDesk);
+if (insuranceDownloadTxt) {
+  insuranceDownloadTxt.addEventListener("click", () => {
+    if (!lastInsuranceQuote) renderInsuranceDesk();
+    downloadTextFile("focusea-marine-insurance-quote.txt", lastInsuranceQuote?.reportText || insuranceQuoteText());
+    if (insuranceExportStatus) insuranceExportStatus.innerHTML = `<small class="download-confirm">Downloaded TXT quote.</small>`;
+  });
+}
+if (insuranceDownloadPdf) {
+  insuranceDownloadPdf.addEventListener("click", () => {
+    if (!lastInsuranceQuote) renderInsuranceDesk();
+    downloadPdfFile("focusea-marine-insurance-quote.pdf", "Focusea Marine Insurance Quote", lastInsuranceQuote?.reportText || insuranceQuoteText());
+    if (insuranceExportStatus) insuranceExportStatus.innerHTML = `<small class="download-confirm">Downloaded PDF quote.</small>`;
+  });
+}
 bindBrokerForm(redFlagForm, renderRedFlagSystem);
 bindBrokerForm(recapBuilderForm, renderRecapBuilder);
 bindBrokerForm(evidencePackForm, renderEvidencePack);
@@ -20901,6 +21104,7 @@ initializeProductNavigator();
 renderSeaTraffic();
 setSeaProviderStatus("Demo AIS shown. Real global live traffic requires a licensed AIS provider/API.", "simulated");
 renderGrowthSuite();
+renderInsuranceDesk();
 renderBalticFeedPanel();
 renderSecurityShield();
 renderPythonHistory();

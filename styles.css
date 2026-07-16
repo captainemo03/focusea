@@ -1154,6 +1154,89 @@ main {
   color: #8dfbe8;
 }
 
+.insurance-desk-panel {
+  padding: clamp(18px, 3vw, 32px);
+  border: 1px solid rgba(40, 240, 198, 0.22);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 15% 5%, rgba(255, 203, 114, 0.16), transparent 28%),
+    linear-gradient(145deg, rgba(3, 12, 28, 0.95), rgba(12, 8, 34, 0.95));
+  box-shadow: var(--shadow);
+}
+
+.insurance-desk-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.insurance-desk-grid > article {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid rgba(100, 97, 255, 0.22);
+  border-radius: 8px;
+  background: rgba(8, 14, 35, 0.48);
+}
+
+.insurance-desk-grid .wide-card {
+  grid-column: 1 / -1;
+}
+
+.insurance-risk-bars {
+  display: grid;
+  gap: 10px;
+}
+
+.insurance-risk-bars div {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 5px 10px;
+  min-width: 0;
+  padding: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(100, 97, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(2, 13, 18, 0.34);
+}
+
+.insurance-risk-bars div > em {
+  grid-column: 1 / -1;
+  display: block;
+  height: 7px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #28f0c6, #ffcb72, #ff6b9c);
+}
+
+.insurance-risk-bars small {
+  grid-column: 1 / -1;
+  color: var(--muted);
+}
+
+.insurance-glossary-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.insurance-glossary-grid div {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid rgba(40, 240, 198, 0.16);
+  border-radius: 8px;
+  background: rgba(2, 13, 18, 0.32);
+}
+
+.insurance-glossary-grid strong,
+.insurance-risk-bars strong {
+  color: var(--text);
+}
+
+.insurance-glossary-grid span {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+}
+
 .command-search-card {
   margin: 18px 0;
   padding: 16px;
@@ -7976,6 +8059,7 @@ code,
   .role-picker,
   .workflow-template-grid,
   .growth-command-grid,
+  .insurance-desk-grid,
   .sea-terminal-topbar,
   .sea-terminal-shell,
   .sea-terminal-bottom,
@@ -7984,6 +8068,10 @@ code,
   }
 
   .growth-command-grid .wide-card {
+    grid-column: auto;
+  }
+
+  .insurance-desk-grid .wide-card {
     grid-column: auto;
   }
 

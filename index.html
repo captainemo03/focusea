@@ -27,7 +27,7 @@
     <link rel="manifest" href="manifest.webmanifest" />
     <script src="theme.js?v=theme-1"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="styles.css?v=live-ais-connector-1" />
+    <link rel="stylesheet" href="styles.css?v=marine-insurance-desk-1" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -110,6 +110,7 @@
           <a href="#decisionLab" data-page-link="decisionLab">Decision Lab</a>
           <a href="#superSuite" data-page-link="superSuite">Super Suite</a>
           <a href="#growthSuite" data-page-link="growthSuite">Broker Growth Suite</a>
+          <a href="#insuranceDesk" data-page-link="insuranceDesk">Marine Insurance Desk</a>
           <a href="#enterprise" data-page-link="enterprise">Enterprise Command</a>
           <a href="#pythonEngine" data-page-link="pythonEngine">Python Engine</a>
           <a href="#market" data-page-link="market">Market & News</a>
@@ -4633,6 +4634,70 @@ Subject: Firm offer
           </div>
         </section>
 
+        <section class="insurance-desk-panel" id="insuranceDeskPanel" aria-label="Marine Insurance Desk">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Marine Insurance Desk</p>
+              <h2>Build marine insurance quotes with premium, risk and coverage notes.</h2>
+              <p>
+                Hull, P&amp;I, cargo, war risk, charterers liability, FDD and pollution cover in one
+                insurance workspace for brokers, underwriters and maritime students.
+              </p>
+            </div>
+            <div class="status-pill">Quote Builder</div>
+          </div>
+
+          <div class="insurance-desk-grid">
+            <article class="wide-card">
+              <div class="mini-heading"><span>Insurance Quote Builder</span><strong>risk-rated premium estimate</strong></div>
+              <form class="broker-form" id="insuranceQuoteForm">
+                <label><span>Vessel name</span><input name="vesselName" value="MV Focusea Trader" /></label>
+                <label><span>IMO</span><input name="imo" value="9811001" /></label>
+                <label><span>Vessel type</span><select name="vesselType"><option>Bulk Carrier</option><option>Container</option><option>Tanker</option><option>LNG</option><option>Ro-Ro</option><option>General Cargo</option></select></label>
+                <label><span>Build year</span><input name="buildYear" type="number" value="2014" min="1960" max="2026" /></label>
+                <label><span>Flag</span><input name="flag" value="Panama" /></label>
+                <label><span>Class</span><input name="classSociety" value="IACS class" /></label>
+                <label><span>DWT</span><input name="dwt" type="number" value="58000" min="0" step="100" /></label>
+                <label><span>GT</span><input name="gt" type="number" value="34500" min="0" step="100" /></label>
+                <label><span>Cargo type</span><select name="cargoType"><option value="coal">Coal</option><option value="grain">Grain</option><option value="ironOre">Iron ore</option><option value="container">Container</option><option value="crudeOil">Crude oil</option><option value="lng">LNG</option><option value="chemicals">Chemicals</option><option value="projectCargo">Project cargo</option></select></label>
+                <label><span>Coverage</span><select name="coverageType"><option>Hull & Machinery</option><option>P&I</option><option>Cargo Insurance</option><option>War Risk</option><option>Kidnap & Ransom</option><option>Charterers Liability</option><option>Freight, Demurrage & Defence</option><option>Pollution Liability</option><option>Port Risk Cover</option></select></label>
+                <label><span>Route</span><input name="route" value="Indonesia -> India via Malacca" /></label>
+                <label><span>Insured value USD</span><input name="insuredValue" type="number" value="28000000" min="0" step="100000" /></label>
+                <label><span>Deductible USD</span><input name="deductible" type="number" value="150000" min="0" step="10000" /></label>
+                <label><span>Claims last 5 years</span><input name="claims" type="number" value="1" min="0" step="1" /></label>
+                <label><span>Risk zone</span><select name="riskZone"><option>Normal trading area</option><option>Congested port / strait</option><option>Weather exposed</option><option>War risk / piracy watch</option><option>Sanctions-sensitive route</option></select></label>
+                <button type="submit">Generate Quote</button>
+              </form>
+              <div class="broker-output insurance-quote-output" id="insuranceQuoteResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Coverage Terms</span><strong>underwriter note</strong></div>
+              <div class="broker-output" id="insuranceCoverageResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Claim Risk Panel</span><strong>loss exposure</strong></div>
+              <div class="broker-output" id="insuranceClaimRiskResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Insurance Glossary</span><strong>marine terms</strong></div>
+              <div class="insurance-glossary-grid" id="insuranceGlossaryResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Quote Export</span><strong>download pack</strong></div>
+              <p class="muted-copy">The quote is an educational estimate. Binding insurance terms require licensed insurer/underwriter approval.</p>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" id="insuranceDownloadTxt">Download Quote TXT</button>
+                <button type="button" class="ghost-button small" id="insuranceDownloadPdf">Download Quote PDF</button>
+              </div>
+              <div class="broker-output" id="insuranceExportStatus"></div>
+            </article>
+          </div>
+        </section>
+
         <footer class="site-footer" aria-label="Focusea legal and privacy information">
           <div class="footer-brand">
             <strong>Focusea</strong>
@@ -4755,7 +4820,7 @@ Subject: Firm offer
 
     <script src="monetization-config.js?v=monetization-ready-3"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="script.js?v=live-ais-connector-1"></script>
+    <script src="script.js?v=marine-insurance-desk-1"></script>
     <script src="monetization.js?v=monetization-ready-3"></script>
   </body>
 </html>
