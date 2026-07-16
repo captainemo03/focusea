@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#061522" />
+    <meta
+      name="description"
+      content="Focusea Marine Insurance Desk helps build educational marine insurance quote indications, premium estimates, risk scores and underwriter email drafts."
+    />
+    <title>Focusea Marine Insurance Desk</title>
+    <link rel="icon" href="favicon.svg?v=focusea-badge2" type="image/svg+xml" />
+    <script src="theme.js?v=theme-1"></script>
+    <link rel="stylesheet" href="insurance.css?v=insurance-side-site-1" />
+  </head>
+  <body>
+    <header class="insurance-header">
+      <a class="insurance-brand" href="index.html" aria-label="Focusea main site">
+        <img src="assets/brand/focusea-mark.svg?v=focusea-badge2" alt="Focusea logo" />
+        <span>
+          <strong>Focusea</strong>
+          <small>Marine Insurance Desk</small>
+        </span>
+      </a>
+      <div class="theme-switcher theme-switcher-compact" role="group" aria-label="Appearance">
+        <button type="button" data-theme-value="dark" aria-pressed="true">Dark</button>
+        <button type="button" data-theme-value="light" aria-pressed="false">Light</button>
+      </div>
+      <nav class="insurance-nav" aria-label="Marine insurance tools">
+        <a href="#quoteBuilder">Quote</a>
+        <a href="#riskPanel">Risk</a>
+        <a href="#coveragePanel">Coverage</a>
+        <a href="#claimPanel">Claims</a>
+        <a href="#glossaryPanel">Glossary</a>
+        <a href="index.html">Main Site</a>
+      </nav>
+    </header>
+
+    <main class="insurance-shell">
+      <section class="insurance-hero">
+        <div>
+          <p class="eyebrow">Side Window / Insurance Desk</p>
+          <h1>Build marine insurance quote indications like an underwriting workspace.</h1>
+          <p>
+            Enter vessel, voyage, cargo, coverage, insured value, deductible and claims history.
+            Focusea estimates premium, risk, subjectivities, exclusions, claim exposure and an
+            underwriter email draft.
+          </p>
+          <div class="hero-actions">
+            <a href="#quoteBuilder" class="primary-button">Start Quote</a>
+            <button type="button" class="ghost-button" id="downloadInsuranceReportTop">Download Report</button>
+          </div>
+        </div>
+        <aside class="underwriter-note">
+          <strong>Important</strong>
+          <p>
+            This desk creates educational quote indications only. Binding cover, rate, wording
+            and sanctions/compliance decisions require licensed insurer or underwriter approval.
+          </p>
+        </aside>
+      </section>
+
+      <section class="status-grid" aria-label="Insurance quote status">
+        <article>
+          <span>Premium</span>
+          <strong id="premiumStatus">--</strong>
+          <small id="premiumStatusNote">Generate quote</small>
+        </article>
+        <article>
+          <span>Risk Score</span>
+          <strong id="riskStatus">--</strong>
+          <small id="riskStatusNote">Waiting input</small>
+        </article>
+        <article>
+          <span>Deductible</span>
+          <strong id="deductibleStatus">--</strong>
+          <small id="deductibleStatusNote">Recommended</small>
+        </article>
+        <article>
+          <span>Decision</span>
+          <strong id="decisionStatus">--</strong>
+          <small id="decisionStatusNote">Underwriter gate</small>
+        </article>
+      </section>
+
+      <section class="panel" id="quoteBuilder">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Insurance Quote Builder</p>
+            <h2>Vessel, voyage, cover and premium model.</h2>
+          </div>
+          <span class="source-pill">educational estimate</span>
+        </div>
+
+        <form class="insurance-form" id="insuranceQuoteForm">
+          <label><span>Vessel name</span><input name="vesselName" value="MV Focusea Trader" /></label>
+          <label><span>IMO</span><input name="imo" value="9811001" /></label>
+          <label><span>Vessel type</span><select name="vesselType"><option>Bulk Carrier</option><option>Container</option><option>Tanker</option><option>LNG</option><option>Ro-Ro</option><option>General Cargo</option></select></label>
+          <label><span>Build year</span><input name="buildYear" type="number" value="2014" min="1960" max="2026" /></label>
+          <label><span>Flag</span><input name="flag" value="Panama" /></label>
+          <label><span>Class</span><input name="classSociety" value="IACS class" /></label>
+          <label><span>DWT</span><input name="dwt" type="number" value="58000" min="0" step="100" /></label>
+          <label><span>GT</span><input name="gt" type="number" value="34500" min="0" step="100" /></label>
+          <label><span>Cargo type</span><select name="cargoType"><option value="coal">Coal</option><option value="grain">Grain</option><option value="ironOre">Iron ore</option><option value="container">Container</option><option value="crudeOil">Crude oil</option><option value="lng">LNG</option><option value="chemicals">Chemicals</option><option value="projectCargo">Project cargo</option></select></label>
+          <label><span>Coverage type</span><select name="coverageType"><option>Hull & Machinery</option><option>P&I</option><option>Cargo Insurance</option><option>War Risk</option><option>Kidnap & Ransom</option><option>Charterers Liability</option><option>Freight, Demurrage & Defence</option><option>Pollution Liability</option><option>Port Risk Cover</option></select></label>
+          <label><span>Load port</span><input name="loadPort" value="Taboneo, Indonesia" /></label>
+          <label><span>Discharge port</span><input name="dischargePort" value="Paradip, India" /></label>
+          <label><span>Voyage route</span><input name="route" value="Indonesia -> India via Malacca" /></label>
+          <label><span>Insured value USD</span><input name="insuredValue" type="number" value="28000000" min="0" step="100000" /></label>
+          <label><span>Deductible USD</span><input name="deductible" type="number" value="150000" min="0" step="10000" /></label>
+          <label><span>Claims last 5 years</span><input name="claims" type="number" value="1" min="0" step="1" /></label>
+          <label><span>Risk zone</span><select name="riskZone"><option>Normal trading area</option><option>Congested port / strait</option><option>Weather exposed</option><option>War risk / piracy watch</option><option>Sanctions-sensitive route</option></select></label>
+          <label class="wide-label"><span>Broker / underwriter note</span><textarea name="underwriterNote">Subject to clean sanctions screening, class confirmation, claims record, trading warranty and no material change before attachment.</textarea></label>
+          <button type="submit">Generate Quote</button>
+        </form>
+      </section>
+
+      <section class="panel" id="riskPanel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Risk & Premium</p>
+            <h2>Calculated quote indication.</h2>
+          </div>
+          <span class="source-pill">local model</span>
+        </div>
+        <div class="quote-output" id="quoteOutput"></div>
+      </section>
+
+      <section class="panel-grid">
+        <article class="panel" id="coveragePanel">
+          <div class="panel-heading compact-heading">
+            <div>
+              <p class="eyebrow">Coverage Terms</p>
+              <h2>Subjectivities and exclusions.</h2>
+            </div>
+          </div>
+          <div id="coverageOutput"></div>
+        </article>
+
+        <article class="panel" id="claimPanel">
+          <div class="panel-heading compact-heading">
+            <div>
+              <p class="eyebrow">Claim Risk Panel</p>
+              <h2>Loss exposure reading.</h2>
+            </div>
+          </div>
+          <div id="claimOutput"></div>
+        </article>
+      </section>
+
+      <section class="panel-grid">
+        <article class="panel" id="glossaryPanel">
+          <div class="panel-heading compact-heading">
+            <div>
+              <p class="eyebrow">Insurance Glossary</p>
+              <h2>Marine insurance terms.</h2>
+            </div>
+          </div>
+          <div class="glossary-grid" id="insuranceGlossary"></div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-heading compact-heading">
+            <div>
+              <p class="eyebrow">Quote Export</p>
+              <h2>Download quote and email.</h2>
+            </div>
+          </div>
+          <div class="export-actions">
+            <button type="button" class="ghost-button" id="downloadQuoteTxt">Download Quote TXT</button>
+            <button type="button" class="ghost-button" id="downloadQuotePdf">Download Quote PDF</button>
+            <button type="button" class="ghost-button" id="downloadEmailDraft">Download Email Draft</button>
+          </div>
+          <div class="export-status" id="exportStatus"></div>
+        </article>
+      </section>
+
+      <footer class="insurance-footer" aria-label="Focusea insurance desk legal information">
+        <div>
+          <strong>Focusea Marine Insurance Desk</strong>
+          <span>Educational premium indications, risk reading, coverage notes and quote exports.</span>
+        </div>
+        <div class="footer-grid">
+          <article>
+            <span>Privacy</span>
+            <p>Entered quote data is processed locally in the browser for demo calculation. Mask confidential client, vessel and claims data before sharing.</p>
+          </article>
+          <article>
+            <span>Terms</span>
+            <p>Outputs are not binding insurance advice. Final cover requires licensed insurer, broker or underwriter review.</p>
+          </article>
+          <article>
+            <span>Security</span>
+            <p>Do not paste API keys, passwords or confidential policy documents into public/shared devices.</p>
+          </article>
+        </div>
+      </footer>
+    </main>
+
+    <script src="insurance.js?v=insurance-side-site-1"></script>
+  </body>
+</html>

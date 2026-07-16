@@ -43,6 +43,11 @@
       "name": "Loadicator Lab",
       "short_name": "Loadicator",
       "url": "./stability.html"
+    },
+    {
+      "name": "Marine Insurance Desk",
+      "short_name": "Insurance",
+      "url": "./insurance.html"
     }
   ]
 }
