@@ -2547,6 +2547,7 @@ const seaWorldMap = document.querySelector("#seaWorldMap");
 const seaTrafficSummary = document.querySelector("#seaTrafficSummary");
 const seaVesselDetail = document.querySelector("#seaVesselDetail");
 const seaTrafficTrust = document.querySelector("#seaTrafficTrust");
+const seaTrafficTable = document.querySelector("#seaTrafficTable");
 const redFlagForm = document.querySelector("#redFlagForm");
 const redFlagResult = document.querySelector("#redFlagResult");
 const recapBuilderForm = document.querySelector("#recapBuilderForm");
@@ -7064,6 +7065,15 @@ const seaTrafficVessels = [
   { id: "north-feeder", name: "MV North Feeder", imo: "9412205", type: "Container", flag: "Denmark", region: "Europe", route: "Hamburg -> Antwerp", speed: 15.4, lat: 54, lon: 5, destination: "Antwerp", eta: "22 hours", risk: "Fog delay" }
 ];
 
+const seaTrafficChokePoints = [
+  { name: "Suez", lat: 30, lon: 32.5 },
+  { name: "Panama", lat: 9, lon: -79.6 },
+  { name: "Hormuz", lat: 26.6, lon: 56.2 },
+  { name: "Malacca", lat: 2.8, lon: 101 },
+  { name: "Gibraltar", lat: 36, lon: -5.5 },
+  { name: "Bosphorus", lat: 41, lon: 29 }
+];
+
 const seaTrafficPorts = [
   { name: "Singapore", lat: 1.3, lon: 103.8, type: "Bunker hub" },
   { name: "Rotterdam", lat: 51.9, lon: 4.1, type: "Europe gateway" },
@@ -7140,16 +7150,24 @@ function renderSeaTraffic(selectedId = "") {
     const driftLon = vessel.lon + Math.sin(tick + index) * 1.8;
     const driftLat = vessel.lat + Math.cos(tick + index * 0.7) * 0.6;
     const p = seaProject(driftLat, driftLon);
-    return `<button class="sea-vessel-marker ${vessel.id === selectedId ? "active" : ""}" data-sea-vessel="${escapeHtml(vessel.id)}" style="left:${p.x}%;top:${p.y}%" title="${escapeHtml(vessel.name)}"><span>${escapeHtml(vessel.type[0])}</span></button>`;
+    return `<button class="sea-vessel-marker ${vessel.type.toLowerCase().replace(/\s+/g, "-")} ${vessel.id === selectedId ? "active" : ""}" data-sea-vessel="${escapeHtml(vessel.id)}" style="left:${p.x}%;top:${p.y}%" title="${escapeHtml(vessel.name)}"><span>${escapeHtml(vessel.type[0])}</span></button>`;
   }).join("") : "";
+  const chokeLayer = seaTrafficChokePoints.map((point) => {
+    const p = seaProject(point.lat, point.lon);
+    return `<span class="sea-choke-label" style="left:${p.x}%;top:${p.y}%">${escapeHtml(point.name)}</span>`;
+  }).join("");
   seaWorldMap.innerHTML = `
     <div class="sea-map-ocean-grid"></div>
+    <div class="sea-traffic-density d-malacca"></div>
+    <div class="sea-traffic-density d-suez"></div>
+    <div class="sea-traffic-density d-northsea"></div>
+    <div class="sea-traffic-density d-pacific"></div>
     <div class="sea-continent c-americas"></div>
     <div class="sea-continent c-europe"></div>
     <div class="sea-continent c-africa"></div>
     <div class="sea-continent c-asia"></div>
     <div class="sea-continent c-australia"></div>
-    ${routes}${riskLayer}${portsLayer}${vesselLayer}
+    ${routes}${riskLayer}${portsLayer}${chokeLayer}${vesselLayer}
   `;
 
   if (seaTrafficSummary) {
@@ -7179,6 +7197,30 @@ function renderSeaTraffic(selectedId = "") {
 
   const selected = seaTrafficVessels.find((vessel) => vessel.id === selectedId) || vesselsList[0] || seaTrafficVessels[0];
   renderSeaVesselDetail(selected?.id);
+  renderSeaTrafficTable(vesselsList, selected?.id);
+}
+
+function renderSeaTrafficTable(vesselsList = filteredSeaTraffic(), selectedId = "") {
+  if (!seaTrafficTable) return;
+  seaTrafficTable.innerHTML = `
+    <table>
+      <thead>
+        <tr><th>Vessel</th><th>Type</th><th>Route</th><th>Speed</th><th>ETA</th><th>Risk</th></tr>
+      </thead>
+      <tbody>
+        ${vesselsList.map((vessel) => `
+          <tr data-sea-vessel-row="${escapeHtml(vessel.id)}" class="${vessel.id === selectedId ? "active" : ""}">
+            <td><strong>${escapeHtml(vessel.name)}</strong><small>IMO ${escapeHtml(vessel.imo)} / ${escapeHtml(vessel.flag)}</small></td>
+            <td><span class="sea-type-pill ${vessel.type.toLowerCase().replace(/\s+/g, "-")}">${escapeHtml(vessel.type)}</span></td>
+            <td>${escapeHtml(vessel.route)}</td>
+            <td>${vessel.speed.toFixed(1)} kn</td>
+            <td>${escapeHtml(vessel.eta)}</td>
+            <td>${escapeHtml(vessel.risk)}</td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
 }
 
 function renderSeaVesselDetail(id = "") {
@@ -19349,6 +19391,13 @@ if (seaWorldMap) {
     const button = event.target.closest("[data-sea-vessel]");
     if (!button) return;
     renderSeaTraffic(button.dataset.seaVessel);
+  });
+}
+if (seaTrafficTable) {
+  seaTrafficTable.addEventListener("click", (event) => {
+    const row = event.target.closest("[data-sea-vessel-row]");
+    if (!row) return;
+    renderSeaTraffic(row.dataset.seaVesselRow);
   });
 }
 bindBrokerForm(redFlagForm, renderRedFlagSystem);
