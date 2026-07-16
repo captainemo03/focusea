@@ -2408,6 +2408,8 @@ const memberForgotForm = document.querySelector("#memberForgotForm");
 const memberSignupHint = document.querySelector("#memberSignupHint");
 const memberAuthStatus = document.querySelector("#memberAuthStatus");
 const memberSessionPill = document.querySelector("#memberSessionPill");
+const topMemberSessionPill = document.querySelector("#topMemberSessionPill");
+const topMemberSessionNote = document.querySelector("#topMemberSessionNote");
 const memberResumeLast = document.querySelector("#memberResumeLast");
 const memberLogout = document.querySelector("#memberLogout");
 const runBrokerOs = document.querySelector("#runBrokerOs");
@@ -3053,7 +3055,8 @@ const pageGroups = {
   pythonEngine: ["#pythonEngineSuite"],
   market: ["#intelligence", "#newsBulletin"],
   tools: ["#route", "#assistantCareer", "#vesselFinder"],
-  academyPage: ["#academyCenter", "#academicLibrary", "#accountCenter"],
+  academyPage: ["#academyCenter", "#academicLibrary"],
+  accountPage: ["#accountCenter"],
   portsPage: ["#academy"]
 };
 
@@ -4108,12 +4111,21 @@ function initialPageForSession() {
 }
 
 function renderMemberAuthStatus(message = "") {
-  if (!memberAuthStatus && !memberSessionPill) return;
+  if (!memberAuthStatus && !memberSessionPill && !topMemberSessionPill && !topMemberSessionNote) return;
   const session = getMemberSession();
   const account = currentMemberAccount();
   const signedIn = Boolean(session && account);
+  const lastPage = account?.lastPage || "dashboard";
   if (memberSessionPill) {
     memberSessionPill.textContent = signedIn ? `Signed in: ${account.displayName || account.username}` : "Guest Mode";
+  }
+  if (topMemberSessionPill) {
+    topMemberSessionPill.textContent = signedIn ? `Signed in: ${account.displayName || account.username}` : "Guest Mode";
+  }
+  if (topMemberSessionNote) {
+    topMemberSessionNote.textContent = signedIn
+      ? `Last page: ${memberPageLabel(lastPage)}. Use Account Center to resume or log out.`
+      : "Sign up or log in to resume your last Focusea workspace page.";
   }
   if (memberResumeLast) memberResumeLast.disabled = !signedIn;
   if (memberLogout) memberLogout.disabled = !signedIn;
@@ -4129,7 +4141,6 @@ function renderMemberAuthStatus(message = "") {
     `;
     return;
   }
-  const lastPage = account.lastPage || "dashboard";
   memberAuthStatus.innerHTML = `
     ${metricCards([
       { label: "User", value: escapeHtml(account.displayName || account.username) },

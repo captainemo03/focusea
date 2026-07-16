@@ -1,4 +1,4 @@
-const FOCUSEA_CACHE = "focusea-loadicator-pro-1";
+const FOCUSEA_CACHE = "focusea-account-center-1";
 const FOCUSEA_ASSETS = [
   "./",
   "./index.html",
