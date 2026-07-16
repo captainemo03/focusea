@@ -27,7 +27,7 @@
     <link rel="manifest" href="manifest.webmanifest" />
     <script src="theme.js?v=theme-1"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="styles.css?v=leaflet-sea-traffic-1" />
+    <link rel="stylesheet" href="styles.css?v=broker-growth-suite-1" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -109,6 +109,7 @@
           <a href="#dealIQ" data-page-link="dealIQ">Deal IQ</a>
           <a href="#decisionLab" data-page-link="decisionLab">Decision Lab</a>
           <a href="#superSuite" data-page-link="superSuite">Super Suite</a>
+          <a href="#growthSuite" data-page-link="growthSuite">Broker Growth Suite</a>
           <a href="#enterprise" data-page-link="enterprise">Enterprise Command</a>
           <a href="#pythonEngine" data-page-link="pythonEngine">Python Engine</a>
           <a href="#market" data-page-link="market">Market & News</a>
@@ -4538,6 +4539,90 @@ Subject: Firm offer
           </article>
         </section>
 
+        <section class="growth-suite-panel" id="growthSuitePanel" aria-label="Broker Growth Suite">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Broker Growth Suite</p>
+              <h2>Paste one fixture and let Focusea build the broker workspace.</h2>
+              <p>
+                A practical daily desk for offer parsing, deal room memory, port cost estimates,
+                cargo intelligence, document review, report history and SEO resource discovery.
+              </p>
+            </div>
+            <div class="status-pill">Workflow ready</div>
+          </div>
+
+          <div class="growth-command-grid">
+            <article class="growth-command-card wide-card">
+              <div class="mini-heading"><span>1. Broker Inbox Pro</span><strong>mail / WhatsApp to structured deal</strong></div>
+              <form class="broker-form" id="growthInboxForm">
+                <label class="wide-label">
+                  <span>Paste fixture, broker mail, SOF or clause</span>
+                  <textarea name="growthText">50k coal Indonesia to India laycan 10/15 July freight USD 18.50 pmt demurrage USD 18,000/day Supramax. 2.5 pct total commission. Subjects receiver approval by 1700 LT. NOR WIBON WIPON and time lost waiting for berth to count as laytime. NOR tendered 10 Jul 0800. Berthed 10 Jul 1800. Loading started 11 Jul 0600. Rain stop 12 Jul 0300-0900. Completed 14 Jul 2200.</textarea>
+                </label>
+                <label><span>Desk mode</span><select name="growthMode"><option value="full">Full workflow</option><option value="fixture">Fixture only</option><option value="claim">Claim focus</option><option value="client">Client brief</option></select></label>
+                <label><span>Target TCE / day</span><input name="targetTce" type="number" value="22000" min="0" step="500" /></label>
+                <button type="submit">Run Broker Autopilot</button>
+                <button type="button" class="ghost-button small" id="growthPushDeal">Save to Deal Room</button>
+              </form>
+              <div class="broker-output" id="growthInboxResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>2. Deal Room</span><strong>offer to claim file</strong></div>
+              <div class="growth-deal-room" id="growthDealRoomResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>3. Port Cost Estimator</span><strong>PDA-style quick estimate</strong></div>
+              <form class="broker-form single-column" id="growthPortCostForm">
+                <label><span>Port</span><select name="portKey"><option value="singapore">Singapore</option><option value="rotterdam">Rotterdam</option><option value="istanbul">Istanbul</option><option value="mersin">Mersin</option><option value="aliaga">Aliaga</option><option value="houston">Houston</option><option value="shanghai">Shanghai</option></select></label>
+                <label><span>Vessel type</span><select name="vesselType"><option>Bulk Carrier</option><option>Container</option><option>Tanker</option><option>LNG</option><option>Ro-Ro</option></select></label>
+                <label><span>Waiting days</span><input name="waitingDays" type="number" value="1.5" min="0" step="0.25" /></label>
+                <label><span>Daily hire / waiting cost</span><input name="dailyHire" type="number" value="18000" min="0" step="500" /></label>
+              </form>
+              <div class="broker-output" id="growthPortCostResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>4. Cargo Intelligence</span><strong>cargo-specific broker playbook</strong></div>
+              <form class="broker-form single-column" id="growthCargoForm">
+                <label><span>Cargo</span><select name="cargoType"><option value="coal">Coal</option><option value="grain">Grain</option><option value="ironOre">Iron ore</option><option value="container">Container</option><option value="crudeOil">Crude oil</option><option value="lng">LNG</option><option value="chemicals">Chemicals</option><option value="projectCargo">Project cargo</option></select></label>
+                <label><span>Operation</span><select name="operation"><option>Voyage charter</option><option>Spot cargo</option><option>Claim review</option><option>Client presentation</option></select></label>
+              </form>
+              <div class="broker-output" id="growthCargoResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>5. Document AI Room</span><strong>CP / SOF / NOR / invoice risk</strong></div>
+              <form class="broker-form single-column" id="growthDocumentForm">
+                <label><span>Document pack</span><textarea name="documentText">CP: NOR valid whether in berth or not. Time lost waiting for berth shall count as laytime. Weather delays excepted unless used. SOF: NOR tendered 10 Jul 0800, berthed 10 Jul 1800, loading started 11 Jul 0600, rain stop 12 Jul 0300-0900, completed 14 Jul 2200. INVOICE: demurrage USD 18,000/day.</textarea></label>
+              </form>
+              <div class="broker-output" id="growthDocumentResult"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>6. Report Center</span><strong>download and history</strong></div>
+              <div class="growth-report-center" id="growthReportCenter"></div>
+              <div class="button-row">
+                <button type="button" class="ghost-button small" id="growthDownloadReport">Download Growth Report</button>
+              </div>
+            </article>
+
+            <article class="wide-card">
+              <div class="mini-heading"><span>7. SEO Resource Hub</span><strong>Google-ready maritime pages</strong></div>
+              <div class="growth-seo-hub" id="growthSeoHub">
+                <a href="maritime-broker-tools.html">Maritime broker tools</a>
+                <a href="voyage-estimate.html">Voyage estimate guide</a>
+                <a href="laytime-calculator.html">Laytime calculator</a>
+                <a href="demurrage-calculator.html">Demurrage calculator</a>
+                <a href="port-intelligence.html">Port intelligence</a>
+                <a href="stability.html">Load-stability lab</a>
+              </div>
+            </article>
+          </div>
+        </section>
+
         <footer class="site-footer" aria-label="Focusea legal and privacy information">
           <div class="footer-brand">
             <strong>Focusea</strong>
@@ -4660,7 +4745,7 @@ Subject: Firm offer
 
     <script src="monetization-config.js?v=monetization-ready-3"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="script.js?v=leaflet-sea-traffic-1"></script>
+    <script src="script.js?v=broker-growth-suite-1"></script>
     <script src="monetization.js?v=monetization-ready-3"></script>
   </body>
 </html>

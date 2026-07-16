@@ -1048,6 +1048,85 @@ main {
 .sea-type-pill.lng { background: rgba(123, 92, 255, 0.16); color: #c7bcff; }
 .sea-type-pill.ro-ro { background: rgba(43, 212, 165, 0.14); color: #b7ffdd; }
 
+.growth-suite-panel {
+  padding: clamp(18px, 3vw, 32px);
+  border: 1px solid rgba(40, 240, 198, 0.22);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 82% 8%, rgba(91, 255, 220, 0.16), transparent 28%),
+    linear-gradient(145deg, rgba(3, 12, 28, 0.95), rgba(9, 9, 38, 0.95));
+  box-shadow: var(--shadow);
+}
+
+.growth-command-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.growth-command-grid > article {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid rgba(100, 97, 255, 0.22);
+  border-radius: 8px;
+  background: rgba(8, 14, 35, 0.48);
+}
+
+.growth-command-grid .wide-card {
+  grid-column: 1 / -1;
+}
+
+.growth-deal-room,
+.growth-report-center,
+.growth-seo-hub {
+  min-width: 0;
+}
+
+.growth-timeline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.growth-timeline span {
+  padding: 7px 10px;
+  border: 1px solid rgba(100, 97, 255, 0.26);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.growth-timeline span.active {
+  border-color: rgba(40, 240, 198, 0.42);
+  background: rgba(40, 240, 198, 0.12);
+  color: #8dfbe8;
+}
+
+.growth-seo-hub {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+  gap: 10px;
+}
+
+.growth-seo-hub a {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid rgba(40, 240, 198, 0.2);
+  border-radius: 8px;
+  background: rgba(2, 13, 18, 0.44);
+  color: var(--text);
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.growth-seo-hub a:hover,
+.growth-seo-hub a:focus-visible {
+  border-color: rgba(40, 240, 198, 0.52);
+  color: #8dfbe8;
+}
+
 .command-search-card {
   margin: 18px 0;
   padding: 16px;
@@ -7869,11 +7948,16 @@ code,
   .command-search-form,
   .role-picker,
   .workflow-template-grid,
+  .growth-command-grid,
   .sea-terminal-topbar,
   .sea-terminal-shell,
   .sea-terminal-bottom,
   .sea-map-head {
     grid-template-columns: 1fr;
+  }
+
+  .growth-command-grid .wide-card {
+    grid-column: auto;
   }
 
   .sea-world-map {

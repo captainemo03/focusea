@@ -2548,6 +2548,18 @@ const seaTrafficSummary = document.querySelector("#seaTrafficSummary");
 const seaVesselDetail = document.querySelector("#seaVesselDetail");
 const seaTrafficTrust = document.querySelector("#seaTrafficTrust");
 const seaTrafficTable = document.querySelector("#seaTrafficTable");
+const growthInboxForm = document.querySelector("#growthInboxForm");
+const growthInboxResult = document.querySelector("#growthInboxResult");
+const growthPushDeal = document.querySelector("#growthPushDeal");
+const growthDealRoomResult = document.querySelector("#growthDealRoomResult");
+const growthPortCostForm = document.querySelector("#growthPortCostForm");
+const growthPortCostResult = document.querySelector("#growthPortCostResult");
+const growthCargoForm = document.querySelector("#growthCargoForm");
+const growthCargoResult = document.querySelector("#growthCargoResult");
+const growthDocumentForm = document.querySelector("#growthDocumentForm");
+const growthDocumentResult = document.querySelector("#growthDocumentResult");
+const growthReportCenter = document.querySelector("#growthReportCenter");
+const growthDownloadReport = document.querySelector("#growthDownloadReport");
 const redFlagForm = document.querySelector("#redFlagForm");
 const redFlagResult = document.querySelector("#redFlagResult");
 const recapBuilderForm = document.querySelector("#recapBuilderForm");
@@ -3310,6 +3322,7 @@ const pageGroups = {
   dealIQ: ["#dealIqSuite"],
   decisionLab: ["#decisionLabSuite"],
   superSuite: ["#superSuitePanel"],
+  growthSuite: ["#growthSuitePanel"],
   enterprise: ["#enterpriseCommandPanel"],
   pythonEngine: ["#pythonEngineSuite"],
   market: ["#intelligence", "#newsBulletin"],
@@ -7360,6 +7373,283 @@ function renderSeaVesselDetail(id = "") {
     <p><b>Risk:</b> ${escapeHtml(vessel.risk)}</p>
     <small>Source label: simulated vessel sample. Connect licensed AIS for real-time global traffic.</small>
   `;
+}
+
+const growthSuiteKey = "focusea-growth-suite-v1";
+let lastGrowthSuiteReport = null;
+
+function growthState() {
+  return safeLocalGet(growthSuiteKey, { deals: [], reports: [] }) || { deals: [], reports: [] };
+}
+
+function saveGrowthState(state) {
+  return safeLocalSet(growthSuiteKey, {
+    deals: (state.deals || []).slice(0, 12),
+    reports: (state.reports || []).slice(0, 16)
+  });
+}
+
+function growthVesselMultiplier(type = "") {
+  const normalized = String(type).toLowerCase();
+  if (normalized.includes("lng")) return 1.55;
+  if (normalized.includes("tanker")) return 1.28;
+  if (normalized.includes("container")) return 1.18;
+  if (normalized.includes("ro-ro")) return 1.12;
+  return 1;
+}
+
+function growthCargoPlaybook(cargo) {
+  const label = cargo.label || "Cargo";
+  const common = {
+    ship: cargo.vessel || "Suitable vessel to be confirmed",
+    docs: ["fixture recap", "cargo manifest", "NOR", "SOF", "load/discharge logs"],
+    market: `${label} pricing should be checked against cargo risk, port cost and demurrage exposure.`
+  };
+  const map = {
+    Coal: { risks: ["moisture", "self-heating", "hold trimming"], docs: ["moisture certificate", "IMSBC declaration", "hold cleanliness"], action: "Confirm moisture, ventilation and terminal rain process before fixing." },
+    Grain: { risks: ["shifting", "fumigation", "shortage claim"], docs: ["phytosanitary certificate", "fumigation certificate", "grain stability"], action: "Protect grain stability, weather days and draft survey evidence." },
+    "Iron ore": { risks: ["tanktop stress", "liquefaction", "draft limit"], docs: ["TML / moisture certificate", "draft survey", "hold readiness"], action: "Watch density and tanktop limits; avoid overloading one hold." },
+    Container: { risks: ["slot availability", "reefer plugs", "cut-off"], docs: ["booking note", "container manifest", "dangerous goods list"], action: "Check TEU mix, reefer count, cut-off and transshipment risk." },
+    "Crude oil": { risks: ["vetting", "heating", "terminal acceptance"], docs: ["Q88", "MSDS", "terminal nomination"], action: "Confirm vetting, pumping rate, ROB and terminal restrictions." },
+    LNG: { risks: ["boil-off", "heel", "terminal compatibility"], docs: ["compatibility study", "cooldown plan", "terminal approval"], action: "Protect boil-off, laycan precision and terminal compatibility." },
+    Chemicals: { risks: ["coating", "segregation", "IMDG"], docs: ["MSDS", "tank coating certificate", "stowage/segregation plan"], action: "Confirm coating, previous cargo and dangerous goods rules." },
+    "Project cargo": { risks: ["lifting plan", "lashing", "center of gravity"], docs: ["method statement", "lashing plan", "heavy-lift drawings"], action: "Require engineered lifting/lashing plan and port equipment confirmation." }
+  };
+  return { ...common, ...(map[label] || { risks: ["port restriction", "documentation", "cargo compatibility"], action: "Confirm cargo-specific restrictions before subjects lifted." }) };
+}
+
+function growthPortEstimate(values = {}) {
+  const port = ports[values.portKey] || ports.singapore || Object.values(ports)[0];
+  const cargo = getCargoProfile(values.cargoType || growthCurrentParsed()?.cargoType || "coal");
+  const base = port?.costs || { pilotage: 8000, tug: 13000, berth: 19000, portDues: 9000 };
+  const vesselFactor = growthVesselMultiplier(values.vesselType);
+  const waiting = (Number(values.waitingDays) || 0) * (Number(values.dailyHire) || 0);
+  const subtotal = Object.values(base).reduce((sum, value) => sum + Number(value || 0), 0);
+  const operational = subtotal * vesselFactor * cargo.portCostMultiplier;
+  return {
+    port,
+    cargo,
+    vesselFactor,
+    subtotal,
+    operational,
+    waiting,
+    total: operational + waiting
+  };
+}
+
+function growthCurrentParsed() {
+  const text = growthInboxForm?.elements.growthText?.value || "";
+  return parseOfferText(text);
+}
+
+function growthReportText() {
+  const state = growthState();
+  const parsed = growthCurrentParsed();
+  const risk = scoreParsedOffer(parsed);
+  const latestDeal = state.deals[0];
+  const cargo = getCargoProfile(parsed.cargoType);
+  const portEstimate = growthPortEstimate(collectFormValues(growthPortCostForm || document.createElement("form")));
+  const clause = analyzeClauseText(growthDocumentForm?.elements.documentText?.value || parsed.rawText || "");
+  return [
+    "FOCUSEA BROKER GROWTH SUITE REPORT",
+    `Generated: ${new Date().toLocaleString()}`,
+    "",
+    "INBOX",
+    `Cargo: ${parsed.cargoLabel}`,
+    `Quantity: ${parsed.quantity || defaultQuantityForCargo(cargo)} ${parsed.unit}`,
+    `Route: ${parsed.route || "Route missing"}`,
+    `Laycan: ${parsed.laycan || "Missing"}`,
+    `Freight: ${parsed.freight ? money(parsed.freight, 2) : "Missing"} / ${parsed.unit}`,
+    `Demurrage: ${parsed.demurrage ? money(parsed.demurrage) : "Missing"} / day`,
+    `Risk: ${risk.label} (${risk.score}/100)`,
+    `Missing: ${parsed.missing.join(", ") || "None detected"}`,
+    "",
+    "DEAL ROOM",
+    latestDeal ? `Saved deal: ${latestDeal.ref} / ${latestDeal.stage} / ${latestDeal.route}` : "No saved deal yet.",
+    "",
+    "PORT COST",
+    `${portEstimate.port?.name || "Port"} total estimate: ${money(portEstimate.total)}`,
+    "",
+    "CARGO INTELLIGENCE",
+    `${cargo.label}: ${growthCargoPlaybook(cargo).action}`,
+    "",
+    "DOCUMENT AI",
+    `Clause risk owner: ${clause.riskOwner}`,
+    ...(clause.findings || []).map((item) => `- ${item}`)
+  ].join("\n");
+}
+
+function renderGrowthInbox() {
+  if (!growthInboxForm || !growthInboxResult) return;
+  const values = collectFormValues(growthInboxForm);
+  const parsed = parseOfferText(values.growthText || "");
+  const risk = scoreParsedOffer(parsed);
+  const cargo = getCargoProfile(parsed.cargoType);
+  const distance = estimateAutoDealDistance(parsed, values.growthText || "");
+  const estimate = calculateVoyageEstimate({
+    cargoType: parsed.cargoType,
+    distance,
+    speed: cargo.unit === "TEU" ? 17 : cargo.unit === "cbm" ? 15 : 12.5,
+    cargoQty: parsed.quantity || defaultQuantityForCargo(cargo),
+    freightRate: parsed.freight || cargo.baseFreight,
+    seaCons: cargo.unit === "TEU" ? 44 : cargo.unit === "cbm" ? 38 : 28,
+    portCons: cargo.unit === "TEU" ? 7 : 4,
+    portDays: 5 + risk.score / 45,
+    bunkerPrice: liveFeedState.bunker || 686,
+    portCosts: 75000,
+    canalCosts: /suez|panama|canal/i.test(values.growthText || "") ? 220000 : 0,
+    dailyHire: Number(values.targetTce) || 22000,
+    commission: parsed.commission || 2.5
+  });
+  const decision = estimate.tce >= Number(values.targetTce || 0) && risk.score < 68 ? "Fix / pursue" : risk.score >= 72 ? "Avoid until clarified" : "Watch / counter";
+  lastGrowthSuiteReport = { parsed, risk, estimate, decision, text: growthReportText() };
+  growthInboxResult.innerHTML = `
+    ${metricCards([
+      { label: "Cargo", value: parsed.cargoLabel },
+      { label: "Route", value: parsed.route || "Missing" },
+      { label: "Risk", value: `${risk.label} ${risk.score}/100` },
+      { label: "TCE", value: `${money(estimate.tce)}/day` },
+      { label: "Net P&L", value: money(estimate.netPnl) },
+      { label: "Decision", value: decision }
+    ])}
+    <div class="ops-list">
+      <div><strong>Missing info</strong><span>${escapeHtml(parsed.missing.join(", ") || "No major missing field detected.")}</span></div>
+      <div><strong>Next broker action</strong><span>${escapeHtml(risk.factors[0] || "Send recap and keep CP wording under review.")}</span></div>
+      <div><strong>Counter wording</strong><span>Clarify NOR validity, weather exceptions, demurrage rate and subject deadline before lifting subjects.</span></div>
+    </div>
+  `;
+  renderGrowthReportCenter();
+}
+
+function saveGrowthDeal() {
+  if (!growthInboxForm) return;
+  const parsed = growthCurrentParsed();
+  const risk = scoreParsedOffer(parsed);
+  const state = growthState();
+  const ref = `FX-${new Date().getFullYear()}-${String(state.deals.length + 1).padStart(3, "0")}`;
+  state.deals.unshift({
+    ref,
+    at: new Date().toLocaleString(),
+    stage: risk.score >= 70 ? "Counter needed" : "New offer",
+    cargo: parsed.cargoLabel,
+    route: parsed.route || "Route missing",
+    laycan: parsed.laycan || "-",
+    risk: risk.score,
+    missing: parsed.missing
+  });
+  state.reports.unshift({ ref, at: new Date().toLocaleString(), title: "Broker Growth Report", risk: risk.score });
+  saveGrowthState(state);
+  renderGrowthDealRoom();
+  renderGrowthReportCenter();
+  growthInboxResult?.insertAdjacentHTML("beforeend", `<small class="download-confirm">Saved to Deal Room as ${escapeHtml(ref)}.</small>`);
+}
+
+function renderGrowthDealRoom() {
+  if (!growthDealRoomResult) return;
+  const state = growthState();
+  const deals = state.deals.length ? state.deals : [{
+    ref: "FX-DEMO-001",
+    at: "Demo",
+    stage: "New offer",
+    cargo: "Coal",
+    route: "Indonesia -> India",
+    laycan: "10/15 Jul",
+    risk: 54,
+    missing: ["commission confirmation"]
+  }];
+  growthDealRoomResult.innerHTML = `
+    <div class="growth-timeline">
+      ${["Offer", "Counter", "Subjects", "Recap", "CP", "SOF", "Laytime", "Claim"].map((stage, index) => `<span class="${index < 3 ? "active" : ""}">${stage}</span>`).join("")}
+    </div>
+    <div class="ops-list">
+      ${deals.slice(0, 5).map((deal) => `
+        <div>
+          <strong>${escapeHtml(deal.ref)} / ${escapeHtml(deal.cargo)}</strong>
+          <span>${escapeHtml(deal.route)} / ${escapeHtml(deal.stage)} / risk ${deal.risk}/100</span>
+          <small>Laycan ${escapeHtml(deal.laycan)} / Missing: ${escapeHtml((deal.missing || []).join(", ") || "none")}</small>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+function renderGrowthPortCost() {
+  if (!growthPortCostForm || !growthPortCostResult) return;
+  const estimate = growthPortEstimate(collectFormValues(growthPortCostForm));
+  growthPortCostResult.innerHTML = `
+    ${metricCards([
+      { label: "Port", value: estimate.port?.name || "Port" },
+      { label: "Pilotage", value: money(estimate.port?.costs?.pilotage || 0) },
+      { label: "Towage", value: money(estimate.port?.costs?.tug || 0) },
+      { label: "Port / berth", value: money((estimate.port?.costs?.berth || 0) + (estimate.port?.costs?.portDues || 0)) },
+      { label: "Waiting", value: money(estimate.waiting) },
+      { label: "Total PDA", value: money(estimate.total) }
+    ])}
+    <small>${escapeHtml(estimate.port?.note || "Agency PDA should be checked before fixture.")}</small>
+  `;
+}
+
+function renderGrowthCargo() {
+  if (!growthCargoForm || !growthCargoResult) return;
+  const values = collectFormValues(growthCargoForm);
+  const cargo = getCargoProfile(values.cargoType);
+  const playbook = growthCargoPlaybook(cargo);
+  growthCargoResult.innerHTML = `
+    ${metricCards([
+      { label: "Cargo", value: cargo.label },
+      { label: "Best vessel", value: playbook.ship },
+      { label: "Base freight", value: `${money(cargo.baseFreight, 2)}/${cargo.unit}` },
+      { label: "Risk index", value: `${cargo.risk}/100` }
+    ])}
+    <div class="ops-list">
+      <div><strong>Risks</strong><span>${escapeHtml(playbook.risks.join(", "))}</span></div>
+      <div><strong>Documents</strong><span>${escapeHtml([...new Set([...playbook.docs, ...playbook.docs])].join(", "))}</span></div>
+      <div><strong>Broker action</strong><span>${escapeHtml(playbook.action)}</span></div>
+    </div>
+  `;
+}
+
+function renderGrowthDocumentAi() {
+  if (!growthDocumentForm || !growthDocumentResult) return;
+  const text = String(collectFormValues(growthDocumentForm).documentText || "");
+  const clause = analyzeClauseText(text);
+  const norHits = (text.match(/\bNOR\b/gi) || []).length;
+  const sofHits = (text.match(/\bSOF\b|berthed|completed|loading started/gi) || []).length;
+  const invoiceMismatch = /invoice/i.test(text) && /demurrage/i.test(text) && /20,?000|20000/i.test(text) && /18,?000|18000/i.test(text);
+  growthDocumentResult.innerHTML = `
+    ${metricCards([
+      { label: "Clause owner", value: clause.riskOwner },
+      { label: "Laytime stops", value: clause.laytimeStops },
+      { label: "Demurrage likely", value: clause.demurrageLikely },
+      { label: "SOF signals", value: sofHits },
+      { label: "NOR signals", value: norHits },
+      { label: "Mismatch", value: invoiceMismatch ? "Check invoice" : "No hard mismatch" }
+    ])}
+    <div class="ops-list">
+      ${(clause.findings.length ? clause.findings : ["No strong clause red flag found in pasted text."]).map((finding) => `<div><strong>Finding</strong><span>${escapeHtml(finding)}</span></div>`).join("")}
+      ${invoiceMismatch ? `<div><strong>Invoice warning</strong><span>Recap/CP and invoice demurrage rates appear inconsistent.</span></div>` : ""}
+    </div>
+  `;
+}
+
+function renderGrowthReportCenter() {
+  if (!growthReportCenter) return;
+  const state = growthState();
+  const reports = state.reports.length ? state.reports : [{ ref: "DEMO", at: new Date().toLocaleString(), title: "Broker Growth Report", risk: 54 }];
+  growthReportCenter.innerHTML = `
+    <div class="ops-list">
+      ${reports.slice(0, 6).map((report) => `<div><strong>${escapeHtml(report.title)}</strong><span>${escapeHtml(report.ref)} / ${escapeHtml(report.at)} / risk ${report.risk}/100</span></div>`).join("")}
+    </div>
+  `;
+}
+
+function renderGrowthSuite() {
+  renderGrowthInbox();
+  renderGrowthDealRoom();
+  renderGrowthPortCost();
+  renderGrowthCargo();
+  renderGrowthDocumentAi();
+  renderGrowthReportCenter();
 }
 
 function renderFrontFixtureAutopilot() {
@@ -19517,6 +19807,28 @@ if (seaTrafficTable) {
     renderSeaTraffic(row.dataset.seaVesselRow);
   });
 }
+bindBrokerForm(growthInboxForm, renderGrowthInbox);
+bindBrokerForm(growthPortCostForm, renderGrowthPortCost);
+bindBrokerForm(growthCargoForm, renderGrowthCargo);
+bindBrokerForm(growthDocumentForm, renderGrowthDocumentAi);
+if (growthPushDeal) {
+  growthPushDeal.addEventListener("click", saveGrowthDeal);
+}
+if (growthDownloadReport) {
+  growthDownloadReport.addEventListener("click", () => {
+    const report = growthReportText();
+    const state = growthState();
+    state.reports.unshift({
+      ref: `RPT-${Date.now().toString().slice(-6)}`,
+      at: new Date().toLocaleString(),
+      title: "Downloaded Growth Report",
+      risk: lastGrowthSuiteReport?.risk?.score || scoreParsedOffer(growthCurrentParsed()).score
+    });
+    saveGrowthState(state);
+    renderGrowthReportCenter();
+    downloadTextFile("focusea-broker-growth-suite-report.txt", report);
+  });
+}
 bindBrokerForm(redFlagForm, renderRedFlagSystem);
 bindBrokerForm(recapBuilderForm, renderRecapBuilder);
 bindBrokerForm(evidencePackForm, renderEvidencePack);
@@ -20383,6 +20695,7 @@ runAllTrustAutopilot();
 renderFlagshipWorkflow();
 initializeProductNavigator();
 renderSeaTraffic();
+renderGrowthSuite();
 renderBalticFeedPanel();
 renderSecurityShield();
 renderPythonHistory();
