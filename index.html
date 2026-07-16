@@ -27,7 +27,7 @@
     <link rel="manifest" href="manifest.webmanifest" />
     <script src="theme.js?v=theme-1"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="styles.css?v=sea-traffic-clickfix-1" />
+    <link rel="stylesheet" href="styles.css?v=live-ais-connector-1" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -224,6 +224,16 @@
                 <label><span>Vessel type</span><select name="trafficType"><option value="All">All types</option><option>Container</option><option>Tanker</option><option>Bulk Carrier</option><option>LNG</option><option>Ro-Ro</option></select></label>
                 <label><span>Region</span><select name="trafficRegion"><option value="All">All regions</option><option>Asia</option><option>Europe</option><option>Mediterranean</option><option>Americas</option><option>Middle East</option><option>Africa</option></select></label>
               </form>
+              <details class="ais-provider-panel" open>
+                <summary>Live AIS provider connector</summary>
+                <form class="broker-form single-column" id="seaTrafficProviderForm">
+                  <label><span>AIS JSON endpoint</span><input name="aisEndpoint" placeholder="https://your-backend.example.com/ais/live" /></label>
+                  <label><span>Or paste AIS JSON</span><textarea name="aisJson" placeholder='[{"name":"MV Example","imo":"1234567","lat":41.0,"lon":29.0,"type":"Container","speed":12.4,"destination":"Istanbul"}]'></textarea></label>
+                  <button type="submit">Load AIS Feed</button>
+                  <button type="button" class="ghost-button small" id="seaTrafficUseDemo">Use Demo Fleet</button>
+                </form>
+                <div class="sea-provider-status" id="seaTrafficProviderStatus">Demo AIS shown. Real global live traffic requires a licensed AIS provider/API.</div>
+              </details>
               <div class="sea-layer-toolbar" aria-label="Sea traffic layers">
                 <label><input type="checkbox" data-sea-layer="vessels" checked /> Vessels</label>
                 <label><input type="checkbox" data-sea-layer="routes" checked /> Routes</label>
@@ -4745,7 +4755,7 @@ Subject: Firm offer
 
     <script src="monetization-config.js?v=monetization-ready-3"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="script.js?v=sea-traffic-clickfix-1"></script>
+    <script src="script.js?v=live-ais-connector-1"></script>
     <script src="monetization.js?v=monetization-ready-3"></script>
   </body>
 </html>

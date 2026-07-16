@@ -1,4 +1,4 @@
-const FOCUSEA_CACHE = "focusea-sea-traffic-clickfix-1";
+const FOCUSEA_CACHE = "focusea-live-ais-connector-1";
 const FOCUSEA_ASSETS = [
   "./",
   "./index.html",

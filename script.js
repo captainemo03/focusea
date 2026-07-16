@@ -2548,6 +2548,9 @@ const seaTrafficSummary = document.querySelector("#seaTrafficSummary");
 const seaVesselDetail = document.querySelector("#seaVesselDetail");
 const seaTrafficTrust = document.querySelector("#seaTrafficTrust");
 const seaTrafficTable = document.querySelector("#seaTrafficTable");
+const seaTrafficProviderForm = document.querySelector("#seaTrafficProviderForm");
+const seaTrafficProviderStatus = document.querySelector("#seaTrafficProviderStatus");
+const seaTrafficUseDemo = document.querySelector("#seaTrafficUseDemo");
 const growthInboxForm = document.querySelector("#growthInboxForm");
 const growthInboxResult = document.querySelector("#growthInboxResult");
 const growthPushDeal = document.querySelector("#growthPushDeal");
@@ -7136,6 +7139,9 @@ let seaLeafletVesselMarkers = new Map();
 let seaTrafficLastFilterSignature = "";
 let seaTrafficFitDone = false;
 let seaTrafficPopupVesselId = "";
+let seaExternalVessels = [];
+let seaTrafficSourceMode = "demo";
+let seaTrafficSourceLabel = "Demo AIS training fleet";
 
 function seaProject(lat, lon) {
   return {
@@ -7152,16 +7158,77 @@ function activeSeaLayers() {
   return layers;
 }
 
+function seaTrafficFleet() {
+  return seaTrafficSourceMode === "live" && seaExternalVessels.length ? seaExternalVessels : seaTrafficVessels;
+}
+
+function seaTrafficField(item, keys = [], fallback = "") {
+  const match = keys.find((key) => item?.[key] !== undefined && item?.[key] !== null && item?.[key] !== "");
+  return match ? item[match] : fallback;
+}
+
+function seaTrafficType(value = "") {
+  const text = String(value || "").toLowerCase();
+  if (text.includes("lng")) return "LNG";
+  if (text.includes("tank") || text.includes("crude") || text.includes("product")) return "Tanker";
+  if (text.includes("bulk") || text.includes("cargo")) return "Bulk Carrier";
+  if (text.includes("ro") || text.includes("ferry")) return "Ro-Ro";
+  if (text.includes("container") || text.includes("box")) return "Container";
+  return value || "Vessel";
+}
+
+function normalizeAisVessel(item = {}, index = 0) {
+  const lat = Number(seaTrafficField(item, ["lat", "latitude", "LAT", "Latitude", "y"]));
+  const lon = Number(seaTrafficField(item, ["lon", "lng", "longitude", "LON", "Longitude", "x"]));
+  if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
+  const imo = String(seaTrafficField(item, ["imo", "IMO", "imoNumber", "mmsi", "MMSI"], `AIS-${index + 1}`));
+  const name = String(seaTrafficField(item, ["name", "vesselName", "shipname", "SHIPNAME", "Name"], `AIS Vessel ${index + 1}`));
+  const load = seaTrafficField(item, ["loadPort", "origin", "from", "departure"], "Unknown");
+  const discharge = seaTrafficField(item, ["destination", "dest", "to", "DESTINATION"], seaTrafficField(item, ["nextPort"], "Unknown"));
+  return {
+    id: `live-${imo}-${index}`.toLowerCase().replace(/[^a-z0-9-]+/g, "-"),
+    name,
+    imo,
+    type: seaTrafficType(seaTrafficField(item, ["type", "vesselType", "shipType", "TYPE"], "Vessel")),
+    flag: String(seaTrafficField(item, ["flag", "FLAG", "country"], "Unknown")),
+    region: String(seaTrafficField(item, ["region", "area"], "Live AIS")),
+    route: String(seaTrafficField(item, ["route"], `${load} -> ${discharge}`)),
+    speed: Number(seaTrafficField(item, ["speed", "sog", "SOG", "knots"], 0)) || 0,
+    lat,
+    lon,
+    destination: String(discharge || "Unknown"),
+    eta: String(seaTrafficField(item, ["eta", "ETA"], "Live feed")),
+    risk: String(seaTrafficField(item, ["risk", "status", "navStatus", "NAVSTAT"], "Live AIS"))
+  };
+}
+
+function normalizeAisPayload(payload) {
+  const list = Array.isArray(payload)
+    ? payload
+    : Array.isArray(payload?.vessels)
+      ? payload.vessels
+      : Array.isArray(payload?.data)
+        ? payload.data
+        : Array.isArray(payload?.features)
+          ? payload.features.map((feature) => ({
+            ...(feature.properties || {}),
+            lat: feature.geometry?.coordinates?.[1],
+            lon: feature.geometry?.coordinates?.[0]
+          }))
+          : [];
+  return list.map(normalizeAisVessel).filter(Boolean);
+}
+
 function filteredSeaTraffic() {
   const values = seaTrafficFilterForm ? collectFormValues(seaTrafficFilterForm) : {};
   const query = String(values.trafficQuery || "").toLowerCase();
   const type = values.trafficType || "All";
   const region = values.trafficRegion || "All";
-  return seaTrafficVessels.filter((vessel) => {
+  return seaTrafficFleet().filter((vessel) => {
     const text = `${vessel.name} ${vessel.imo} ${vessel.route} ${vessel.destination}`.toLowerCase();
     return (!query || text.includes(query))
       && (type === "All" || vessel.type === type)
-      && (region === "All" || vessel.region === region);
+      && (region === "All" || vessel.region === region || seaTrafficSourceMode === "live");
   });
 }
 
@@ -7317,7 +7384,7 @@ function seaTrafficFilterSignature(vesselsList, layers) {
 
 function styleSeaTrafficMarkers() {
   seaLeafletVesselMarkers.forEach((marker, id) => {
-    const vessel = seaTrafficVessels.find((item) => item.id === id);
+    const vessel = seaTrafficFleet().find((item) => item.id === id);
     const color = seaVesselColor(vessel?.type);
     const selected = id === seaSelectedVesselId;
     marker.setStyle({
@@ -7348,7 +7415,7 @@ function fitSeaTrafficToVisibleVessels(vesselsList, layers, options = {}) {
 }
 
 function selectSeaTrafficVessel(id = "", options = {}) {
-  const vessel = seaTrafficVessels.find((item) => item.id === id);
+  const vessel = seaTrafficFleet().find((item) => item.id === id);
   if (!vessel) return;
   seaSelectedVesselId = id;
   renderSeaVesselDetail(id);
@@ -7369,7 +7436,7 @@ function renderSeaTraffic(selectedId = seaSelectedVesselId, options = {}) {
   seaSelectedVesselId = selectedId || seaSelectedVesselId;
   const layers = activeSeaLayers();
   const vesselsList = filteredSeaTraffic();
-  const selected = seaTrafficVessels.find((vessel) => vessel.id === seaSelectedVesselId) || vesselsList[0] || seaTrafficVessels[0];
+  const selected = seaTrafficFleet().find((vessel) => vessel.id === seaSelectedVesselId) || vesselsList[0] || seaTrafficFleet()[0];
   seaSelectedVesselId = selected?.id || "";
 
   if (initializeSeaLeafletMap()) {
@@ -7396,7 +7463,7 @@ function renderSeaTraffic(selectedId = seaSelectedVesselId, options = {}) {
     seaTrafficSummary.innerHTML = `
       ${metricCards([
         { label: "Visible vessels", value: vesselsList.length },
-        { label: "Global AIS", value: "Licensed required" },
+        { label: "AIS source", value: seaTrafficSourceMode === "live" ? "Live feed" : "Demo" },
         { label: "High-risk watches", value: seaTrafficRisks.length },
         { label: "Map base", value: "OpenStreetMap" }
       ])}
@@ -7406,8 +7473,8 @@ function renderSeaTraffic(selectedId = seaSelectedVesselId, options = {}) {
 
   if (seaTrafficTrust) {
     seaTrafficTrust.innerHTML = [
-      ["AIS vessel positions", "licensed required", "Global live AIS needs a paid provider/API."],
-      ["Demo vessel movement", "simulated", "Current dots are training/demo positions, not live AIS."],
+      ["AIS vessel positions", seaTrafficSourceMode === "live" ? "user input" : "licensed required", seaTrafficSourceMode === "live" ? seaTrafficSourceLabel : "Global live AIS needs a paid provider/API."],
+      ["Demo vessel movement", seaTrafficSourceMode === "live" ? "replaced" : "simulated", seaTrafficSourceMode === "live" ? "Demo fleet hidden while live/user AIS feed is active." : "Current dots are training/demo positions, not live AIS."],
       ["Ports and routes", "seed data", "Major ports and routes are hand-curated for product demo."],
       ["Weather/security layer", "api-ready", "Can be connected to weather, piracy/security and route-risk feeds."]
     ].map(([name, badge, note]) => `<div><strong>${escapeHtml(name)}</strong><em class="source-badge ${badge.includes("licensed") ? "licensed" : badge}">${escapeHtml(badge)}</em><small>${escapeHtml(note)}</small></div>`).join("");
@@ -7441,9 +7508,59 @@ function renderSeaTrafficTable(vesselsList = filteredSeaTraffic(), selectedId = 
   `;
 }
 
+function setSeaProviderStatus(message = "", type = "simulated") {
+  if (!seaTrafficProviderStatus) return;
+  seaTrafficProviderStatus.innerHTML = `<em class="source-badge ${escapeHtml(type)}">${escapeHtml(type)}</em> ${escapeHtml(message)}`;
+}
+
+async function loadSeaTrafficProvider(event) {
+  event?.preventDefault();
+  if (!seaTrafficProviderForm) return;
+  const values = collectFormValues(seaTrafficProviderForm);
+  const endpoint = String(values.aisEndpoint || "").trim();
+  const pasted = String(values.aisJson || "").trim();
+  setSeaProviderStatus("Loading AIS feed...", "api-ready");
+  try {
+    let payload;
+    if (pasted) {
+      payload = JSON.parse(pasted);
+      seaTrafficSourceLabel = "Pasted AIS JSON / user input";
+    } else if (endpoint) {
+      const response = await fetch(endpoint, { cache: "no-store" });
+      if (!response.ok) throw new Error(`AIS endpoint returned ${response.status}`);
+      payload = await response.json();
+      seaTrafficSourceLabel = `Live AIS endpoint: ${endpoint}`;
+    } else {
+      throw new Error("Enter an AIS endpoint or paste AIS JSON.");
+    }
+    const vessels = normalizeAisPayload(payload);
+    if (!vessels.length) throw new Error("No valid vessels with lat/lon found in AIS payload.");
+    seaExternalVessels = vessels;
+    seaTrafficSourceMode = "live";
+    seaSelectedVesselId = "";
+    seaTrafficFitDone = false;
+    seaTrafficPopupVesselId = "";
+    setSeaProviderStatus(`${vessels.length.toLocaleString("en-US")} AIS vessel(s) loaded. Map is now using your live/user feed.`, "input");
+    renderSeaTraffic("", { fit: true });
+  } catch (error) {
+    setSeaProviderStatus(`${error.message || "AIS feed failed."} Demo fleet remains active.`, "licensed");
+  }
+}
+
+function useDemoSeaTraffic() {
+  seaExternalVessels = [];
+  seaTrafficSourceMode = "demo";
+  seaTrafficSourceLabel = "Demo AIS training fleet";
+  seaSelectedVesselId = "";
+  seaTrafficFitDone = false;
+  seaTrafficPopupVesselId = "";
+  setSeaProviderStatus("Demo AIS shown. Real global live traffic requires a licensed AIS provider/API.", "simulated");
+  renderSeaTraffic("", { fit: true });
+}
+
 function renderSeaVesselDetail(id = "") {
   if (!seaVesselDetail) return;
-  const vessel = seaTrafficVessels.find((item) => item.id === id) || filteredSeaTraffic()[0] || seaTrafficVessels[0];
+  const vessel = seaTrafficFleet().find((item) => item.id === id) || filteredSeaTraffic()[0] || seaTrafficFleet()[0];
   if (!vessel) {
     seaVesselDetail.textContent = "No vessel in current filter.";
     return;
@@ -19888,6 +20005,12 @@ if (seaTrafficTable) {
     renderSeaTraffic(row.dataset.seaVesselRow, { openPopup: true, pan: true });
   });
 }
+if (seaTrafficProviderForm) {
+  seaTrafficProviderForm.addEventListener("submit", loadSeaTrafficProvider);
+}
+if (seaTrafficUseDemo) {
+  seaTrafficUseDemo.addEventListener("click", useDemoSeaTraffic);
+}
 bindBrokerForm(growthInboxForm, renderGrowthInbox);
 bindBrokerForm(growthPortCostForm, renderGrowthPortCost);
 bindBrokerForm(growthCargoForm, renderGrowthCargo);
@@ -20776,6 +20899,7 @@ runAllTrustAutopilot();
 renderFlagshipWorkflow();
 initializeProductNavigator();
 renderSeaTraffic();
+setSeaProviderStatus("Demo AIS shown. Real global live traffic requires a licensed AIS provider/API.", "simulated");
 renderGrowthSuite();
 renderBalticFeedPanel();
 renderSecurityShield();
