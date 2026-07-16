@@ -7079,6 +7079,23 @@ const seaTrafficVessels = [
   { id: "north-feeder", name: "MV North Feeder", imo: "9412205", type: "Container", flag: "Denmark", region: "Europe", route: "Hamburg -> Antwerp", speed: 15.4, lat: 54, lon: 5, destination: "Antwerp", eta: "22 hours", risk: "Fog delay" }
 ];
 
+seaTrafficVessels.push(
+  { id: "med-star", name: "MV Med Star", imo: "9701184", type: "Ro-Ro", flag: "Italy", region: "Mediterranean", route: "Trieste -> Istanbul", speed: 16.8, lat: 38.5, lon: 18.8, destination: "Istanbul", eta: "2 days", risk: "Aegean wind" },
+  { id: "blacksea-grain", name: "MV Blacksea Grain", imo: "9449802", type: "Bulk Carrier", flag: "Turkey", region: "Europe", route: "Samsun -> Ravenna", speed: 12.2, lat: 43.2, lon: 35.6, destination: "Ravenna", eta: "6 days", risk: "Black Sea weather" },
+  { id: "aegean-chem", name: "MT Aegean Chem", imo: "9517721", type: "Tanker", flag: "Greece", region: "Mediterranean", route: "Aliaga -> Valencia", speed: 13.7, lat: 37.6, lon: 24.2, destination: "Valencia", eta: "5 days", risk: "Terminal compatibility" },
+  { id: "redsea-link", name: "MV Redsea Link", imo: "9673325", type: "Container", flag: "Malta", region: "Middle East", route: "Jeddah -> Suez", speed: 16.9, lat: 23.2, lon: 38.8, destination: "Suez", eta: "3 days", risk: "Red Sea watch" },
+  { id: "atlantic-bulk", name: "MV Atlantic Bulk", imo: "9480045", type: "Bulk Carrier", flag: "Greece", region: "Americas", route: "Santos -> Rotterdam", speed: 12.1, lat: -18.4, lon: -28.8, destination: "Rotterdam", eta: "15 days", risk: "South Atlantic swell" },
+  { id: "texas-product", name: "MT Texas Product", imo: "9561045", type: "Tanker", flag: "USA", region: "Americas", route: "Houston -> Antwerp", speed: 14.4, lat: 28.4, lon: -82.2, destination: "Antwerp", eta: "10 days", risk: "Gulf squall" },
+  { id: "andes-feeder", name: "MV Andes Feeder", imo: "9344506", type: "Container", flag: "Chile", region: "Americas", route: "Callao -> Balboa", speed: 15.6, lat: -5.8, lon: -81.1, destination: "Balboa", eta: "4 days", risk: "Port lineup" },
+  { id: "pacific-lng", name: "LNG Pacific Dawn", imo: "9784411", type: "LNG", flag: "Bahamas", region: "Asia", route: "Darwin -> Yokohama", speed: 18.7, lat: -7.4, lon: 135.2, destination: "Yokohama", eta: "9 days", risk: "Cyclone watch" },
+  { id: "cape-ore", name: "MV Cape Ore", imo: "9603324", type: "Bulk Carrier", flag: "Liberia", region: "Asia", route: "Port Hedland -> Qingdao", speed: 11.5, lat: -16.8, lon: 116.3, destination: "Qingdao", eta: "12 days", risk: "Iron ore density" },
+  { id: "nordic-box", name: "MV Nordic Box", imo: "9491203", type: "Container", flag: "Norway", region: "Europe", route: "Felixstowe -> Oslo", speed: 14.8, lat: 57.4, lon: 3.1, destination: "Oslo", eta: "28 hours", risk: "North Sea gale" },
+  { id: "africa-rover", name: "MV Africa Rover", imo: "9328710", type: "Ro-Ro", flag: "Portugal", region: "Africa", route: "Tanger Med -> Durban", speed: 15.2, lat: 8.4, lon: -7.8, destination: "Durban", eta: "14 days", risk: "Bunker planning" },
+  { id: "arabian-crude", name: "MT Arabian Crude", imo: "9538816", type: "Tanker", flag: "Saudi Arabia", region: "Middle East", route: "Ras Tanura -> Fujairah", speed: 13.4, lat: 25.8, lon: 53.6, destination: "Fujairah", eta: "30 hours", risk: "Hormuz traffic" },
+  { id: "malacca-runner", name: "MV Malacca Runner", imo: "9650012", type: "Container", flag: "Singapore", region: "Asia", route: "Port Klang -> Busan", speed: 17.9, lat: 3.9, lon: 101.4, destination: "Busan", eta: "7 days", risk: "Malacca density" },
+  { id: "baltic-timber", name: "MV Baltic Timber", imo: "9417750", type: "Bulk Carrier", flag: "Cyprus", region: "Europe", route: "Riga -> Hamburg", speed: 11.9, lat: 57.1, lon: 18.8, destination: "Hamburg", eta: "3 days", risk: "Ice / wind watch" }
+);
+
 const seaTrafficChokePoints = [
   { name: "Suez", lat: 30, lon: 32.5 },
   { name: "Panama", lat: 9, lon: -79.6 },
@@ -7115,6 +7132,10 @@ const seaTrafficRoutes = [
 let seaLeafletMap = null;
 let seaLeafletLayers = null;
 let seaSelectedVesselId = "";
+let seaLeafletVesselMarkers = new Map();
+let seaTrafficLastFilterSignature = "";
+let seaTrafficFitDone = false;
+let seaTrafficPopupVesselId = "";
 
 function seaProject(lat, lon) {
   return {
@@ -7192,6 +7213,7 @@ function initializeSeaLeafletMap() {
 function clearSeaLeafletLayers() {
   if (!seaLeafletLayers) return;
   Object.values(seaLeafletLayers).forEach((layer) => layer.clearLayers());
+  seaLeafletVesselMarkers = new Map();
 }
 
 function addSeaLeafletRoutes(layers) {
@@ -7276,14 +7298,73 @@ function addSeaLeafletVessels(layers, vesselsList, selectedId) {
       fillOpacity: selected ? 1 : 0.9
     }).bindPopup(seaVesselPopup(vessel), { className: "sea-leaflet-popup" });
     marker.on("click", () => {
-      seaSelectedVesselId = vessel.id;
-      renderSeaTraffic(vessel.id);
+      selectSeaTrafficVessel(vessel.id, { openPopup: true, pan: false });
+    });
+    marker.on("popupclose", () => {
+      if (seaTrafficPopupVesselId === vessel.id) seaTrafficPopupVesselId = "";
     });
     marker.addTo(seaLeafletLayers.vessels);
+    seaLeafletVesselMarkers.set(vessel.id, marker);
   });
 }
 
-function renderSeaTraffic(selectedId = seaSelectedVesselId) {
+function seaTrafficFilterSignature(vesselsList, layers) {
+  return JSON.stringify({
+    ids: vesselsList.map((vessel) => vessel.id),
+    layers
+  });
+}
+
+function styleSeaTrafficMarkers() {
+  seaLeafletVesselMarkers.forEach((marker, id) => {
+    const vessel = seaTrafficVessels.find((item) => item.id === id);
+    const color = seaVesselColor(vessel?.type);
+    const selected = id === seaSelectedVesselId;
+    marker.setStyle({
+      radius: selected ? 9 : 6,
+      color: selected ? "#ffffff" : color,
+      weight: selected ? 3 : 2,
+      fillColor: color,
+      fillOpacity: selected ? 1 : 0.9
+    });
+  });
+}
+
+function fitSeaTrafficToVisibleVessels(vesselsList, layers, options = {}) {
+  if (!seaLeafletMap || !window.L || !layers.vessels || !vesselsList.length) return;
+  const signature = seaTrafficFilterSignature(vesselsList, layers);
+  if (signature !== seaTrafficLastFilterSignature) {
+    seaTrafficLastFilterSignature = signature;
+    seaTrafficFitDone = false;
+  }
+  if (seaTrafficFitDone && !options.force) return;
+  const markers = vesselsList.map((vessel) => seaLeafletVesselMarkers.get(vessel.id)).filter(Boolean);
+  if (!markers.length) return;
+  const bounds = window.L.featureGroup(markers).getBounds();
+  if (bounds.isValid()) {
+    seaLeafletMap.fitBounds(bounds.pad(0.18), { maxZoom: 3, animate: false });
+    seaTrafficFitDone = true;
+  }
+}
+
+function selectSeaTrafficVessel(id = "", options = {}) {
+  const vessel = seaTrafficVessels.find((item) => item.id === id);
+  if (!vessel) return;
+  seaSelectedVesselId = id;
+  renderSeaVesselDetail(id);
+  renderSeaTrafficTable(filteredSeaTraffic(), id);
+  styleSeaTrafficMarkers();
+  const marker = seaLeafletVesselMarkers.get(id);
+  if (marker && seaLeafletMap) {
+    if (options.pan) seaLeafletMap.setView(marker.getLatLng(), Math.max(seaLeafletMap.getZoom(), 4), { animate: true });
+    if (options.openPopup) {
+      seaTrafficPopupVesselId = id;
+      marker.openPopup();
+    }
+  }
+}
+
+function renderSeaTraffic(selectedId = seaSelectedVesselId, options = {}) {
   if (!seaWorldMap) return;
   seaSelectedVesselId = selectedId || seaSelectedVesselId;
   const layers = activeSeaLayers();
@@ -7298,7 +7379,13 @@ function renderSeaTraffic(selectedId = seaSelectedVesselId) {
     addSeaLeafletRisks(layers);
     addSeaLeafletChokePoints(layers);
     addSeaLeafletVessels(layers, vesselsList, seaSelectedVesselId);
-    setTimeout(() => seaLeafletMap?.invalidateSize(), 0);
+    setTimeout(() => {
+      seaLeafletMap?.invalidateSize();
+      fitSeaTrafficToVisibleVessels(vesselsList, layers, { force: options.fit });
+      if (options.openPopup && seaSelectedVesselId) {
+        selectSeaTrafficVessel(seaSelectedVesselId, { openPopup: true, pan: options.pan });
+      }
+    }, 0);
   }
 
   if (seaTrafficSummary) {
@@ -7328,6 +7415,7 @@ function renderSeaTraffic(selectedId = seaSelectedVesselId) {
 
   renderSeaVesselDetail(selected?.id);
   renderSeaTrafficTable(vesselsList, selected?.id);
+  styleSeaTrafficMarkers();
 }
 
 function renderSeaTrafficTable(vesselsList = filteredSeaTraffic(), selectedId = "") {
@@ -19789,22 +19877,15 @@ if (saveNavigatorReport) {
 if (downloadReportHistory) {
   downloadReportHistory.addEventListener("click", () => downloadTextFile("focusea-report-history.txt", navigatorHistoryText()));
 }
-bindBrokerForm(seaTrafficFilterForm, () => renderSeaTraffic());
+bindBrokerForm(seaTrafficFilterForm, () => renderSeaTraffic("", { fit: true }));
 document.querySelectorAll("[data-sea-layer]").forEach((input) => {
-  input.addEventListener("change", () => renderSeaTraffic());
+  input.addEventListener("change", () => renderSeaTraffic("", { fit: true }));
 });
-if (seaWorldMap) {
-  seaWorldMap.addEventListener("click", (event) => {
-    const button = event.target.closest("[data-sea-vessel]");
-    if (!button) return;
-    renderSeaTraffic(button.dataset.seaVessel);
-  });
-}
 if (seaTrafficTable) {
   seaTrafficTable.addEventListener("click", (event) => {
     const row = event.target.closest("[data-sea-vessel-row]");
     if (!row) return;
-    renderSeaTraffic(row.dataset.seaVesselRow);
+    renderSeaTraffic(row.dataset.seaVesselRow, { openPopup: true, pan: true });
   });
 }
 bindBrokerForm(growthInboxForm, renderGrowthInbox);
@@ -20709,7 +20790,9 @@ renderMemberAuthStatus();
 activatePage(initialPageForSession(), false);
 setInterval(updateLiveFeed, 1000);
 setInterval(refreshBalticLicensedFeed, 1000);
-setInterval(() => renderSeaTraffic(), 3000);
+setInterval(() => {
+  if (!seaTrafficPopupVesselId) renderSeaTraffic();
+}, 3000);
 refreshBalticLicensedFeed();
 loadMaritimeNews();
 normalizeEnglishUi();
