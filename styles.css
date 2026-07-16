@@ -742,6 +742,92 @@ main {
     linear-gradient(180deg, rgba(2, 18, 33, 0.94), rgba(3, 7, 22, 0.98));
 }
 
+.sea-world-map.leaflet-container,
+.sea-world-map .leaflet-container {
+  width: 100%;
+  min-height: clamp(540px, 62vw, 760px);
+  background: #061522;
+  color: var(--text);
+  font-family: inherit;
+}
+
+.sea-world-map .leaflet-tile {
+  filter: saturate(0.72) brightness(0.54) contrast(1.18) hue-rotate(156deg);
+}
+
+.sea-world-map .leaflet-control-zoom a,
+.sea-world-map .leaflet-control-attribution {
+  border-color: rgba(40, 240, 198, 0.24);
+  background: rgba(3, 10, 25, 0.9);
+  color: var(--muted);
+}
+
+.sea-world-map .leaflet-control-zoom a {
+  color: #8dfbe8;
+}
+
+.sea-world-map .leaflet-control-attribution a {
+  color: #8dfbe8;
+}
+
+.sea-world-map .leaflet-popup-content-wrapper,
+.sea-world-map .leaflet-popup-tip {
+  border: 1px solid rgba(40, 240, 198, 0.24);
+  background: rgba(4, 12, 28, 0.96);
+  color: var(--text);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.42);
+}
+
+.sea-world-map .leaflet-popup-content {
+  margin: 12px;
+}
+
+.sea-leaflet-popup-card {
+  display: grid;
+  gap: 5px;
+  min-width: 190px;
+}
+
+.sea-leaflet-popup-card strong {
+  color: #8dfbe8;
+  font-size: 1rem;
+}
+
+.sea-leaflet-popup-card span,
+.sea-leaflet-popup-card small {
+  color: var(--muted);
+}
+
+.sea-leaflet-popup-card em {
+  width: fit-content;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(255, 203, 114, 0.13);
+  color: #ffdd96;
+  font-style: normal;
+  font-weight: 900;
+}
+
+.sea-map-fallback {
+  display: grid;
+  min-height: inherit;
+  place-items: center;
+  padding: 24px;
+  text-align: center;
+}
+
+.sea-map-fallback strong {
+  display: block;
+  color: var(--text);
+  font-size: 1.2rem;
+}
+
+.sea-map-fallback span {
+  display: block;
+  max-width: 520px;
+  color: var(--muted);
+}
+
 .sea-traffic-density {
   position: absolute;
   z-index: 1;

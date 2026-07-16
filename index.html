@@ -7,7 +7,7 @@
     <meta name="keywords" content="maritime broker tools, chartering software, voyage estimate, laytime calculator, demurrage calculator, port intelligence, bunker index, shipping market news, loadicator, Focusea" />
     <meta name="robots" content="index,follow,max-image-preview:large" />
     <meta name="google-adsense-account" content="ca-pub-8225865281154040" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' https://pagead2.googlesyndication.com https://*.googlesyndication.com https://*.doubleclick.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; connect-src 'self' https: http://127.0.0.1:* http://localhost:*; frame-src https:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; worker-src 'self'; manifest-src 'self'; upgrade-insecure-requests" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' https://unpkg.com https://pagead2.googlesyndication.com https://*.googlesyndication.com https://*.doubleclick.net; style-src 'self' 'unsafe-inline' https://unpkg.com; img-src 'self' data: blob: https:; connect-src 'self' https: http://127.0.0.1:* http://localhost:*; frame-src https:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; worker-src 'self'; manifest-src 'self'; upgrade-insecure-requests" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), serial=()" />
     <meta name="theme-color" content="#061522" />
@@ -26,7 +26,8 @@
     <link rel="icon" href="favicon.svg?v=focusea-badge2" type="image/svg+xml" />
     <link rel="manifest" href="manifest.webmanifest" />
     <script src="theme.js?v=theme-1"></script>
-    <link rel="stylesheet" href="styles.css?v=sea-traffic-terminal-2" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="styles.css?v=leaflet-sea-traffic-1" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -212,7 +213,7 @@
                   <span><i class="legend-risk"></i> Risk / weather</span>
                 </div>
               </div>
-              <div class="sea-world-map" id="seaWorldMap" role="img" aria-label="Simulated global maritime traffic map"></div>
+              <div class="sea-world-map" id="seaWorldMap" role="application" aria-label="Leaflet global maritime traffic map with demo AIS layer"></div>
             </div>
 
             <aside class="sea-control-panel" aria-label="Sea traffic controls">
@@ -4658,7 +4659,8 @@ Subject: Firm offer
     </dialog>
 
     <script src="monetization-config.js?v=monetization-ready-3"></script>
-    <script src="script.js?v=sea-traffic-terminal-2"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js?v=leaflet-sea-traffic-1"></script>
     <script src="monetization.js?v=monetization-ready-3"></script>
   </body>
 </html>

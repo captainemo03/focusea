@@ -1,4 +1,4 @@
-const FOCUSEA_CACHE = "focusea-sea-traffic-terminal-2";
+const FOCUSEA_CACHE = "focusea-leaflet-sea-traffic-1";
 const FOCUSEA_ASSETS = [
   "./",
   "./index.html",

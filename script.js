@@ -4083,6 +4083,7 @@ function activatePage(pageName = "dashboard", updateHash = true) {
   }
   recordMemberLocation(activePage);
   if (activePage === "passport") renderDecisionPassportHistory();
+  if (activePage === "seaTraffic") setTimeout(() => renderSeaTraffic(), 80);
   window.scrollTo({ top: 0, behavior: "auto" });
 }
 
@@ -7098,6 +7099,10 @@ const seaTrafficRoutes = [
   ["LA", 34, -118, "Yokohama", 35, 139]
 ];
 
+let seaLeafletMap = null;
+let seaLeafletLayers = null;
+let seaSelectedVesselId = "";
+
 function seaProject(lat, lon) {
   return {
     x: clamp(((Number(lon) + 180) / 360) * 100, 1, 99),
@@ -7126,49 +7131,162 @@ function filteredSeaTraffic() {
   });
 }
 
-function renderSeaTraffic(selectedId = "") {
+function seaVesselColor(type = "") {
+  const colors = {
+    Container: "#5bffdc",
+    Tanker: "#ffcb72",
+    "Bulk Carrier": "#52a8ff",
+    LNG: "#b9a7ff",
+    "Ro-Ro": "#7dffa5"
+  };
+  return colors[type] || "#d7f7ff";
+}
+
+function initializeSeaLeafletMap() {
   if (!seaWorldMap) return;
-  const layers = activeSeaLayers();
-  const vesselsList = filteredSeaTraffic();
+  if (!window.L) {
+    seaWorldMap.innerHTML = `
+      <div class="sea-map-fallback">
+        <strong>Map engine could not load</strong>
+        <span>Leaflet/OpenStreetMap CDN is blocked or offline. Vessel table and intelligence panels still work.</span>
+      </div>
+    `;
+    return false;
+  }
+  if (seaLeafletMap) return true;
+  seaLeafletMap = window.L.map(seaWorldMap, {
+    worldCopyJump: true,
+    zoomControl: true,
+    attributionControl: true
+  }).setView([18, 24], 2);
+  window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 8,
+    minZoom: 2,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(seaLeafletMap);
+  seaLeafletLayers = {
+    routes: window.L.layerGroup().addTo(seaLeafletMap),
+    ports: window.L.layerGroup().addTo(seaLeafletMap),
+    vessels: window.L.layerGroup().addTo(seaLeafletMap),
+    weather: window.L.layerGroup().addTo(seaLeafletMap),
+    security: window.L.layerGroup().addTo(seaLeafletMap),
+    choke: window.L.layerGroup().addTo(seaLeafletMap)
+  };
+  setTimeout(() => seaLeafletMap.invalidateSize(), 80);
+  return true;
+}
+
+function clearSeaLeafletLayers() {
+  if (!seaLeafletLayers) return;
+  Object.values(seaLeafletLayers).forEach((layer) => layer.clearLayers());
+}
+
+function addSeaLeafletRoutes(layers) {
+  if (!layers.routes || !seaLeafletLayers?.routes) return;
+  seaTrafficRoutes.forEach((route) => {
+    window.L.polyline([[route[1], route[2]], [route[4], route[5]]], {
+      color: "#5bffdc",
+      weight: 2,
+      opacity: 0.58,
+      dashArray: "8 10"
+    }).bindTooltip(`${escapeHtml(route[0])} to ${escapeHtml(route[3])}`).addTo(seaLeafletLayers.routes);
+  });
+}
+
+function addSeaLeafletPorts(layers) {
+  if (!layers.ports || !seaLeafletLayers?.ports) return;
+  seaTrafficPorts.forEach((port) => {
+    window.L.circleMarker([port.lat, port.lon], {
+      radius: 6,
+      color: "#ffcb72",
+      weight: 2,
+      fillColor: "#ffcb72",
+      fillOpacity: 0.86
+    }).bindTooltip(`<strong>${escapeHtml(port.name)}</strong><br>${escapeHtml(port.type)}`).addTo(seaLeafletLayers.ports);
+  });
+}
+
+function addSeaLeafletRisks(layers) {
+  if (!seaLeafletLayers) return;
+  seaTrafficRisks.forEach((risk) => {
+    if (!layers[risk.level]) return;
+    const color = risk.level === "weather" ? "#ffcb72" : "#ff6b9c";
+    window.L.circle([risk.lat, risk.lon], {
+      radius: 650000,
+      color,
+      weight: 1,
+      fillColor: color,
+      fillOpacity: 0.12,
+      opacity: 0.72
+    }).bindTooltip(`${escapeHtml(risk.name)} | ${escapeHtml(risk.level)}`).addTo(seaLeafletLayers[risk.level]);
+  });
+}
+
+function addSeaLeafletChokePoints(layers) {
+  if (!seaLeafletLayers?.choke || (!layers.routes && !layers.ports)) return;
+  seaTrafficChokePoints.forEach((point) => {
+    window.L.circleMarker([point.lat, point.lon], {
+      radius: 4,
+      color: "#ffffff",
+      weight: 1,
+      fillColor: "#6461ff",
+      fillOpacity: 0.8
+    }).bindTooltip(`<strong>${escapeHtml(point.name)}</strong><br>Choke point watch`).addTo(seaLeafletLayers.choke);
+  });
+}
+
+function seaVesselPopup(vessel) {
+  return `
+    <div class="sea-leaflet-popup-card">
+      <strong>${escapeHtml(vessel.name)}</strong>
+      <span>IMO ${escapeHtml(vessel.imo)} / ${escapeHtml(vessel.flag)}</span>
+      <small>${escapeHtml(vessel.type)} | ${vessel.speed.toFixed(1)} kn</small>
+      <small>${escapeHtml(vessel.route)} -> ${escapeHtml(vessel.destination)}</small>
+      <em>${escapeHtml(vessel.risk)}</em>
+    </div>
+  `;
+}
+
+function addSeaLeafletVessels(layers, vesselsList, selectedId) {
+  if (!layers.vessels || !seaLeafletLayers?.vessels) return;
   const tick = Date.now() / 100000;
-  const routes = layers.routes ? seaTrafficRoutes.map((route, index) => {
-    const a = seaProject(route[1], route[2]);
-    const b = seaProject(route[4], route[5]);
-    const width = Math.max(0.8, Math.hypot(b.x - a.x, b.y - a.y));
-    const angle = Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
-    return `<span class="sea-route-line" style="left:${a.x}%;top:${a.y}%;width:${width}%;transform:rotate(${angle}deg)" title="${escapeHtml(route[0])} to ${escapeHtml(route[3])}"></span>`;
-  }).join("") : "";
-  const portsLayer = layers.ports ? seaTrafficPorts.map((port) => {
-    const p = seaProject(port.lat, port.lon);
-    return `<button class="sea-port-marker" style="left:${p.x}%;top:${p.y}%" title="${escapeHtml(port.name)}"><span>${escapeHtml(port.name)}</span></button>`;
-  }).join("") : "";
-  const riskLayer = seaTrafficRisks.filter((risk) => layers[risk.level]).map((risk) => {
-    const p = seaProject(risk.lat, risk.lon);
-    return `<span class="sea-risk-zone ${escapeHtml(risk.level)}" style="left:${p.x}%;top:${p.y}%" title="${escapeHtml(risk.name)}"></span>`;
-  }).join("");
-  const vesselLayer = layers.vessels ? vesselsList.map((vessel, index) => {
+  vesselsList.forEach((vessel, index) => {
     const driftLon = vessel.lon + Math.sin(tick + index) * 1.8;
     const driftLat = vessel.lat + Math.cos(tick + index * 0.7) * 0.6;
-    const p = seaProject(driftLat, driftLon);
-    return `<button class="sea-vessel-marker ${vessel.type.toLowerCase().replace(/\s+/g, "-")} ${vessel.id === selectedId ? "active" : ""}" data-sea-vessel="${escapeHtml(vessel.id)}" style="left:${p.x}%;top:${p.y}%" title="${escapeHtml(vessel.name)}"><span>${escapeHtml(vessel.type[0])}</span></button>`;
-  }).join("") : "";
-  const chokeLayer = seaTrafficChokePoints.map((point) => {
-    const p = seaProject(point.lat, point.lon);
-    return `<span class="sea-choke-label" style="left:${p.x}%;top:${p.y}%">${escapeHtml(point.name)}</span>`;
-  }).join("");
-  seaWorldMap.innerHTML = `
-    <div class="sea-map-ocean-grid"></div>
-    <div class="sea-traffic-density d-malacca"></div>
-    <div class="sea-traffic-density d-suez"></div>
-    <div class="sea-traffic-density d-northsea"></div>
-    <div class="sea-traffic-density d-pacific"></div>
-    <div class="sea-continent c-americas"></div>
-    <div class="sea-continent c-europe"></div>
-    <div class="sea-continent c-africa"></div>
-    <div class="sea-continent c-asia"></div>
-    <div class="sea-continent c-australia"></div>
-    ${routes}${riskLayer}${portsLayer}${chokeLayer}${vesselLayer}
-  `;
+    const selected = vessel.id === selectedId;
+    const color = seaVesselColor(vessel.type);
+    const marker = window.L.circleMarker([driftLat, driftLon], {
+      radius: selected ? 9 : 6,
+      color: selected ? "#ffffff" : color,
+      weight: selected ? 3 : 2,
+      fillColor: color,
+      fillOpacity: selected ? 1 : 0.9
+    }).bindPopup(seaVesselPopup(vessel), { className: "sea-leaflet-popup" });
+    marker.on("click", () => {
+      seaSelectedVesselId = vessel.id;
+      renderSeaTraffic(vessel.id);
+    });
+    marker.addTo(seaLeafletLayers.vessels);
+  });
+}
+
+function renderSeaTraffic(selectedId = seaSelectedVesselId) {
+  if (!seaWorldMap) return;
+  seaSelectedVesselId = selectedId || seaSelectedVesselId;
+  const layers = activeSeaLayers();
+  const vesselsList = filteredSeaTraffic();
+  const selected = seaTrafficVessels.find((vessel) => vessel.id === seaSelectedVesselId) || vesselsList[0] || seaTrafficVessels[0];
+  seaSelectedVesselId = selected?.id || "";
+
+  if (initializeSeaLeafletMap()) {
+    clearSeaLeafletLayers();
+    addSeaLeafletRoutes(layers);
+    addSeaLeafletPorts(layers);
+    addSeaLeafletRisks(layers);
+    addSeaLeafletChokePoints(layers);
+    addSeaLeafletVessels(layers, vesselsList, seaSelectedVesselId);
+    setTimeout(() => seaLeafletMap?.invalidateSize(), 0);
+  }
 
   if (seaTrafficSummary) {
     const byType = vesselsList.reduce((map, vessel) => {
@@ -7180,7 +7298,7 @@ function renderSeaTraffic(selectedId = "") {
         { label: "Visible vessels", value: vesselsList.length },
         { label: "Global AIS", value: "Licensed required" },
         { label: "High-risk watches", value: seaTrafficRisks.length },
-        { label: "Refresh", value: "Simulated 3s" }
+        { label: "Map base", value: "OpenStreetMap" }
       ])}
       <div class="ops-list">${Object.entries(byType).map(([type, count]) => `<div><strong>${escapeHtml(type)}</strong><span>${count} vessel(s) in current filter</span></div>`).join("")}</div>
     `;
@@ -7195,7 +7313,6 @@ function renderSeaTraffic(selectedId = "") {
     ].map(([name, badge, note]) => `<div><strong>${escapeHtml(name)}</strong><em class="source-badge ${badge.includes("licensed") ? "licensed" : badge}">${escapeHtml(badge)}</em><small>${escapeHtml(note)}</small></div>`).join("");
   }
 
-  const selected = seaTrafficVessels.find((vessel) => vessel.id === selectedId) || vesselsList[0] || seaTrafficVessels[0];
   renderSeaVesselDetail(selected?.id);
   renderSeaTrafficTable(vesselsList, selected?.id);
 }
