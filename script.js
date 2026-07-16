@@ -2542,6 +2542,11 @@ const dealScoreExplain = document.querySelector("#dealScoreExplain");
 const saveNavigatorReport = document.querySelector("#saveNavigatorReport");
 const downloadReportHistory = document.querySelector("#downloadReportHistory");
 const reportHistoryResult = document.querySelector("#reportHistoryResult");
+const seaTrafficFilterForm = document.querySelector("#seaTrafficFilterForm");
+const seaWorldMap = document.querySelector("#seaWorldMap");
+const seaTrafficSummary = document.querySelector("#seaTrafficSummary");
+const seaVesselDetail = document.querySelector("#seaVesselDetail");
+const seaTrafficTrust = document.querySelector("#seaTrafficTrust");
 const redFlagForm = document.querySelector("#redFlagForm");
 const redFlagResult = document.querySelector("#redFlagResult");
 const recapBuilderForm = document.querySelector("#recapBuilderForm");
@@ -3288,6 +3293,7 @@ function applyBunkerDefaultsToForms() {
 
 const pageGroups = {
   dashboard: ["#command", ".dashboard-strip", "#productNavigator", "#newsBulletin", "#trustAutopilotCenter", ".ops-board", "#commandDeck", "#smartOps"],
+  seaTraffic: ["#seaTrafficPanel"],
   flagship: ["#flagshipWorkflow"],
   passport: ["#decisionPassportPanel"],
   theater: ["#commandTheaterPanel"],
@@ -6881,6 +6887,7 @@ function handleFlagshipDownload(type) {
 function navigatorSearchItems() {
   return [
     { keywords: ["demurrage", "despatch", "dispatch", "laytime", "sof", "nor"], page: "tools", title: "Laytime / Demurrage tools", action: "Open calculator tools and use the laytime or demurrage page.", link: "demurrage-calculator.html" },
+    { keywords: ["sea traffic", "marine traffic", "ais", "vessel traffic", "gemi trafiği", "gemi trafigi", "ship traffic"], page: "seaTraffic", title: "Global Sea Traffic", action: "Open the AIS-ready world traffic map with vessels, routes, ports, weather and security layers." },
     { keywords: ["fixture", "recap", "offer", "coal", "grain", "tanker", "container", "risk"], page: "flagship", title: "Flagship Workflow", action: "Paste the fixture mail and generate risk, TCE, recap and client output." },
     { keywords: ["broker", "chartering", "mail", "counter", "subjects"], page: "broker", title: "Broker Desk", action: "Use parser, counter email, recap and negotiation tools." },
     { keywords: ["port", "mersin", "rotterdam", "singapore", "draft", "pilotage", "tug"], page: "portsPage", title: "Port Intelligence", action: "Search the port atlas and open port cost / restriction tools." },
@@ -7042,6 +7049,158 @@ function initializeProductNavigator() {
   renderWorkflowTemplate("dryBulk", false);
   renderDealScoreExplainability();
   renderReportHistory();
+}
+
+const seaTrafficVessels = [
+  { id: "ever-globe", name: "MV Ever Globe", imo: "9811001", type: "Container", flag: "Panama", region: "Asia", route: "Shanghai -> Singapore", speed: 18.6, lat: 22, lon: 122, destination: "Singapore", eta: "3 days", risk: "Typhoon watch" },
+  { id: "atlantic-trader", name: "MT Atlantic Trader", imo: "9432207", type: "Tanker", flag: "Marshall Islands", region: "Europe", route: "Rotterdam -> US Gulf", speed: 13.2, lat: 49, lon: -5, destination: "Houston", eta: "11 days", risk: "Low" },
+  { id: "bosphorus-star", name: "MV Bosphorus Star", imo: "9357814", type: "Bulk Carrier", flag: "Liberia", region: "Mediterranean", route: "Constanta -> Egypt", speed: 12.4, lat: 41, lon: 29, destination: "Alexandria", eta: "4 days", risk: "Strait traffic" },
+  { id: "lng-nova", name: "LNG Nova", imo: "9734507", type: "LNG", flag: "Liberia", region: "Middle East", route: "Qatar -> Rotterdam", speed: 19.4, lat: 24, lon: 57, destination: "Rotterdam", eta: "14 days", risk: "Suez watch" },
+  { id: "cape-miner", name: "MV Cape Miner", imo: "9617741", type: "Bulk Carrier", flag: "Singapore", region: "Africa", route: "Richards Bay -> China", speed: 11.8, lat: -31, lon: 33, destination: "Qingdao", eta: "23 days", risk: "Weather routing" },
+  { id: "pacific-rover", name: "MV Pacific Rover", imo: "9485502", type: "Ro-Ro", flag: "Japan", region: "Americas", route: "Los Angeles -> Yokohama", speed: 16.1, lat: 32, lon: -145, destination: "Yokohama", eta: "8 days", risk: "North Pacific swell" },
+  { id: "suez-carrier", name: "MV Suez Carrier", imo: "9584413", type: "Container", flag: "Malta", region: "Mediterranean", route: "Piraeus -> Jeddah", speed: 17.2, lat: 31, lon: 33, destination: "Jeddah", eta: "5 days", risk: "Canal queue" },
+  { id: "indian-bulk", name: "MV Indian Bulk", imo: "9467123", type: "Bulk Carrier", flag: "Hong Kong", region: "Asia", route: "Indonesia -> India", speed: 12.9, lat: 5, lon: 88, destination: "Paradip", eta: "6 days", risk: "Monsoon cells" },
+  { id: "gulf-crude", name: "MT Gulf Crude", imo: "9528304", type: "Tanker", flag: "Bahamas", region: "Middle East", route: "Ras Tanura -> Singapore", speed: 14.1, lat: 18, lon: 65, destination: "Singapore", eta: "7 days", risk: "Hormuz watch" },
+  { id: "north-feeder", name: "MV North Feeder", imo: "9412205", type: "Container", flag: "Denmark", region: "Europe", route: "Hamburg -> Antwerp", speed: 15.4, lat: 54, lon: 5, destination: "Antwerp", eta: "22 hours", risk: "Fog delay" }
+];
+
+const seaTrafficPorts = [
+  { name: "Singapore", lat: 1.3, lon: 103.8, type: "Bunker hub" },
+  { name: "Rotterdam", lat: 51.9, lon: 4.1, type: "Europe gateway" },
+  { name: "Shanghai", lat: 31.2, lon: 121.5, type: "Container hub" },
+  { name: "Istanbul", lat: 41, lon: 29, type: "Strait watch" },
+  { name: "Los Angeles", lat: 33.7, lon: -118.2, type: "US West Coast" },
+  { name: "Suez", lat: 30, lon: 32.5, type: "Canal" }
+];
+
+const seaTrafficRisks = [
+  { name: "GoA security watch", lat: 12, lon: 50, level: "security" },
+  { name: "Bay of Bengal weather", lat: 14, lon: 88, level: "weather" },
+  { name: "North Pacific swell", lat: 38, lon: -160, level: "weather" },
+  { name: "Hormuz transit watch", lat: 26, lon: 56, level: "security" }
+];
+
+const seaTrafficRoutes = [
+  ["Shanghai", 31, 121, "Singapore", 1, 104],
+  ["Rotterdam", 52, 4, "US Gulf", 29, -94],
+  ["Qatar", 25, 52, "Suez", 30, 32],
+  ["Indonesia", -3, 112, "India", 20, 86],
+  ["LA", 34, -118, "Yokohama", 35, 139]
+];
+
+function seaProject(lat, lon) {
+  return {
+    x: clamp(((Number(lon) + 180) / 360) * 100, 1, 99),
+    y: clamp(((85 - Number(lat)) / 170) * 100, 4, 96)
+  };
+}
+
+function activeSeaLayers() {
+  const layers = {};
+  document.querySelectorAll("[data-sea-layer]").forEach((input) => {
+    layers[input.dataset.seaLayer] = input.checked;
+  });
+  return layers;
+}
+
+function filteredSeaTraffic() {
+  const values = seaTrafficFilterForm ? collectFormValues(seaTrafficFilterForm) : {};
+  const query = String(values.trafficQuery || "").toLowerCase();
+  const type = values.trafficType || "All";
+  const region = values.trafficRegion || "All";
+  return seaTrafficVessels.filter((vessel) => {
+    const text = `${vessel.name} ${vessel.imo} ${vessel.route} ${vessel.destination}`.toLowerCase();
+    return (!query || text.includes(query))
+      && (type === "All" || vessel.type === type)
+      && (region === "All" || vessel.region === region);
+  });
+}
+
+function renderSeaTraffic(selectedId = "") {
+  if (!seaWorldMap) return;
+  const layers = activeSeaLayers();
+  const vesselsList = filteredSeaTraffic();
+  const tick = Date.now() / 100000;
+  const routes = layers.routes ? seaTrafficRoutes.map((route, index) => {
+    const a = seaProject(route[1], route[2]);
+    const b = seaProject(route[4], route[5]);
+    const width = Math.max(0.8, Math.hypot(b.x - a.x, b.y - a.y));
+    const angle = Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
+    return `<span class="sea-route-line" style="left:${a.x}%;top:${a.y}%;width:${width}%;transform:rotate(${angle}deg)" title="${escapeHtml(route[0])} to ${escapeHtml(route[3])}"></span>`;
+  }).join("") : "";
+  const portsLayer = layers.ports ? seaTrafficPorts.map((port) => {
+    const p = seaProject(port.lat, port.lon);
+    return `<button class="sea-port-marker" style="left:${p.x}%;top:${p.y}%" title="${escapeHtml(port.name)}"><span>${escapeHtml(port.name)}</span></button>`;
+  }).join("") : "";
+  const riskLayer = seaTrafficRisks.filter((risk) => layers[risk.level]).map((risk) => {
+    const p = seaProject(risk.lat, risk.lon);
+    return `<span class="sea-risk-zone ${escapeHtml(risk.level)}" style="left:${p.x}%;top:${p.y}%" title="${escapeHtml(risk.name)}"></span>`;
+  }).join("");
+  const vesselLayer = layers.vessels ? vesselsList.map((vessel, index) => {
+    const driftLon = vessel.lon + Math.sin(tick + index) * 1.8;
+    const driftLat = vessel.lat + Math.cos(tick + index * 0.7) * 0.6;
+    const p = seaProject(driftLat, driftLon);
+    return `<button class="sea-vessel-marker ${vessel.id === selectedId ? "active" : ""}" data-sea-vessel="${escapeHtml(vessel.id)}" style="left:${p.x}%;top:${p.y}%" title="${escapeHtml(vessel.name)}"><span>${escapeHtml(vessel.type[0])}</span></button>`;
+  }).join("") : "";
+  seaWorldMap.innerHTML = `
+    <div class="sea-map-ocean-grid"></div>
+    <div class="sea-continent c-americas"></div>
+    <div class="sea-continent c-europe"></div>
+    <div class="sea-continent c-africa"></div>
+    <div class="sea-continent c-asia"></div>
+    <div class="sea-continent c-australia"></div>
+    ${routes}${riskLayer}${portsLayer}${vesselLayer}
+  `;
+
+  if (seaTrafficSummary) {
+    const byType = vesselsList.reduce((map, vessel) => {
+      map[vessel.type] = (map[vessel.type] || 0) + 1;
+      return map;
+    }, {});
+    seaTrafficSummary.innerHTML = `
+      ${metricCards([
+        { label: "Visible vessels", value: vesselsList.length },
+        { label: "Global AIS", value: "Licensed required" },
+        { label: "High-risk watches", value: seaTrafficRisks.length },
+        { label: "Refresh", value: "Simulated 3s" }
+      ])}
+      <div class="ops-list">${Object.entries(byType).map(([type, count]) => `<div><strong>${escapeHtml(type)}</strong><span>${count} vessel(s) in current filter</span></div>`).join("")}</div>
+    `;
+  }
+
+  if (seaTrafficTrust) {
+    seaTrafficTrust.innerHTML = [
+      ["AIS vessel positions", "licensed required", "Global live AIS needs a paid provider/API."],
+      ["Demo vessel movement", "simulated", "Current dots are training/demo positions, not live AIS."],
+      ["Ports and routes", "seed data", "Major ports and routes are hand-curated for product demo."],
+      ["Weather/security layer", "api-ready", "Can be connected to weather, piracy/security and route-risk feeds."]
+    ].map(([name, badge, note]) => `<div><strong>${escapeHtml(name)}</strong><em class="source-badge ${badge.includes("licensed") ? "licensed" : badge}">${escapeHtml(badge)}</em><small>${escapeHtml(note)}</small></div>`).join("");
+  }
+
+  const selected = seaTrafficVessels.find((vessel) => vessel.id === selectedId) || vesselsList[0] || seaTrafficVessels[0];
+  renderSeaVesselDetail(selected?.id);
+}
+
+function renderSeaVesselDetail(id = "") {
+  if (!seaVesselDetail) return;
+  const vessel = seaTrafficVessels.find((item) => item.id === id) || filteredSeaTraffic()[0] || seaTrafficVessels[0];
+  if (!vessel) {
+    seaVesselDetail.textContent = "No vessel in current filter.";
+    return;
+  }
+  seaVesselDetail.innerHTML = `
+    <strong>${escapeHtml(vessel.name)}</strong>
+    <span>IMO ${escapeHtml(vessel.imo)} | ${escapeHtml(vessel.flag)}</span>
+    <div class="metric-grid">
+      <article><span>Type</span><strong>${escapeHtml(vessel.type)}</strong></article>
+      <article><span>Speed</span><strong>${vessel.speed.toFixed(1)} kn</strong></article>
+      <article><span>Destination</span><strong>${escapeHtml(vessel.destination)}</strong></article>
+      <article><span>ETA</span><strong>${escapeHtml(vessel.eta)}</strong></article>
+    </div>
+    <p><b>Route:</b> ${escapeHtml(vessel.route)}</p>
+    <p><b>Risk:</b> ${escapeHtml(vessel.risk)}</p>
+    <small>Source label: simulated vessel sample. Connect licensed AIS for real-time global traffic.</small>
+  `;
 }
 
 function renderFrontFixtureAutopilot() {
@@ -19181,6 +19340,17 @@ if (saveNavigatorReport) {
 if (downloadReportHistory) {
   downloadReportHistory.addEventListener("click", () => downloadTextFile("focusea-report-history.txt", navigatorHistoryText()));
 }
+bindBrokerForm(seaTrafficFilterForm, () => renderSeaTraffic());
+document.querySelectorAll("[data-sea-layer]").forEach((input) => {
+  input.addEventListener("change", () => renderSeaTraffic());
+});
+if (seaWorldMap) {
+  seaWorldMap.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-sea-vessel]");
+    if (!button) return;
+    renderSeaTraffic(button.dataset.seaVessel);
+  });
+}
 bindBrokerForm(redFlagForm, renderRedFlagSystem);
 bindBrokerForm(recapBuilderForm, renderRecapBuilder);
 bindBrokerForm(evidencePackForm, renderEvidencePack);
@@ -20046,6 +20216,7 @@ renderDataTrustLayer();
 runAllTrustAutopilot();
 renderFlagshipWorkflow();
 initializeProductNavigator();
+renderSeaTraffic();
 renderBalticFeedPanel();
 renderSecurityShield();
 renderPythonHistory();
@@ -20059,6 +20230,7 @@ renderMemberAuthStatus();
 activatePage(initialPageForSession(), false);
 setInterval(updateLiveFeed, 1000);
 setInterval(refreshBalticLicensedFeed, 1000);
+setInterval(() => renderSeaTraffic(), 3000);
 refreshBalticLicensedFeed();
 loadMaritimeNews();
 normalizeEnglishUi();

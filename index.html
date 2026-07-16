@@ -26,7 +26,7 @@
     <link rel="icon" href="favicon.svg?v=focusea-badge2" type="image/svg+xml" />
     <link rel="manifest" href="manifest.webmanifest" />
     <script src="theme.js?v=theme-1"></script>
-    <link rel="stylesheet" href="styles.css?v=product-navigator-1" />
+    <link rel="stylesheet" href="styles.css?v=sea-traffic-1" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -92,6 +92,7 @@
 
         <nav class="nav-list" data-page-nav>
           <a href="#dashboard" class="active" data-page-link="dashboard">Dashboard</a>
+          <a href="#seaTraffic" data-page-link="seaTraffic">Sea Traffic</a>
           <a href="#flagship" data-page-link="flagship">Flagship Workflow</a>
           <a href="#passport" data-page-link="passport">Deal Passport</a>
           <a href="#theater" data-page-link="theater">Workflow Control</a>
@@ -183,6 +184,57 @@
             <strong data-live="weather">9</strong>
             <small data-live-note="weather">Indian Ocean watch</small>
           </article>
+        </section>
+
+        <section class="sea-traffic-panel" id="seaTrafficPanel" aria-label="Global sea traffic terminal">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Global Sea Traffic</p>
+              <h2>World vessel traffic terminal with AIS-ready layers.</h2>
+              <p>Shows simulated worldwide maritime traffic now. Real global AIS requires a licensed provider such as MarineTraffic, Spire, exactEarth or VesselFinder API.</p>
+            </div>
+            <div class="status-pill">AIS-ready / simulated</div>
+          </div>
+
+          <div class="sea-traffic-grid">
+            <article class="sea-map-card">
+              <div class="mini-heading"><span>World traffic map</span><strong>vessels, routes, ports and risk layers</strong></div>
+              <div class="sea-layer-toolbar" aria-label="Sea traffic layers">
+                <label><input type="checkbox" data-sea-layer="vessels" checked /> Vessels</label>
+                <label><input type="checkbox" data-sea-layer="routes" checked /> Routes</label>
+                <label><input type="checkbox" data-sea-layer="ports" checked /> Ports</label>
+                <label><input type="checkbox" data-sea-layer="weather" checked /> Weather</label>
+                <label><input type="checkbox" data-sea-layer="security" checked /> Security</label>
+              </div>
+              <div class="sea-world-map" id="seaWorldMap" role="img" aria-label="Simulated global maritime traffic map"></div>
+              <div class="sea-map-legend">
+                <span><i class="legend-vessel"></i> Vessel</span>
+                <span><i class="legend-route"></i> Shipping lane</span>
+                <span><i class="legend-port"></i> Port</span>
+                <span><i class="legend-risk"></i> Risk / weather</span>
+              </div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Traffic filters</span><strong>sector and region watch</strong></div>
+              <form class="broker-form single-column" id="seaTrafficFilterForm">
+                <label><span>Search vessel / IMO / route</span><input name="trafficQuery" value="" placeholder="Ever Globe, Singapore, Suez..." /></label>
+                <label><span>Vessel type</span><select name="trafficType"><option value="All">All types</option><option>Container</option><option>Tanker</option><option>Bulk Carrier</option><option>LNG</option><option>Ro-Ro</option></select></label>
+                <label><span>Region</span><select name="trafficRegion"><option value="All">All regions</option><option>Asia</option><option>Europe</option><option>Mediterranean</option><option>Americas</option><option>Middle East</option><option>Africa</option></select></label>
+              </form>
+              <div class="broker-output" id="seaTrafficSummary"></div>
+            </article>
+
+            <article>
+              <div class="mini-heading"><span>Vessel details</span><strong>click any vessel</strong></div>
+              <div class="sea-vessel-detail" id="seaVesselDetail"></div>
+            </article>
+
+            <article class="wide-card">
+              <div class="mini-heading"><span>Live data trust layer</span><strong>what is real and what needs a license</strong></div>
+              <div class="sea-trust-grid" id="seaTrafficTrust"></div>
+            </article>
+          </div>
         </section>
 
         <section class="product-navigator-panel" id="productNavigator" aria-label="Focusea product navigator">
@@ -4597,7 +4649,7 @@ Subject: Firm offer
     </dialog>
 
     <script src="monetization-config.js?v=monetization-ready-3"></script>
-    <script src="script.js?v=product-navigator-1"></script>
+    <script src="script.js?v=sea-traffic-1"></script>
     <script src="monetization.js?v=monetization-ready-3"></script>
   </body>
 </html>

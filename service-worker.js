@@ -1,4 +1,4 @@
-const FOCUSEA_CACHE = "focusea-product-navigator-1";
+const FOCUSEA_CACHE = "focusea-sea-traffic-1";
 const FOCUSEA_ASSETS = [
   "./",
   "./index.html",
