@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Focusea Deal Surgeon is a maritime decision lab for fixture lie detection, deal DNA, what-if analysis, negotiation coaching, CP heatmaps, dispute simulation and port readiness."
+    />
+    <meta name="theme-color" content="#061522" />
+    <title>Focusea Deal Surgeon | Maritime Decision Lab</title>
+    <link rel="icon" href="favicon.svg?v=focusea-badge2" type="image/svg+xml" />
+    <script src="theme.js?v=theme-1"></script>
+    <link rel="stylesheet" href="deal-surgeon.css?v=deal-surgeon-1" />
+  </head>
+  <body>
+    <header class="surgeon-header">
+      <a class="surgeon-brand" href="index.html" aria-label="Focusea main site">
+        <img src="assets/brand/focusea-mark.svg?v=focusea-badge2" alt="Focusea logo" />
+        <span>
+          <strong>Focusea</strong>
+          <small>Deal Surgeon</small>
+        </span>
+      </a>
+      <nav class="surgeon-nav" aria-label="Deal Surgeon tools">
+        <a href="#intake">Intake</a>
+        <a href="#diagnosis">Diagnosis</a>
+        <a href="#battle">Battle</a>
+        <a href="#client">Client</a>
+        <a href="index.html">Main Site</a>
+      </nav>
+      <div class="theme-switcher theme-switcher-compact" role="group" aria-label="Appearance">
+        <button type="button" data-theme-value="dark" aria-pressed="true">Dark</button>
+        <button type="button" data-theme-value="light" aria-pressed="false">Light</button>
+      </div>
+    </header>
+
+    <main class="surgeon-shell">
+      <section class="surgeon-hero">
+        <div>
+          <p class="eyebrow">Maritime Decision Lab</p>
+          <h1>Put a fixture on the table. Focusea cuts out the hidden risk.</h1>
+          <p>
+            Paste any broker mail, recap, SOF note or clause. Deal Surgeon turns it into a lie
+            detector, deal DNA, what-if machine, negotiation coach, CP heatmap, dispute simulator,
+            port mood, cargo trouble forecast, black box and client-ready brief.
+          </p>
+          <div class="hero-actions">
+            <a class="primary-button" href="#intake">Analyze Deal</a>
+            <button class="ghost-button" type="button" id="downloadSurgeonReportTop">Download Report</button>
+          </div>
+        </div>
+        <aside class="surgeon-score-card">
+          <span>Focusea Decision</span>
+          <strong id="surgeonDecision">WATCH</strong>
+          <small id="surgeonDecisionNote">Waiting for live diagnosis</small>
+        </aside>
+      </section>
+
+      <section class="surgeon-status-grid" aria-label="Deal Surgeon status">
+        <article><span>Commercial Pulse</span><strong id="commercialPulse">--</strong><small>TCE / P&L</small></article>
+        <article><span>Legal Heat</span><strong id="legalHeat">--</strong><small>Clause / NOR</small></article>
+        <article><span>Ops Mood</span><strong id="opsMood">--</strong><small>Port / cargo</small></article>
+        <article><span>Claim Pressure</span><strong id="claimPressure">--</strong><small>SOF / time bar</small></article>
+      </section>
+
+      <section class="panel" id="intake">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Paste Anything Engine</p>
+            <h2>Mail, recap, SOF, clause or port note goes in. Decision package comes out.</h2>
+          </div>
+          <span class="source-pill">browser decision model</span>
+        </div>
+        <form class="surgeon-form" id="dealSurgeonForm">
+          <label class="wide-label">
+            <span>Deal text / broker mail / recap</span>
+            <textarea name="dealText">50k coal Indonesia to India laycan 10/15 Jul freight USD 18.50 pmt demurrage USD 18,000/day Supramax. Subjects receiver approval by 1700 LT. NOR WIBON/WIPON, time lost waiting berth to count. Port delay risk 2 days. Commission 2.5 pct.</textarea>
+          </label>
+          <label><span>Cargo</span><select name="cargo"><option>Coal</option><option>Grain</option><option>Iron ore</option><option>Containers</option><option>Crude oil</option><option>LNG</option><option>Chemicals</option><option>Project cargo</option></select></label>
+          <label><span>Load port</span><input name="loadPort" value="Taboneo, Indonesia" /></label>
+          <label><span>Discharge port</span><input name="dischargePort" value="Paradip, India" /></label>
+          <label><span>Freight USD / unit</span><input name="freight" type="number" value="18.5" step="0.1" /></label>
+          <label><span>Quantity</span><input name="quantity" type="number" value="50000" step="100" /></label>
+          <label><span>Bunker USD/mt</span><input name="bunker" type="number" value="635" step="5" /></label>
+          <label><span>Port delay days</span><input name="delay" type="number" value="2" step="0.5" /></label>
+          <label><span>Demurrage USD/day</span><input name="demurrage" type="number" value="18000" step="500" /></label>
+          <label><span>Laycan width days</span><input name="laycan" type="number" value="5" step="1" /></label>
+          <label><span>Counterparty history</span><select name="counterparty"><option>Clean history</option><option>Slow payer</option><option>Frequent claims</option><option>Unknown counterparty</option></select></label>
+          <button type="submit">Run Deal Surgeon</button>
+        </form>
+      </section>
+
+      <section class="panel-grid" id="diagnosis">
+        <article class="panel">
+          <div class="mini-heading"><span>1. Maritime Lie Detector</span><strong>hidden trap scan</strong></div>
+          <div class="surgeon-output" id="lieDetectorResult"></div>
+        </article>
+        <article class="panel">
+          <div class="mini-heading"><span>2. Deal DNA</span><strong>fixture personality</strong></div>
+          <div class="surgeon-output" id="dealDnaResult"></div>
+        </article>
+        <article class="panel">
+          <div class="mini-heading"><span>3. What-If Machine</span><strong>bunker, delay, speed shock</strong></div>
+          <div class="surgeon-output" id="whatIfResult"></div>
+        </article>
+        <article class="panel">
+          <div class="mini-heading"><span>4. Negotiation Coach</span><strong>next counter move</strong></div>
+          <div class="surgeon-output" id="negotiationCoachResult"></div>
+        </article>
+      </section>
+
+      <section class="panel-grid" id="battle">
+        <article class="panel">
+          <div class="mini-heading"><span>5. CP Clause Heatmap</span><strong>risk wording map</strong></div>
+          <div class="surgeon-output" id="cpHeatmapResult"></div>
+        </article>
+        <article class="panel">
+          <div class="mini-heading"><span>6. Dispute Simulator</span><strong>owner vs charterer</strong></div>
+          <div class="surgeon-output" id="disputeSimulatorResult"></div>
+        </article>
+        <article class="panel">
+          <div class="mini-heading"><span>7. Port Mood Index</span><strong>port personality</strong></div>
+          <div class="surgeon-output" id="portMoodResult"></div>
+        </article>
+        <article class="panel">
+          <div class="mini-heading"><span>8. Cargo Trouble Forecast</span><strong>cargo-specific traps</strong></div>
+          <div class="surgeon-output" id="cargoTroubleResult"></div>
+        </article>
+      </section>
+
+      <section class="panel-grid">
+        <article class="panel">
+          <div class="mini-heading"><span>9. Broker Autopilot Timeline</span><strong>offer to invoice</strong></div>
+          <div class="timeline-output" id="timelineResult"></div>
+        </article>
+        <article class="panel">
+          <div class="mini-heading"><span>10. Focusea Black Box</span><strong>audit memory</strong></div>
+          <div class="surgeon-output" id="blackBoxResult"></div>
+        </article>
+        <article class="panel">
+          <div class="mini-heading"><span>11. Maritime Doctor</span><strong>commercial diagnosis</strong></div>
+          <div class="surgeon-output" id="doctorResult"></div>
+        </article>
+        <article class="panel">
+          <div class="mini-heading"><span>12. AI Recap Police</span><strong>missing recap fields</strong></div>
+          <div class="surgeon-output" id="recapPoliceResult"></div>
+        </article>
+      </section>
+
+      <section class="panel-grid" id="client">
+        <article class="panel">
+          <div class="mini-heading"><span>13. Port Entry Readiness</span><strong>arrival gate</strong></div>
+          <div class="surgeon-output" id="portReadinessResult"></div>
+        </article>
+        <article class="panel">
+          <div class="mini-heading"><span>14. Client-Friendly Mode</span><strong>shareable plain-English brief</strong></div>
+          <div class="surgeon-output" id="clientBriefResult"></div>
+        </article>
+        <article class="panel">
+          <div class="mini-heading"><span>15. Maritime Career Mode</span><strong>student score and lesson</strong></div>
+          <div class="surgeon-output" id="careerModeResult"></div>
+        </article>
+        <article class="panel">
+          <div class="mini-heading"><span>Export</span><strong>report package</strong></div>
+          <div class="export-actions">
+            <button type="button" class="ghost-button" id="downloadSurgeonTxt">Download TXT</button>
+            <button type="button" class="ghost-button" id="downloadSurgeonClient">Download Client Brief</button>
+            <button type="button" class="ghost-button" id="copySurgeonBrief">Copy Brief</button>
+          </div>
+          <div class="export-status" id="surgeonExportStatus"></div>
+        </article>
+      </section>
+
+      <footer class="surgeon-footer">
+        <strong>Focusea Deal Surgeon</strong>
+        <span>Educational decision support only. Final fixture, legal, insurance and compliance decisions require professional review.</span>
+      </footer>
+    </main>
+
+    <script src="deal-surgeon.js?v=deal-surgeon-1"></script>
+  </body>
+</html>

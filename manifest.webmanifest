@@ -48,6 +48,11 @@
       "name": "Marine Insurance Desk",
       "short_name": "Insurance",
       "url": "./insurance.html"
+    },
+    {
+      "name": "Deal Surgeon",
+      "short_name": "Surgeon",
+      "url": "./deal-surgeon.html"
     }
   ]
 }

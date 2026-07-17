@@ -1,4 +1,4 @@
-const FOCUSEA_CACHE = "focusea-insurance-side-site-1";
+const FOCUSEA_CACHE = "focusea-deal-surgeon-1";
 const FOCUSEA_ASSETS = [
   "./",
   "./index.html",
@@ -10,6 +10,7 @@ const FOCUSEA_ASSETS = [
   "./monetization.js",
   "./stability.html",
   "./insurance.html",
+  "./deal-surgeon.html",
   "./laytime-calculator.html",
   "./demurrage-calculator.html",
   "./voyage-estimate.html",
@@ -17,8 +18,10 @@ const FOCUSEA_ASSETS = [
   "./maritime-broker-tools.html",
   "./stability.css",
   "./insurance.css",
+  "./deal-surgeon.css",
   "./stability.js",
   "./insurance.js",
+  "./deal-surgeon.js",
   "./stability-loadicator-basic.js",
   "./stability-3d.js",
   "./assets/brand/focusea-mark.svg",
