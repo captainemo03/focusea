@@ -1076,6 +1076,75 @@ main {
 .sea-type-pill.lng { background: rgba(123, 92, 255, 0.16); color: #c7bcff; }
 .sea-type-pill.ro-ro { background: rgba(43, 212, 165, 0.14); color: #b7ffdd; }
 
+.focusea-workbench-panel {
+  padding: clamp(18px, 3vw, 34px);
+  border: 1px solid rgba(40, 240, 198, 0.24);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(40, 240, 198, 0.2), transparent 30%),
+    radial-gradient(circle at 86% 12%, rgba(100, 97, 255, 0.2), transparent 32%),
+    linear-gradient(145deg, rgba(4, 13, 28, 0.96), rgba(7, 10, 30, 0.96));
+  box-shadow: var(--shadow);
+}
+
+.workbench-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+  gap: 14px;
+}
+
+.workbench-grid > article {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid rgba(100, 97, 255, 0.22);
+  border-radius: 8px;
+  background: rgba(8, 14, 35, 0.5);
+}
+
+.workbench-input-card {
+  grid-row: span 2;
+}
+
+.workbench-score-card {
+  background:
+    linear-gradient(135deg, rgba(40, 240, 198, 0.16), rgba(100, 97, 255, 0.1)),
+    rgba(8, 14, 35, 0.58);
+}
+
+.workbench-output-card p,
+.workbench-score-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.workbench-form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.workbench-history-list {
+  display: grid;
+  gap: 9px;
+}
+
+.workbench-history-list div {
+  display: grid;
+  gap: 4px;
+  padding: 10px;
+  border: 1px solid rgba(40, 240, 198, 0.16);
+  border-radius: 8px;
+  background: rgba(2, 13, 18, 0.38);
+}
+
+.workbench-history-list strong,
+.workbench-history-list span,
+.workbench-history-list small {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 .growth-suite-panel {
   padding: clamp(18px, 3vw, 32px);
   border: 1px solid rgba(40, 240, 198, 0.22);
@@ -8059,6 +8128,7 @@ code,
   .top-account-bar,
   .panel-heading,
   .mini-heading,
+  .workbench-grid,
   .enterprise-command-hero,
   .command-deck-hero,
   .trust-command-hero,
@@ -8081,6 +8151,7 @@ code,
   }
 
   .enterprise-command-hero,
+  .workbench-form-row,
   .enterprise-command-grid {
     grid-template-columns: 1fr;
   }

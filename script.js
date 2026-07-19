@@ -3327,6 +3327,7 @@ function applyBunkerDefaultsToForms() {
 
 const pageGroups = {
   dashboard: ["#command", ".dashboard-strip", "#productNavigator", "#newsBulletin", "#trustAutopilotCenter", ".ops-board", "#commandDeck", "#smartOps"],
+  workbench: ["#focuseaWorkbench"],
   seaTraffic: ["#seaTrafficPanel"],
   flagship: ["#flagshipWorkflow"],
   passport: ["#decisionPassportPanel"],
@@ -8681,6 +8682,172 @@ function parsedOfferReport(parsed) {
     "",
     `Missing: ${parsed.missing.length ? parsed.missing.join(", ") : "None"}`
   ].join("\n");
+}
+
+const workbenchHistoryKey = "focusea-workbench-history-v1";
+let lastWorkbenchPack = null;
+
+function workbenchDecisionLabel(score, targetGap) {
+  if (score >= 70 || targetGap < -3000) return "AVOID";
+  if (score >= 45 || targetGap < 0) return "WATCH";
+  return "FIX";
+}
+
+function buildWorkbenchPack(values = {}) {
+  const parsed = parseOfferText(values.fixtureText || "");
+  const risk = scoreParsedOffer(parsed);
+  const targetTce = Number(values.targetTce) || 0;
+  const grossFreight = (parsed.freight || 0) * (parsed.quantity || 0);
+  const commissionCost = grossFreight * ((parsed.commission || 0) / 100);
+  const voyageDays = parsed.laycanDays ? Math.max(8, parsed.laycanDays + 9) : 14;
+  const estimatedCosts = 215000 + voyageDays * 18500 + (parsed.demurrage ? parsed.demurrage * 0.35 : 0);
+  const netPnl = grossFreight - commissionCost - estimatedCosts;
+  const tce = netPnl / Math.max(voyageDays, 1);
+  const targetGap = tce - targetTce;
+  const decision = workbenchDecisionLabel(risk.score, targetGap);
+  const mode = values.deskMode || "fix";
+  const actions = [
+    parsed.missing.length ? `Ask missing terms before recap: ${parsed.missing.join(", ")}.` : "Terms are complete enough for a structured recap draft.",
+    risk.score >= 45 ? "Keep the deal under watch and request cleaner NOR / weather / subjects wording." : "Prepare firm recap and client-friendly summary.",
+    targetGap < 0 ? `TCE is below target by ${money(Math.abs(targetGap))}/day; counter freight or reduce exposure.` : `TCE clears target by ${money(targetGap)}/day; protect commission and subjects deadline.`,
+    parsed.demurrage ? `Demurrage exposure model uses ${money(parsed.demurrage)}/day.` : "Insert demurrage rate before lifting subjects.",
+    mode === "claim" ? "Attach SOF, NOR, rain log, completion time and invoice evidence to the claim pack." : "Save this pack to Deal Room and monitor subject deadline."
+  ];
+  const clientBrief = [
+    `${parsed.cargoLabel} ${parsed.route || "route TBC"} / ${parsed.quantity ? parsed.quantity.toLocaleString("en-US") : "quantity TBC"} ${parsed.unit}.`,
+    `Commercial status: ${decision}. Estimated TCE ${money(tce)}/day versus target ${money(targetTce)}/day.`,
+    `Main risks: ${risk.factors.slice(0, 3).join(" ")}`
+  ].join(" ");
+  const reportText = [
+    "FOCUSEA WORKBENCH ACTION PACK",
+    `Generated: ${new Date().toLocaleString()}`,
+    `Decision: ${decision}`,
+    `Risk: ${risk.label} (${risk.score}/100)`,
+    `Cargo: ${parsed.cargoLabel}`,
+    `Route: ${parsed.route || "-"}`,
+    `Quantity: ${parsed.quantity ? parsed.quantity.toLocaleString("en-US") : "-"} ${parsed.unit}`,
+    `Freight: ${parsed.freight ? money(parsed.freight, 2) : "-"} / ${parsed.unit}`,
+    `Demurrage: ${parsed.demurrage ? money(parsed.demurrage) : "-"} / day`,
+    `Estimated TCE: ${money(tce)} / day`,
+    `Target gap: ${money(targetGap)} / day`,
+    "",
+    "Actions:",
+    ...actions.map((item) => `- ${item}`),
+    "",
+    "Client brief:",
+    clientBrief,
+    "",
+    "Risk factors:",
+    ...risk.factors.map((item) => `- ${item}`)
+  ].join("\n");
+  return { parsed, risk, targetTce, grossFreight, commissionCost, estimatedCosts, netPnl, tce, targetGap, decision, mode, actions, clientBrief, reportText, savedAt: new Date().toLocaleString() };
+}
+
+function renderWorkbenchHistory() {
+  const historyTarget = document.querySelector("#workbenchReportHistory");
+  if (!historyTarget) return;
+  const history = safeLocalGet(workbenchHistoryKey, []);
+  historyTarget.innerHTML = `
+    <div class="mini-heading"><span>Report history</span><strong>${history.length} saved pack(s)</strong></div>
+    <div class="workbench-history-list">
+      ${history.slice(0, 5).map((item) => `
+        <div>
+          <strong>${escapeHtml(item.decision)} / ${escapeHtml(item.cargo || "Cargo TBC")}</strong>
+          <span>${escapeHtml(item.route || "Route TBC")}</span>
+          <small>${escapeHtml(item.savedAt || "")}</small>
+        </div>
+      `).join("") || "<small>No saved Workbench packs yet.</small>"}
+    </div>
+  `;
+}
+
+function renderWorkbenchAdsStatus() {
+  const target = document.querySelector("#workbenchAdStatus");
+  if (!target) return;
+  const adStatus = window.FocuseaAdvertising?.getStatus?.();
+  const enabled = adStatus?.enabled === true || window.FOCUSEA_MONETIZATION?.enabled === true;
+  target.innerHTML = `
+    <div class="mini-heading"><span>Monetization</span><strong>${enabled ? "AdSense enabled" : "Advertising inactive"}</strong></div>
+    ${metricCards([
+      { label: "Publisher", value: window.FOCUSEA_MONETIZATION?.publisherId ? "valid" : "missing" },
+      { label: "CMP", value: window.FOCUSEA_MONETIZATION?.certifiedCmpReady ? "ready" : "needed" },
+      { label: "Ad script", value: adStatus?.adScriptState || "checking" }
+    ])}
+    <small>Ads never change broker calculations, risk scores or editorial output.</small>
+  `;
+}
+
+function renderWorkbenchTrust(pack) {
+  const target = document.querySelector("#workbenchTrust");
+  if (!target) return;
+  target.innerHTML = `
+    <div class="mini-heading"><span>Trust layer</span><strong>source and confidence</strong></div>
+    <div class="data-source-grid compact">
+      <article><span class="source-chip input">User input</span><strong>Fixture text</strong><small>Parsed from pasted broker message.</small></article>
+      <article><span class="source-chip simulated">Model estimate</span><strong>TCE / cost</strong><small>Educational commercial estimate until backend data is connected.</small></article>
+      <article><span class="source-chip api-ready">API-ready</span><strong>Market and AIS</strong><small>Can be upgraded with licensed bunker, Baltic, AIS and port data.</small></article>
+    </div>
+    <div class="trust-meter"><span style="width:${pack ? clamp(100 - pack.risk.score, 18, 92) : 45}%"></span></div>
+  `;
+}
+
+function renderWorkbench(event) {
+  event?.preventDefault();
+  const form = document.querySelector("#workbenchForm");
+  const scoreTarget = document.querySelector("#workbenchScore");
+  const riskTarget = document.querySelector("#workbenchRisk");
+  const actionsTarget = document.querySelector("#workbenchActions");
+  const clientTarget = document.querySelector("#workbenchClientBrief");
+  if (!form || !scoreTarget || !riskTarget || !actionsTarget || !clientTarget) return;
+  lastWorkbenchPack = buildWorkbenchPack(collectFormValues(form));
+  const pack = lastWorkbenchPack;
+  scoreTarget.innerHTML = `
+    <div class="mini-heading"><span>Decision</span><strong>${escapeHtml(pack.decision)}</strong></div>
+    ${metricCards([
+      { label: "Risk", value: `${pack.risk.score}/100` },
+      { label: "TCE", value: `${money(pack.tce)}/day` },
+      { label: "Target gap", value: `${money(pack.targetGap)}/day` },
+      { label: "Net P&L", value: money(pack.netPnl) }
+    ])}
+    <div class="trust-meter"><span style="width:${clamp(100 - pack.risk.score, 5, 100)}%"></span></div>
+  `;
+  riskTarget.innerHTML = `
+    <div class="mini-heading"><span>Risk radar</span><strong>${escapeHtml(pack.risk.label)} risk</strong></div>
+    <ul class="compact-list">${pack.risk.factors.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+  `;
+  actionsTarget.innerHTML = `
+    <div class="mini-heading"><span>Next actions</span><strong>broker checklist</strong></div>
+    <ul class="compact-list">${pack.actions.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+  `;
+  clientTarget.innerHTML = `
+    <div class="mini-heading"><span>Client brief</span><strong>ready to send</strong></div>
+    <p>${escapeHtml(pack.clientBrief)}</p>
+  `;
+  renderWorkbenchHistory();
+  renderWorkbenchAdsStatus();
+  renderWorkbenchTrust(pack);
+}
+
+function saveWorkbenchDeal() {
+  if (!lastWorkbenchPack) renderWorkbench();
+  if (!lastWorkbenchPack) return;
+  const history = safeLocalGet(workbenchHistoryKey, []);
+  const entry = {
+    savedAt: new Date().toLocaleString(),
+    decision: lastWorkbenchPack.decision,
+    cargo: lastWorkbenchPack.parsed.cargoLabel,
+    route: lastWorkbenchPack.parsed.route,
+    risk: lastWorkbenchPack.risk.score,
+    tce: Math.round(lastWorkbenchPack.tce),
+    reportText: lastWorkbenchPack.reportText
+  };
+  safeLocalSet(workbenchHistoryKey, [entry, ...history].slice(0, 25));
+  renderWorkbenchHistory();
+}
+
+function downloadWorkbenchReport() {
+  if (!lastWorkbenchPack) renderWorkbench();
+  downloadPdfFile("focusea-workbench-action-pack.pdf", "Focusea Workbench Action Pack", lastWorkbenchPack?.reportText || "No Workbench report generated.");
 }
 
 function renderParsedOfferOutput(element, parsed, title = "Parsed offer") {
@@ -20244,6 +20411,10 @@ bindBrokerForm(growthInboxForm, renderGrowthInbox);
 bindBrokerForm(growthPortCostForm, renderGrowthPortCost);
 bindBrokerForm(growthCargoForm, renderGrowthCargo);
 bindBrokerForm(growthDocumentForm, renderGrowthDocumentAi);
+bindBrokerForm(document.querySelector("#workbenchForm"), renderWorkbench);
+document.querySelector("#workbenchSaveDeal")?.addEventListener("click", saveWorkbenchDeal);
+document.querySelector("#workbenchDownloadReport")?.addEventListener("click", downloadWorkbenchReport);
+window.addEventListener("focusea:ads-status", renderWorkbenchAdsStatus);
 if (growthPushDeal) {
   growthPushDeal.addEventListener("click", saveGrowthDeal);
 }
@@ -21339,6 +21510,7 @@ renderFlagshipWorkflow();
 initializeProductNavigator();
 renderSeaTraffic();
 setSeaProviderStatus("Demo AIS shown. Real global live traffic requires a licensed AIS provider/API.", "simulated");
+renderWorkbench();
 renderGrowthSuite();
 renderInsuranceDesk();
 renderBalticFeedPanel();

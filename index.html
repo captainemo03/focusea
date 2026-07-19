@@ -27,7 +27,7 @@
     <link rel="manifest" href="manifest.webmanifest" />
     <script src="theme.js?v=theme-1"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="styles.css?v=insurance-quote-complete-1" />
+    <link rel="stylesheet" href="styles.css?v=workbench-os-1" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -93,6 +93,7 @@
 
         <nav class="nav-list" data-page-nav>
           <a href="#dashboard" class="active" data-page-link="dashboard">Dashboard</a>
+          <a href="#workbench" data-page-link="workbench">Focusea Workbench</a>
           <a href="#seaTraffic" data-page-link="seaTraffic">Live Sea Traffic</a>
           <a href="#flagship" data-page-link="flagship">Flagship Workflow</a>
           <a href="#passport" data-page-link="passport">Deal Passport</a>
@@ -162,6 +163,7 @@
           <div class="hero-actions">
             <button type="button" class="ghost-button" data-command-presentation>Demo Flow</button>
             <a href="#passport" class="primary-button" data-page-link="passport">Open Deal Passport</a>
+            <a href="#workbench" class="ghost-button" data-page-link="workbench">Open Workbench</a>
             <a href="#flagship" class="ghost-button" data-page-link="flagship">Open Flagship Workflow</a>
             <a href="#broker" class="ghost-button" data-page-link="broker">Open Broker Desk</a>
             <a href="#accountPage" class="ghost-button" data-page-link="accountPage">Sign Up / Log In</a>
@@ -328,6 +330,49 @@
               </div>
               <div class="report-history-grid" id="reportHistoryResult"></div>
             </article>
+          </div>
+        </section>
+
+        <section class="focusea-workbench-panel" id="focuseaWorkbench" aria-label="Focusea Workbench">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Focusea Workbench</p>
+              <h2>Paste one fixture and turn it into a broker action pack.</h2>
+              <p>
+                Inbox parser, deal score, risk radar, client brief, document checklist, report export
+                and monetization status run from one focused operating screen.
+              </p>
+            </div>
+            <div class="status-pill">One-screen OS</div>
+          </div>
+
+          <div class="workbench-grid">
+            <article class="workbench-input-card">
+              <div class="mini-heading"><span>Input</span><strong>Fixture / SOF / recap text</strong></div>
+              <form class="broker-form single-column" id="workbenchForm">
+                <label>
+                  <span>Paste broker message</span>
+                  <textarea name="fixtureText">50k coal Indonesia to India laycan 10/15 July freight USD 18.50 pmt demurrage USD 18,000/day Supramax. 2.5 pct total commission. Subjects receiver approval by 1700 LT. NOR WIBON WIPON and time lost waiting for berth to count as laytime.</textarea>
+                </label>
+                <div class="workbench-form-row">
+                  <label><span>Desk mode</span><select name="deskMode"><option value="fix">Fix / Watch / Avoid</option><option value="claim">Claim review</option><option value="client">Client brief</option><option value="training">Training mode</option></select></label>
+                  <label><span>Target TCE / day</span><input name="targetTce" type="number" value="22000" min="0" step="500" /></label>
+                </div>
+                <div class="button-row">
+                  <button type="submit">Run Workbench</button>
+                  <button type="button" class="ghost-button small" id="workbenchSaveDeal">Save Deal</button>
+                  <button type="button" class="ghost-button small" id="workbenchDownloadReport">Download Report</button>
+                </div>
+              </form>
+            </article>
+
+            <article class="workbench-score-card" id="workbenchScore"></article>
+            <article class="workbench-output-card" id="workbenchRisk"></article>
+            <article class="workbench-output-card" id="workbenchActions"></article>
+            <article class="workbench-output-card" id="workbenchClientBrief"></article>
+            <article class="workbench-output-card" id="workbenchReportHistory"></article>
+            <article class="workbench-output-card" id="workbenchAdStatus"></article>
+            <article class="workbench-output-card" id="workbenchTrust"></article>
           </div>
         </section>
 
@@ -4972,7 +5017,7 @@ Subject: Firm offer
 
     <script src="monetization-config.js?v=monetization-live-1"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="script.js?v=insurance-quote-complete-1"></script>
-    <script src="monetization.js?v=monetization-live-1"></script>
+    <script src="script.js?v=workbench-os-1"></script>
+    <script src="monetization.js?v=workbench-os-1"></script>
   </body>
 </html>

@@ -28,6 +28,15 @@
     if (publisherElement) publisherElement.textContent = validPublisher ? "Publisher ID valid" : "Publisher ID required";
     if (cmpElement) cmpElement.textContent = cmpReady ? "Certified CMP marked ready" : "Google-certified CMP required";
     if (requestElement) requestElement.textContent = adScriptState;
+    window.dispatchEvent(new CustomEvent("focusea:ads-status", {
+      detail: {
+        enabled: config.enabled === true,
+        publisherIdValid: validPublisher,
+        certifiedCmpReady: cmpReady,
+        previewMode,
+        adScriptState
+      }
+    }));
   }
 
   function placementLabel(name) {
