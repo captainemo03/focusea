@@ -27,7 +27,7 @@
     <link rel="manifest" href="manifest.webmanifest" />
     <script src="theme.js?v=theme-1"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="styles.css?v=control-tower-1" />
+    <link rel="stylesheet" href="styles.css?v=front-news-rail-1" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -170,6 +170,35 @@
             <a href="#broker" class="ghost-button" data-page-link="broker">Open Broker Desk</a>
             <a href="#accountPage" class="ghost-button" data-page-link="accountPage">Sign Up / Log In</a>
           </div>
+        </section>
+
+        <section class="news-panel front-news-rail" id="newsBulletin">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Front Page Live Maritime News</p>
+              <h2>Scrollable maritime breaking news bulletin</h2>
+            </div>
+            <div class="news-actions">
+              <button class="ghost-button small" id="newsRailPrev" type="button" aria-label="Scroll news left">‹</button>
+              <button class="ghost-button small" id="newsRailNext" type="button" aria-label="Scroll news right">›</button>
+              <button class="ghost-button small" id="refreshNews" type="button">Refresh</button>
+            </div>
+          </div>
+          <div class="news-toolbar">
+            <button class="active" data-news-query="maritime shipping">All</button>
+            <button data-news-query="shipping container market">Container</button>
+            <button data-news-query="tanker shipping market">Tanker</button>
+            <button data-news-query="dry bulk chartering freight market">Dry Bulk</button>
+            <button data-news-query="ship bunker fuel prices VLSFO">Bunker</button>
+            <button data-news-query="ship charter rates freight market">Charter</button>
+            <button data-news-query="port congestion shipping">Ports</button>
+            <button data-news-query="maritime safety incident">Safety</button>
+          </div>
+          <div class="news-status" id="newsStatus">Loading real maritime news sources...</div>
+          <div class="news-rail-shell" aria-label="Scrollable maritime news">
+            <div class="news-grid news-rail" id="newsGrid"></div>
+          </div>
+          <aside class="ad-placement ad-placement-horizontal" data-ad-placement="news" aria-label="Advertisement" hidden></aside>
         </section>
 
         <section class="dashboard-strip" aria-label="Maritime indicators">
@@ -584,29 +613,6 @@
               <small>Keep active until DNS, HTTPS and Search Console are verified for the custom domain.</small>
             </article>
           </div>
-        </section>
-
-        <section class="news-panel" id="newsBulletin">
-          <div class="panel-heading">
-            <div>
-              <p class="eyebrow">Front Page Live Maritime News</p>
-              <h2>Maritime breaking news bulletin</h2>
-            </div>
-            <button class="ghost-button small" id="refreshNews" type="button">Refresh</button>
-          </div>
-          <div class="news-toolbar">
-            <button class="active" data-news-query="maritime shipping">All</button>
-            <button data-news-query="shipping container market">Container</button>
-            <button data-news-query="tanker shipping market">Tanker</button>
-            <button data-news-query="dry bulk chartering freight market">Dry Bulk</button>
-            <button data-news-query="ship bunker fuel prices VLSFO">Bunker</button>
-            <button data-news-query="ship charter rates freight market">Charter</button>
-            <button data-news-query="port congestion shipping">Ports</button>
-            <button data-news-query="maritime safety incident">Safety</button>
-          </div>
-          <div class="news-status" id="newsStatus">Loading real maritime news sources...</div>
-          <div class="news-grid" id="newsGrid"></div>
-          <aside class="ad-placement ad-placement-horizontal" data-ad-placement="news" aria-label="Advertisement" hidden></aside>
         </section>
 
         <section class="trust-autopilot-panel" id="trustAutopilotCenter">
@@ -5050,7 +5056,7 @@ Subject: Firm offer
 
     <script src="monetization-config.js?v=monetization-live-1"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="script.js?v=control-tower-1"></script>
+    <script src="script.js?v=front-news-rail-1"></script>
     <script src="monetization.js?v=control-tower-1"></script>
   </body>
 </html>

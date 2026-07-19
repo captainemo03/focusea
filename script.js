@@ -2383,6 +2383,8 @@ const downloadCv = document.querySelector("#downloadCv");
 const newsGrid = document.querySelector("#newsGrid");
 const newsStatus = document.querySelector("#newsStatus");
 const refreshNews = document.querySelector("#refreshNews");
+const newsRailPrev = document.querySelector("#newsRailPrev");
+const newsRailNext = document.querySelector("#newsRailNext");
 const smartSearchForm = document.querySelector("#smartSearchForm");
 const smartSearchInput = document.querySelector("#smartSearchInput");
 const smartSearchResults = document.querySelector("#smartSearchResults");
@@ -20253,6 +20255,14 @@ function renderNews(items, query, meta = {}) {
   newsStatus.textContent = `${sourceLabel} · "${query}" · ${items.length} gerçek haber · son kontrol ${new Date().toLocaleTimeString()}`;
 }
 
+function scrollFrontNewsRail(direction) {
+  const railShell = newsGrid?.closest(".news-rail-shell");
+  if (!railShell) return;
+  const card = newsGrid.querySelector(".news-card");
+  const distance = card ? card.getBoundingClientRect().width + 14 : Math.max(280, railShell.clientWidth * 0.82);
+  railShell.scrollBy({ left: direction * distance, behavior: "smooth" });
+}
+
 async function loadMaritimeNews(query = activeNewsQuery) {
   if (!newsGrid || !newsStatus) return;
   activeNewsQuery = query;
@@ -21538,6 +21548,14 @@ document.querySelectorAll("[data-news-query]").forEach((button) => {
 
 if (refreshNews) {
   refreshNews.addEventListener("click", () => loadMaritimeNews(activeNewsQuery));
+}
+
+if (newsRailPrev) {
+  newsRailPrev.addEventListener("click", () => scrollFrontNewsRail(-1));
+}
+
+if (newsRailNext) {
+  newsRailNext.addEventListener("click", () => scrollFrontNewsRail(1));
 }
 
 if (globalPortSearchForm) {
