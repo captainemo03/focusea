@@ -115,8 +115,32 @@
     }
   }
 
+  function handleExistingAdSenseScript(script) {
+    adScriptState = "Google ad code detected";
+    script.addEventListener("load", () => {
+      script.dataset.focuseaLoaded = "true";
+      adScriptState = autoAdsEnabled ? "Google Auto Ads code loaded" : "Google ad code loaded";
+      renderManualPlacements();
+      updateStatus();
+    }, { once: true });
+    script.addEventListener("error", () => {
+      adScriptState = "blocked or unavailable";
+      updateStatus();
+    }, { once: true });
+    if (script.dataset.focuseaLoaded === "true") {
+      adScriptState = autoAdsEnabled ? "Google Auto Ads code present" : "Google ad code present";
+      renderManualPlacements();
+    }
+    updateStatus();
+  }
+
   function loadAdSense() {
-    if (!monetizationReady || document.querySelector("script[data-focusea-adsense]")) return;
+    if (!monetizationReady) return;
+    const existingScript = document.querySelector("script[data-focusea-adsense]");
+    if (existingScript) {
+      handleExistingAdSenseScript(existingScript);
+      return;
+    }
     adScriptState = "loading";
     updateStatus();
     const script = document.createElement("script");
@@ -125,6 +149,7 @@
     script.dataset.focuseaAdsense = "true";
     script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${encodeURIComponent(config.publisherId)}`;
     script.addEventListener("load", () => {
+      script.dataset.focuseaLoaded = "true";
       adScriptState = autoAdsEnabled ? "Google Auto Ads code loaded" : "Google ad code loaded";
       renderManualPlacements();
       updateStatus();

@@ -1,4 +1,4 @@
-const FOCUSEA_CACHE = "focusea-radar-brand-2";
+const FOCUSEA_CACHE = "focusea-adsense-readiness-1";
 const FOCUSEA_ASSETS = [
   "./",
   "./index.html",
@@ -16,6 +16,11 @@ const FOCUSEA_ASSETS = [
   "./voyage-estimate.html",
   "./port-intelligence.html",
   "./maritime-broker-tools.html",
+  "./privacy-policy.html",
+  "./terms-of-use.html",
+  "./advertising-policy.html",
+  "./about.html",
+  "./contact.html",
   "./stability.css",
   "./insurance.css",
   "./deal-surgeon.css",
