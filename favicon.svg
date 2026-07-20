@@ -1,27 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Focusea">
   <defs>
-    <linearGradient id="bg" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#082235"/>
-      <stop offset=".55" stop-color="#061522"/>
-      <stop offset="1" stop-color="#0b102b"/>
+    <linearGradient id="shell" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#062a3a"/>
+      <stop offset=".55" stop-color="#041724"/>
+      <stop offset="1" stop-color="#050a19"/>
     </linearGradient>
-    <linearGradient id="mark" x1="20" y1="15" x2="45" y2="49" gradientUnits="userSpaceOnUse">
+    <linearGradient id="mono" x1="19" y1="14" x2="45" y2="49" gradientUnits="userSpaceOnUse">
       <stop stop-color="#ffffff"/>
-      <stop offset=".55" stop-color="#c9fff8"/>
-      <stop offset="1" stop-color="#3ff0dc"/>
+      <stop offset=".45" stop-color="#d8fff9"/>
+      <stop offset="1" stop-color="#47f3df"/>
     </linearGradient>
-    <linearGradient id="ocean" x1="10" y1="42" x2="54" y2="50" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#4ffff0"/>
-      <stop offset=".55" stop-color="#20c8ff"/>
-      <stop offset="1" stop-color="#6f63ff"/>
+    <linearGradient id="route" x1="12" y1="47" x2="54" y2="28" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#54ffe8"/>
+      <stop offset=".5" stop-color="#26d8ff"/>
+      <stop offset="1" stop-color="#7070ff"/>
     </linearGradient>
   </defs>
   <rect width="64" height="64" rx="15" fill="#030817"/>
-  <rect x="4" y="4" width="56" height="56" rx="12" fill="url(#bg)"/>
-  <circle cx="32" cy="32" r="22" fill="none" stroke="#4ffff0" stroke-width="1.5" opacity=".45"/>
-  <path d="M32 32l19-11" fill="none" stroke="#4ffff0" stroke-linecap="round" stroke-width="2.4"/>
-  <path d="M21 17h22M21 17v29M21 30h16" fill="none" stroke="#02101d" stroke-linecap="round" stroke-linejoin="round" stroke-width="8" opacity=".6"/>
-  <path d="M21 16h22M21 16v30M21 29h16" fill="none" stroke="url(#mark)" stroke-linecap="round" stroke-linejoin="round" stroke-width="5.2"/>
-  <path d="M39 29h9l-4-4M48 29l-4 4" fill="none" stroke="#4ffff0" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
-  <path d="M10 45c8-5 15-5 22-1 7 4 14 4 22-1" fill="none" stroke="url(#ocean)" stroke-linecap="round" stroke-width="3.5"/>
+  <rect x="4" y="4" width="56" height="56" rx="12" fill="url(#shell)"/>
+  <circle cx="32" cy="32" r="22" fill="none" stroke="#54ffe8" stroke-width="1.5" opacity=".44"/>
+  <circle cx="32" cy="32" r="11" fill="none" stroke="#7070ff" stroke-width="1.2" opacity=".42"/>
+  <path d="M32 32l20-12" fill="none" stroke="#54ffe8" stroke-linecap="round" stroke-width="2.4"/>
+  <path d="M20 16h23M20 16v31M20 30h17" fill="none" stroke="#02111f" stroke-linecap="round" stroke-linejoin="round" stroke-width="8" opacity=".68"/>
+  <path d="M20 15h23M20 15v32M20 29h17" fill="none" stroke="url(#mono)" stroke-linecap="round" stroke-linejoin="round" stroke-width="5.4"/>
+  <path d="M39 29h10l-4-4M49 29l-4 4" fill="none" stroke="#54ffe8" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+  <path d="M10 48c8-6 15-7 23-3 8 4 15 1 21-8" fill="none" stroke="url(#route)" stroke-linecap="round" stroke-width="3.6"/>
 </svg>

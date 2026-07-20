@@ -1,59 +1,63 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
-  <title id="title">Focusea horizon radar logo</title>
-  <desc id="desc">A modern maritime technology mark combining a focused F monogram, radar sweep, horizon line and route arrow.</desc>
+  <title id="title">Focusea radar route logo</title>
+  <desc id="desc">A maritime technology logo with an F route monogram, radar rings and a focused navigation sweep.</desc>
   <defs>
-    <linearGradient id="bg" x1="31" y1="25" x2="220" y2="228" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#082235"/>
-      <stop offset=".48" stop-color="#061522"/>
-      <stop offset="1" stop-color="#0b102b"/>
+    <linearGradient id="shell" x1="37" y1="25" x2="219" y2="232" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#062a3a"/>
+      <stop offset=".52" stop-color="#041724"/>
+      <stop offset="1" stop-color="#050a19"/>
     </linearGradient>
-    <linearGradient id="ocean" x1="47" y1="155" x2="211" y2="192" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#4ffff0"/>
-      <stop offset=".52" stop-color="#20c8ff"/>
-      <stop offset="1" stop-color="#6f63ff"/>
+    <linearGradient id="route" x1="61" y1="184" x2="202" y2="82" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#54ffe8"/>
+      <stop offset=".48" stop-color="#26d8ff"/>
+      <stop offset="1" stop-color="#7070ff"/>
     </linearGradient>
-    <linearGradient id="mark" x1="78" y1="58" x2="169" y2="183" gradientUnits="userSpaceOnUse">
+    <linearGradient id="mono" x1="75" y1="63" x2="177" y2="186" gradientUnits="userSpaceOnUse">
       <stop stop-color="#ffffff"/>
-      <stop offset=".5" stop-color="#c9fff8"/>
-      <stop offset="1" stop-color="#3ff0dc"/>
+      <stop offset=".38" stop-color="#d8fff9"/>
+      <stop offset="1" stop-color="#47f3df"/>
     </linearGradient>
-    <linearGradient id="sweep" x1="128" y1="128" x2="218" y2="74" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#4ffff0" stop-opacity=".95"/>
-      <stop offset="1" stop-color="#6f63ff" stop-opacity=".05"/>
-    </linearGradient>
-    <filter id="softShadow" x="-22%" y="-22%" width="144%" height="144%" color-interpolation-filters="sRGB">
-      <feDropShadow dx="0" dy="18" stdDeviation="14" flood-color="#010611" flood-opacity=".55"/>
+    <radialGradient id="pulse" cx="0" cy="0" r="1" gradientTransform="matrix(86 0 0 86 127 128)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#54ffe8" stop-opacity=".55"/>
+      <stop offset=".42" stop-color="#26d8ff" stop-opacity=".18"/>
+      <stop offset="1" stop-color="#54ffe8" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="18" stdDeviation="14" flood-color="#000716" flood-opacity=".58"/>
     </filter>
-    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB">
+    <filter id="glow" x="-35%" y="-35%" width="170%" height="170%" color-interpolation-filters="sRGB">
       <feGaussianBlur stdDeviation="5"/>
     </filter>
   </defs>
 
-  <rect width="256" height="256" rx="58" fill="#030817"/>
-  <rect x="13" y="13" width="230" height="230" rx="48" fill="url(#bg)"/>
-  <path d="M39 166c28-16 52-17 76-3 26 15 51 15 78 0 12-7 21-9 30-7" fill="none" stroke="url(#ocean)" stroke-linecap="round" stroke-width="10"/>
-  <path d="M42 190h172" fill="none" stroke="#b8fff5" stroke-linecap="round" stroke-width="3" opacity=".28"/>
+  <rect width="256" height="256" rx="54" fill="#030817"/>
+  <rect x="14" y="14" width="228" height="228" rx="44" fill="url(#shell)"/>
+  <circle cx="127" cy="128" r="86" fill="url(#pulse)"/>
 
-  <g opacity=".48">
-    <circle cx="128" cy="128" r="93" fill="none" stroke="#4ffff0" stroke-width="2"/>
-    <circle cx="128" cy="128" r="63" fill="none" stroke="#6f63ff" stroke-width="2"/>
-    <circle cx="128" cy="128" r="29" fill="none" stroke="#b8fff5" stroke-width="2" opacity=".7"/>
-    <path d="M128 35v24M128 197v24M35 128h24M197 128h24" fill="none" stroke="#b8fff5" stroke-linecap="round" stroke-width="4"/>
+  <g opacity=".5">
+    <circle cx="127" cy="128" r="91" fill="none" stroke="#54ffe8" stroke-width="2"/>
+    <circle cx="127" cy="128" r="61" fill="none" stroke="#6d74ff" stroke-width="2"/>
+    <circle cx="127" cy="128" r="26" fill="none" stroke="#c9fff8" stroke-width="2"/>
+    <path d="M127 36v20M127 200v20M35 128h20M200 128h20" fill="none" stroke="#bffff7" stroke-linecap="round" stroke-width="4"/>
   </g>
 
-  <path d="M128 128l86-52c-11 42-36 76-86 52Z" fill="url(#sweep)" opacity=".22"/>
-  <path d="M128 128l75-45" fill="none" stroke="#4ffff0" stroke-linecap="round" stroke-width="4"/>
-  <circle cx="128" cy="128" r="7" fill="#4ffff0"/>
+  <path d="M127 128l82-48c-11 40-35 72-82 48Z" fill="#54ffe8" opacity=".13"/>
+  <path d="M127 128l80-48" fill="none" stroke="#54ffe8" stroke-linecap="round" stroke-width="4"/>
+  <circle cx="127" cy="128" r="7" fill="#54ffe8"/>
 
-  <g filter="url(#glow)" opacity=".35">
-    <path d="M80 72h87M80 72v112M80 119h62" fill="none" stroke="#4ffff0" stroke-linecap="round" stroke-linejoin="round" stroke-width="22"/>
+  <g filter="url(#glow)" opacity=".36">
+    <path d="M77 72h89M77 72v114M77 119h64" fill="none" stroke="#54ffe8" stroke-linecap="round" stroke-linejoin="round" stroke-width="22"/>
   </g>
 
-  <g filter="url(#softShadow)">
-    <path d="M82 72h86M82 72v109M82 119h61" fill="none" stroke="#02101d" stroke-linecap="round" stroke-linejoin="round" stroke-width="27" opacity=".62"/>
-    <path d="M82 70h86M82 70v111M82 118h61" fill="none" stroke="url(#mark)" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"/>
-    <path d="M150 118h31l-14-13M181 118l-14 13" fill="none" stroke="#4ffff0" stroke-linecap="round" stroke-linejoin="round" stroke-width="9"/>
-    <path d="M51 166c27-16 51-17 75-3 25 15 50 15 76 0" fill="none" stroke="#02101d" stroke-linecap="round" stroke-width="17" opacity=".7"/>
-    <path d="M51 166c27-16 51-17 75-3 25 15 50 15 76 0" fill="none" stroke="url(#ocean)" stroke-linecap="round" stroke-width="9"/>
+  <g filter="url(#shadow)">
+    <path d="M79 73h88M79 73v111M79 120h64" fill="none" stroke="#02111f" stroke-linecap="round" stroke-linejoin="round" stroke-width="28" opacity=".68"/>
+    <path d="M79 71h88M79 71v113M79 119h64" fill="none" stroke="url(#mono)" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"/>
+    <path d="M145 119h37l-16-15M182 119l-16 15" fill="none" stroke="#54ffe8" stroke-linecap="round" stroke-linejoin="round" stroke-width="9"/>
   </g>
+
+  <path d="M55 181c23-18 47-22 74-10 31 14 57 5 82-28" fill="none" stroke="#000716" stroke-linecap="round" stroke-width="15" opacity=".58"/>
+  <path d="M55 181c23-18 47-22 74-10 31 14 57 5 82-28" fill="none" stroke="url(#route)" stroke-linecap="round" stroke-width="8"/>
+  <circle cx="55" cy="181" r="7" fill="#54ffe8"/>
+  <circle cx="129" cy="171" r="6" fill="#26d8ff"/>
+  <circle cx="211" cy="143" r="7" fill="#7070ff"/>
 </svg>

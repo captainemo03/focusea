@@ -1,22 +1,24 @@
 ﻿:root {
   color-scheme: dark;
-  --bg: #09091f;
-  --panel: #171546;
-  --panel-strong: #24206b;
-  --line: rgba(138, 134, 255, 0.22);
+  --bg: #03101d;
+  --panel: #071b2a;
+  --panel-strong: #0b2b3c;
+  --line: rgba(84, 255, 232, 0.18);
   --text: #f4f5ff;
-  --muted: #b9b8e6;
-  --accent: #6461ff;
-  --accent-2: #a291ff;
+  --muted: #a7c4d2;
+  --accent: #54ffe8;
+  --accent-2: #2bd7ff;
   --danger: #ff6b9c;
-  --shadow: 0 24px 72px rgba(5, 5, 24, 0.44);
-  --surface: rgba(18, 16, 62, 0.72);
+  --shadow: 0 24px 72px rgba(0, 7, 18, 0.48);
+  --surface: rgba(7, 27, 42, 0.74);
   --surface-soft: rgba(255, 255, 255, 0.045);
-  --surface-inset: rgba(2, 13, 18, 0.32);
+  --surface-inset: rgba(0, 12, 23, 0.44);
   --text-soft: #d8edf1;
-  --cyan: #6fffe3;
-  --cyan-strong: #28f0c6;
-  --control-bg: rgba(2, 13, 18, 0.32);
+  --cyan: #54ffe8;
+  --cyan-strong: #22dccb;
+  --control-bg: rgba(0, 14, 28, 0.48);
+  --route-blue: #2bd7ff;
+  --deep-violet: #7070ff;
 }
 
 * {
@@ -33,9 +35,12 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   background:
-    radial-gradient(circle at 78% 6%, rgba(100, 97, 255, 0.26), transparent 31%),
-    radial-gradient(circle at 14% 18%, rgba(162, 145, 255, 0.16), transparent 28%),
-    linear-gradient(135deg, #070719 0%, #12113d 52%, #080820 100%);
+    radial-gradient(circle at 82% 4%, rgba(84, 255, 232, 0.18), transparent 28%),
+    radial-gradient(circle at 14% 18%, rgba(43, 215, 255, 0.13), transparent 28%),
+    linear-gradient(rgba(84, 255, 232, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(84, 255, 232, 0.028) 1px, transparent 1px),
+    linear-gradient(135deg, #020712 0%, #031525 48%, #050a1a 100%);
+  background-size: auto, auto, 78px 78px, 78px 78px, auto;
   color: var(--text);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
@@ -74,8 +79,8 @@ a {
   padding: 28px 22px;
   border-right: 1px solid var(--line);
   background:
-    radial-gradient(circle at 50% 0%, rgba(100, 97, 255, 0.22), transparent 34%),
-    rgba(8, 8, 31, 0.86);
+    radial-gradient(circle at 50% -4%, rgba(84, 255, 232, 0.16), transparent 34%),
+    linear-gradient(180deg, rgba(6, 32, 47, 0.9), rgba(3, 10, 24, 0.94));
   backdrop-filter: blur(18px);
 }
 
@@ -98,12 +103,14 @@ a {
   width: 132px;
   height: 132px;
   place-items: center;
-  border: 0;
+  border: 1px solid rgba(84, 255, 232, 0.22);
   border-radius: 999px;
-  background: transparent;
+  background:
+    radial-gradient(circle, rgba(84, 255, 232, 0.13), transparent 62%),
+    linear-gradient(135deg, rgba(84, 255, 232, 0.08), rgba(112, 112, 255, 0.08));
   box-shadow:
-    0 24px 58px rgba(5, 6, 28, 0.42),
-    0 0 44px rgba(40, 240, 198, 0.12);
+    0 24px 58px rgba(0, 7, 18, 0.5),
+    0 0 52px rgba(84, 255, 232, 0.16);
 }
 
 .brand-mark img {
@@ -112,8 +119,8 @@ a {
   height: 132px;
   object-fit: contain;
   filter:
-    drop-shadow(0 18px 28px rgba(5, 7, 24, 0.5))
-    drop-shadow(0 0 18px rgba(40, 240, 198, 0.18));
+    drop-shadow(0 18px 28px rgba(0, 7, 18, 0.56))
+    drop-shadow(0 0 18px rgba(84, 255, 232, 0.2));
 }
 
 .brand-name {
@@ -125,8 +132,8 @@ a {
   text-align: center;
   text-transform: uppercase;
   text-shadow:
-    0 0 20px rgba(40, 240, 198, 0.18),
-    0 10px 26px rgba(100, 97, 255, 0.24);
+    0 0 20px rgba(84, 255, 232, 0.2),
+    0 10px 26px rgba(43, 215, 255, 0.18);
 }
 
 .brand strong,
@@ -149,7 +156,7 @@ a {
   overflow-y: auto;
   overscroll-behavior: contain;
   padding-right: 4px;
-  scrollbar-color: rgba(100, 97, 255, 0.74) rgba(18, 16, 62, 0.4);
+  scrollbar-color: rgba(84, 255, 232, 0.58) rgba(0, 18, 32, 0.56);
   scrollbar-width: thin;
 }
 
@@ -158,12 +165,12 @@ a {
 }
 
 .nav-list::-webkit-scrollbar-track {
-  background: rgba(18, 16, 62, 0.4);
+  background: rgba(0, 18, 32, 0.56);
   border-radius: 999px;
 }
 
 .nav-list::-webkit-scrollbar-thumb {
-  background: rgba(100, 97, 255, 0.74);
+  background: rgba(84, 255, 232, 0.58);
   border-radius: 999px;
 }
 
@@ -205,7 +212,7 @@ a {
 .news-panel,
 .dashboard-strip article {
   border: 1px solid var(--line);
-  background: rgba(18, 16, 62, 0.72);
+  background: rgba(7, 27, 42, 0.74);
   box-shadow: var(--shadow);
 }
 
@@ -220,9 +227,11 @@ a {
 
 .nav-list a.active,
 .nav-list a:hover {
-  border-color: rgba(100, 97, 255, 0.5);
+  border-color: rgba(84, 255, 232, 0.48);
   color: var(--text);
-  background: rgba(100, 97, 255, 0.1);
+  background:
+    linear-gradient(135deg, rgba(84, 255, 232, 0.12), rgba(43, 215, 255, 0.08)),
+    rgba(255, 255, 255, 0.04);
 }
 
 .nav-list a.side-site-link {
@@ -430,7 +439,7 @@ main {
   position: relative;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #06131d;
+  background: #03101d;
   box-shadow: var(--shadow);
 }
 
@@ -439,10 +448,10 @@ main {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, rgba(4, 12, 22, 0.96) 0%, rgba(4, 12, 22, 0.82) 34%, rgba(4, 12, 22, 0.38) 68%, rgba(4, 12, 22, 0.18) 100%),
-    linear-gradient(180deg, rgba(4, 12, 22, 0.12), rgba(4, 12, 22, 0.72)),
+    linear-gradient(90deg, rgba(2, 8, 18, 0.97) 0%, rgba(3, 18, 31, 0.86) 36%, rgba(3, 18, 31, 0.4) 70%, rgba(3, 18, 31, 0.16) 100%),
+    linear-gradient(180deg, rgba(4, 12, 22, 0.06), rgba(2, 8, 18, 0.78)),
     url("assets/hero/focusea-command-hero.png") center right / cover no-repeat;
-  filter: saturate(1.08) contrast(1.03);
+  filter: saturate(1.12) contrast(1.05);
   transform: scale(1.01);
 }
 
@@ -453,11 +462,12 @@ main {
   pointer-events: none;
   opacity: 0.58;
   background:
-    radial-gradient(circle at 82% 48%, rgba(40, 240, 198, 0.26), transparent 20%),
-    radial-gradient(circle at 62% 100%, rgba(100, 97, 255, 0.18), transparent 26%),
-    linear-gradient(rgba(162, 145, 255, 0.13) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(162, 145, 255, 0.1) 1px, transparent 1px);
-  background-size: auto, auto, 72px 72px, 72px 72px;
+    radial-gradient(circle at 82% 48%, rgba(84, 255, 232, 0.28), transparent 20%),
+    radial-gradient(circle at 64% 100%, rgba(43, 215, 255, 0.16), transparent 26%),
+    repeating-radial-gradient(circle at 80% 48%, rgba(84, 255, 232, 0.2) 0 1px, transparent 1px 54px),
+    linear-gradient(rgba(84, 255, 232, 0.11) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(84, 255, 232, 0.09) 1px, transparent 1px);
+  background-size: auto, auto, auto, 72px 72px, 72px 72px;
   mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.42) 34%, #000 100%);
 }
 
