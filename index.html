@@ -27,7 +27,7 @@
     <link rel="manifest" href="manifest.webmanifest" />
     <script src="theme.js?v=theme-1"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="styles.css?v=case-room-1" />
+    <link rel="stylesheet" href="styles.css?v=student-business-1" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -113,6 +113,8 @@
           <a href="#superSuite" data-page-link="superSuite">Super Suite</a>
           <a href="#growthSuite" data-page-link="growthSuite">Broker Growth Suite</a>
           <a href="#insuranceDesk" data-page-link="insuranceDesk">Marine Insurance Desk</a>
+          <a href="#studentCenter" data-page-link="studentCenter">Student Center</a>
+          <a href="#businessCenter" data-page-link="businessCenter">Business Center</a>
           <a href="#caseRoom" data-page-link="caseRoom">Maritime Case Room</a>
           <a href="#enterprise" data-page-link="enterprise">Enterprise Command</a>
           <a href="#pythonEngine" data-page-link="pythonEngine">Python Engine</a>
@@ -4950,6 +4952,108 @@ Subject: Firm offer
                 </div>
               <div class="broker-output" id="insuranceExportStatus"></div>
             </article>
+          </div>
+        </section>
+
+        <section class="student-center-panel" id="studentCenterPanel" aria-labelledby="studentCenterTitle">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Student Center</p>
+              <h2 id="studentCenterTitle">Exam, certificate, progress and interview prep in one maritime study room.</h2>
+              <p>
+                Student Center keeps learning separate from business tools. Choose a subject, answer a case-based
+                question, get an adaptive study plan and download a Focusea certificate-style PDF.
+              </p>
+            </div>
+            <span class="source-pill">education mode</span>
+          </div>
+
+          <form class="split-center-form" id="studentCenterForm">
+            <label><span>Exam mode</span><select name="studentTopic"><option value="colreg">COLREG</option><option value="stability">Stability</option><option value="chartering">Chartering</option><option value="laytime">Laytime</option><option value="cargo">Cargo</option><option value="insurance">Insurance</option><option value="portOps">Port Ops</option></select></label>
+            <label><span>Level</span><select name="studentLevel"><option value="cadet">Cadet</option><option value="broker">Broker trainee</option><option value="officer">Officer</option><option value="advanced">Advanced</option></select></label>
+            <label><span>Last weak area</span><select name="studentWeakArea"><option value="stability">Stability / GM-GZ</option><option value="laytime">Laytime / demurrage</option><option value="colreg">COLREG decisions</option><option value="cargo">Cargo documents</option><option value="insurance">Insurance claims</option><option value="ports">Port operations</option></select></label>
+            <button type="submit">Generate Study Pack</button>
+          </form>
+
+          <div class="split-center-layout">
+            <article>
+              <div class="mini-heading"><span>Adaptive Question</span><strong>case-based exam mode</strong></div>
+              <div class="split-card-list" id="studentQuestionResult"></div>
+            </article>
+            <article>
+              <div class="mini-heading"><span>Progress Tracker</span><strong>topic score map</strong></div>
+              <div class="split-score-grid" id="studentProgressResult"></div>
+            </article>
+            <article>
+              <div class="mini-heading"><span>Study Plan</span><strong>what to revise next</strong></div>
+              <div class="split-card-list" id="studentPlanResult"></div>
+            </article>
+            <article>
+              <div class="mini-heading"><span>Interview Prep</span><strong>role-specific questions</strong></div>
+              <div class="split-card-list" id="studentInterviewResult"></div>
+            </article>
+          </div>
+
+          <div class="split-center-actions">
+            <button type="button" class="ghost-button small" id="downloadStudentCertificate">Download Certificate PDF</button>
+            <button type="button" class="ghost-button small" id="downloadStudentStudyPlan">Download Study Plan TXT</button>
+            <div class="broker-output" id="studentExportStatus"></div>
+          </div>
+        </section>
+
+        <section class="business-center-panel" id="businessCenterPanel" aria-labelledby="businessCenterTitle">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Business Center</p>
+              <h2 id="businessCenterTitle">Client portal, cost control, tender desk, port agent marketplace and maritime AI search.</h2>
+              <p>
+                Business Center is the commercial side of Focusea. Build a client-facing status pack, compare tender
+                offers, watch voyage costs, prepare port agency cards and search the right Focusea tool from one command.
+              </p>
+            </div>
+            <span class="source-pill">business mode</span>
+          </div>
+
+          <form class="split-center-form" id="businessCenterForm">
+            <label><span>Fixture / project</span><input name="businessProject" value="50k coal Indonesia to India" /></label>
+            <label><span>Client</span><input name="businessClient" value="Focusea Chartering Client" /></label>
+            <label><span>Budget USD</span><input name="businessBudget" type="number" value="920000" min="0" step="10000" /></label>
+            <label><span>Estimated cost USD</span><input name="businessCost" type="number" value="845000" min="0" step="10000" /></label>
+            <label><span>Tender offer A USD</span><input name="tenderA" type="number" value="18.5" min="0" step="0.1" /></label>
+            <label><span>Tender offer B USD</span><input name="tenderB" type="number" value="18.1" min="0" step="0.1" /></label>
+            <label><span>Port agent city</span><select name="agentPort"><option>Singapore</option><option>Mersin</option><option>Rotterdam</option><option>Hamburg</option><option>Antwerp</option><option>Piraeus</option></select></label>
+            <label><span>AI search</span><input name="businessSearch" value="coal laytime demurrage risk" /></label>
+            <button type="submit">Run Business Pack</button>
+          </form>
+
+          <div class="split-center-layout">
+            <article>
+              <div class="mini-heading"><span>Client Portal</span><strong>shareable status pack</strong></div>
+              <div class="split-card-list" id="businessClientPortalResult"></div>
+            </article>
+            <article>
+              <div class="mini-heading"><span>Cost Control</span><strong>budget vs actual</strong></div>
+              <div class="split-score-grid" id="businessCostResult"></div>
+            </article>
+            <article>
+              <div class="mini-heading"><span>Tender Desk</span><strong>RFQ comparison</strong></div>
+              <div class="split-card-list" id="businessTenderResult"></div>
+            </article>
+            <article>
+              <div class="mini-heading"><span>Port Agent Marketplace</span><strong>PDA and contact card</strong></div>
+              <div class="split-card-list" id="businessAgentResult"></div>
+            </article>
+          </div>
+
+          <div class="business-search-panel">
+            <div class="mini-heading"><span>Maritime AI Search</span><strong>one command opens the right workflow</strong></div>
+            <div class="split-card-list" id="businessSearchResult"></div>
+          </div>
+
+          <div class="split-center-actions">
+            <button type="button" class="ghost-button small" id="downloadBusinessClientPack">Download Client Portal PDF</button>
+            <button type="button" class="ghost-button small" id="downloadBusinessTenderPack">Download Tender Pack TXT</button>
+            <div class="broker-output" id="businessExportStatus"></div>
           </div>
         </section>
 

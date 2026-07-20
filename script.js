@@ -2776,6 +2776,23 @@ const academicMappingResult = document.querySelector("#academicMappingResult");
 const academicExportStatus = document.querySelector("#academicExportStatus");
 const downloadAcademicPack = document.querySelector("#downloadAcademicPack");
 const copyAcademicCitations = document.querySelector("#copyAcademicCitations");
+const studentCenterForm = document.querySelector("#studentCenterForm");
+const studentQuestionResult = document.querySelector("#studentQuestionResult");
+const studentProgressResult = document.querySelector("#studentProgressResult");
+const studentPlanResult = document.querySelector("#studentPlanResult");
+const studentInterviewResult = document.querySelector("#studentInterviewResult");
+const downloadStudentCertificate = document.querySelector("#downloadStudentCertificate");
+const downloadStudentStudyPlan = document.querySelector("#downloadStudentStudyPlan");
+const studentExportStatus = document.querySelector("#studentExportStatus");
+const businessCenterForm = document.querySelector("#businessCenterForm");
+const businessClientPortalResult = document.querySelector("#businessClientPortalResult");
+const businessCostResult = document.querySelector("#businessCostResult");
+const businessTenderResult = document.querySelector("#businessTenderResult");
+const businessAgentResult = document.querySelector("#businessAgentResult");
+const businessSearchResult = document.querySelector("#businessSearchResult");
+const downloadBusinessClientPack = document.querySelector("#downloadBusinessClientPack");
+const downloadBusinessTenderPack = document.querySelector("#downloadBusinessTenderPack");
+const businessExportStatus = document.querySelector("#businessExportStatus");
 const caseRoomForm = document.querySelector("#caseRoomForm");
 const caseRoomBrief = document.querySelector("#caseRoomBrief");
 const caseRootCause = document.querySelector("#caseRootCause");
@@ -3551,6 +3568,8 @@ const pageGroups = {
   superSuite: ["#superSuitePanel"],
   growthSuite: ["#growthSuitePanel"],
   insuranceDesk: ["#insuranceDeskPanel"],
+  studentCenter: ["#studentCenterPanel"],
+  businessCenter: ["#businessCenterPanel"],
   caseRoom: ["#caseRoomPanel"],
   enterprise: ["#enterpriseCommandPanel"],
   pythonEngine: ["#pythonEngineSuite"],
@@ -20791,12 +20810,42 @@ if (growthDownloadReport) {
 }
 bindBrokerForm(insuranceQuoteForm, renderInsuranceDesk);
 bindBrokerForm(academicIntelForm, renderAcademicIntel);
+bindBrokerForm(studentCenterForm, renderStudentCenter);
+bindBrokerForm(businessCenterForm, renderBusinessCenter);
 bindBrokerForm(caseRoomForm, renderCaseRoom);
 if (downloadAcademicPack) {
   downloadAcademicPack.addEventListener("click", () => {
     if (!lastAcademicPack) renderAcademicIntel();
     downloadTextFile("focusea-academic-study-pack.txt", lastAcademicPack || "No academic pack generated.");
     if (academicExportStatus) academicExportStatus.textContent = "Academic study pack downloaded.";
+  });
+}
+if (downloadStudentCertificate) {
+  downloadStudentCertificate.addEventListener("click", () => {
+    if (!window.focuseaStudentCenterReport) renderStudentCenter();
+    downloadPdfFile("focusea-maritime-knowledge-certificate.pdf", "Focusea Maritime Knowledge Certificate", window.focuseaStudentCenterReport || "No certificate generated.");
+    if (studentExportStatus) studentExportStatus.innerHTML = `<small class="download-confirm">Certificate PDF downloaded.</small>`;
+  });
+}
+if (downloadStudentStudyPlan) {
+  downloadStudentStudyPlan.addEventListener("click", () => {
+    if (!window.focuseaStudentCenterReport) renderStudentCenter();
+    downloadTextFile("focusea-student-study-plan.txt", window.focuseaStudentCenterReport || "No study plan generated.");
+    if (studentExportStatus) studentExportStatus.innerHTML = `<small class="download-confirm">Study plan downloaded.</small>`;
+  });
+}
+if (downloadBusinessClientPack) {
+  downloadBusinessClientPack.addEventListener("click", () => {
+    if (!window.focuseaBusinessCenterReport) renderBusinessCenter();
+    downloadPdfFile("focusea-client-portal-business-pack.pdf", "Focusea Client Portal Business Pack", window.focuseaBusinessCenterReport || "No business pack generated.");
+    if (businessExportStatus) businessExportStatus.innerHTML = `<small class="download-confirm">Client portal PDF downloaded.</small>`;
+  });
+}
+if (downloadBusinessTenderPack) {
+  downloadBusinessTenderPack.addEventListener("click", () => {
+    if (!window.focuseaBusinessCenterReport) renderBusinessCenter();
+    downloadTextFile("focusea-business-tender-pack.txt", window.focuseaBusinessCenterReport || "No tender pack generated.");
+    if (businessExportStatus) businessExportStatus.innerHTML = `<small class="download-confirm">Tender pack downloaded.</small>`;
   });
 }
 if (downloadCaseBrief) {
@@ -21580,6 +21629,182 @@ function renderAcademicIntel() {
   }
 }
 
+const studentQuestionBank = {
+  colreg: {
+    title: "COLREG crossing situation",
+    question: "A power-driven vessel is crossing from your starboard side with risk of collision. What is your role?",
+    answer: "You are generally the give-way vessel and should take early, substantial action.",
+    interview: ["Explain stand-on vs give-way vessel.", "What does early and substantial action mean?", "How would you use radar/ARPA to confirm risk?"]
+  },
+  stability: {
+    title: "GM / GZ stability case",
+    question: "A vessel has low corrected GM after loading high-KG cargo and slack ballast tanks. What should be checked first?",
+    answer: "Check free surface correction, KG, ballast condition, GZ curve and loading distribution before sailing.",
+    interview: ["What is corrected GM?", "Why can slack tanks reduce stability?", "How do GM and GZ curve differ?"]
+  },
+  chartering: {
+    title: "Fixture recap risk",
+    question: "A recap states freight and laycan but misses NOR wording and demurrage time bar. What is the risk?",
+    answer: "The deal can become exposed to laytime and claim disputes because key timing and evidence terms are unclear.",
+    interview: ["What must a recap include?", "What does on subjects mean?", "How do you protect commission wording?"]
+  },
+  laytime: {
+    title: "Laytime and demurrage",
+    question: "NOR is tendered before free pratique and the CP is silent. What should you verify?",
+    answer: "Verify NOR validity, free pratique requirement, WIPON/WIBON wording, exceptions and SOF event timing.",
+    interview: ["When does laytime start?", "What stops laytime?", "What documents support demurrage?"]
+  },
+  cargo: {
+    title: "Cargo document risk",
+    question: "Coal is loaded after rain and moisture documents are weak. What is the operational concern?",
+    answer: "Moisture, self-heating, liquefaction-style behavior, cargo declaration and hatch evidence must be reviewed.",
+    interview: ["What is TML?", "Why does hold cleanliness matter?", "What is clean on board?"]
+  },
+  insurance: {
+    title: "Marine insurance claim",
+    question: "Cargo damage occurs but photos and survey timing are incomplete. What is the claim problem?",
+    answer: "Evidence quality is weak, making causation, policy response, subrogation and carrier liability harder to prove.",
+    interview: ["What is deductible?", "What is general average?", "What is subrogation?"]
+  },
+  portOps: {
+    title: "Port call delay",
+    question: "Pilotage is delayed and the vessel misses laycan. Which records matter?",
+    answer: "Agent messages, pilot/tug schedule, line-up, ETA updates, NOR, SOF and cancellation wording matter.",
+    interview: ["What is PDA?", "What is free pratique?", "How can port congestion affect TCE?"]
+  }
+};
+
+function studentTopicLabel(topic = "stability") {
+  return {
+    colreg: "COLREG",
+    stability: "Stability",
+    chartering: "Chartering",
+    laytime: "Laytime",
+    cargo: "Cargo",
+    insurance: "Insurance",
+    portOps: "Port Ops"
+  }[topic] || "Maritime";
+}
+
+function renderStudentCenter() {
+  if (!studentCenterForm || !studentQuestionResult) return;
+  const values = collectFormValues(studentCenterForm);
+  const pack = studentQuestionBank[values.studentTopic] || studentQuestionBank.stability;
+  const weak = studentTopicLabel(values.studentWeakArea);
+  const base = { cadet: 62, broker: 70, officer: 76, advanced: 84 }[values.studentLevel] || 70;
+  const scores = [
+    ["Selected topic", clamp(base + 8, 0, 100)],
+    ["Weak area", clamp(base - 18, 0, 100)],
+    ["Case reasoning", clamp(base + 2, 0, 100)],
+    ["Interview ready", clamp(base - 5, 0, 100)]
+  ];
+  const nextPlan = [
+    `Revise ${weak} first because the adaptive quiz marks it as the weakest area.`,
+    `Answer one Case Room scenario and write the root cause in 3 lines.`,
+    `Open the glossary and study 5 terms connected to ${weak}.`,
+    "Download the certificate after explaining one case without notes."
+  ];
+  const interviews = pack.interview;
+
+  studentQuestionResult.innerHTML = `
+    <div><span>${escapeHtml(pack.title)}</span><strong>${escapeHtml(pack.question)}</strong><p>Model answer: ${escapeHtml(pack.answer)}</p></div>
+    <div><span>Adaptive rule</span><strong>Next question will focus on ${escapeHtml(weak)}.</strong><p>The weaker the topic, the more case-based questions Focusea should show.</p></div>
+  `;
+  studentProgressResult.innerHTML = scores.map(([label, score]) => `<div><span>${escapeHtml(label)}</span><strong>${score}/100</strong><em style="width:${score}%"></em></div>`).join("");
+  studentPlanResult.innerHTML = nextPlan.map((item, index) => `<div><span>Step ${index + 1}</span><strong>${escapeHtml(item)}</strong></div>`).join("");
+  studentInterviewResult.innerHTML = interviews.map((item, index) => `<div><span>Question ${index + 1}</span><strong>${escapeHtml(item)}</strong></div>`).join("");
+
+  window.focuseaStudentCenterReport = [
+    "FOCUSEA MARITIME KNOWLEDGE CERTIFICATE",
+    `Topic: ${studentTopicLabel(values.studentTopic)}`,
+    `Level: ${values.studentLevel}`,
+    `Adaptive weak area: ${weak}`,
+    `Score: ${scores[0][1]}/100`,
+    "",
+    "Case question",
+    pack.question,
+    "",
+    "Model answer",
+    pack.answer,
+    "",
+    "Study plan",
+    ...nextPlan.map((item) => `- ${item}`),
+    "",
+    "Interview prep",
+    ...interviews.map((item) => `- ${item}`),
+    "",
+    "Certificate note",
+    "This certificate-style PDF is educational and generated by Focusea for study tracking."
+  ].join("\n");
+}
+
+function businessSearchTargets(query = "") {
+  const text = String(query).toLowerCase();
+  return [
+    /laytime|demurrage|sof/.test(text) && ["Laytime / Demurrage", "Open SOF Analyzer, Laytime Calculator and Demurrage Calculator."],
+    /coal|cargo|stability|load/.test(text) && ["Cargo + Stability", "Open Cargo Compatibility, Loadicator and Case Room cargo risk."],
+    /insurance|claim|damage/.test(text) && ["Insurance / Claim", "Open Marine Insurance Desk and Claim Evidence Checklist."],
+    /port|agent|pda|pilot/.test(text) && ["Port Agency", "Open Port Intelligence Pro and Port Agent Marketplace."],
+    /tender|rfq|freight|rate/.test(text) && ["Tender Desk", "Open RFQ comparison and Voyage Estimate Pro."]
+  ].filter(Boolean);
+}
+
+function renderBusinessCenter() {
+  if (!businessCenterForm || !businessClientPortalResult) return;
+  const values = collectFormValues(businessCenterForm);
+  const budget = Number(values.businessBudget) || 0;
+  const cost = Number(values.businessCost) || 0;
+  const margin = budget - cost;
+  const used = budget ? clamp(Math.round((cost / budget) * 100), 0, 140) : 0;
+  const offerA = Number(values.tenderA) || 0;
+  const offerB = Number(values.tenderB) || 0;
+  const better = offerA <= offerB ? "Tender A is cheaper" : "Tender B is cheaper";
+  const targets = businessSearchTargets(values.businessSearch);
+  const portalStatus = margin >= 0 ? "On budget" : "Over budget";
+
+  businessClientPortalResult.innerHTML = `
+    <div><span>Client</span><strong>${escapeHtml(values.businessClient || "Client")}</strong><p>Project: ${escapeHtml(values.businessProject || "Fixture")}</p></div>
+    <div><span>Status</span><strong>${escapeHtml(portalStatus)}</strong><p>Budget margin: ${money(margin)}</p></div>
+    <div><span>Shareable pack</span><strong>ETA, P&L, claim status, risk summary and downloadable PDF.</strong></div>
+  `;
+  businessCostResult.innerHTML = [
+    ["Budget", money(budget), 100],
+    ["Estimated cost", money(cost), used],
+    ["Margin", money(margin), margin >= 0 ? 72 : 96]
+  ].map(([label, value, score]) => `<div><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong><em style="width:${clamp(score, 0, 100)}%"></em></div>`).join("");
+  businessTenderResult.innerHTML = `
+    <div><span>Offer A</span><strong>${money(offerA, 2)} / unit</strong></div>
+    <div><span>Offer B</span><strong>${money(offerB, 2)} / unit</strong></div>
+    <div><span>Decision</span><strong>${escapeHtml(better)}</strong><p>Check not only price: laycan, demurrage, subjects, port risk and counterparty reliability.</p></div>
+  `;
+  businessAgentResult.innerHTML = `
+    <div><span>${escapeHtml(values.agentPort || "Port")}</span><strong>Agent card ready</strong><p>PDA, pilotage, towage, document checklist, local notes and contact placeholder.</p></div>
+    <div><span>Estimated PDA focus</span><strong>pilot / tug / berth / agency / dues</strong><p>Use this as a structured request to real port agents.</p></div>
+  `;
+  businessSearchResult.innerHTML = (targets.length ? targets : [["General Focusea Search", "Open Broker Desk, Glossary and Deal Surgeon."]]).map(([title, action]) => `
+    <div><span>${escapeHtml(title)}</span><strong>${escapeHtml(action)}</strong><p>Search: ${escapeHtml(values.businessSearch || "-")}</p></div>
+  `).join("");
+
+  window.focuseaBusinessCenterReport = [
+    "FOCUSEA BUSINESS CENTER PACK",
+    `Client: ${values.businessClient || "-"}`,
+    `Project: ${values.businessProject || "-"}`,
+    `Budget: ${money(budget)}`,
+    `Estimated cost: ${money(cost)}`,
+    `Margin: ${money(margin)}`,
+    `Tender A: ${money(offerA, 2)} / unit`,
+    `Tender B: ${money(offerB, 2)} / unit`,
+    `Tender decision: ${better}`,
+    `Port agent city: ${values.agentPort || "-"}`,
+    "",
+    "AI search routing",
+    ...(targets.length ? targets.map(([title, action]) => `- ${title}: ${action}`) : ["- General Focusea Search: Open Broker Desk, Glossary and Deal Surgeon."]),
+    "",
+    "Disclaimer",
+    "Business Center outputs are decision-support drafts, not binding client, legal, insurance or agency advice."
+  ].join("\n");
+}
+
 const caseRoomCases = {
   bulkLiquefaction: {
     title: "Bulk cargo liquefaction",
@@ -22032,6 +22257,8 @@ renderWorkbench();
 renderControlTower();
 renderGrowthSuite();
 renderInsuranceDesk();
+renderStudentCenter();
+renderBusinessCenter();
 renderCaseRoom();
 renderBalticFeedPanel();
 renderSecurityShield();

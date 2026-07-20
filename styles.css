@@ -5496,6 +5496,8 @@ main {
   background: rgba(255, 255, 255, 0.035);
 }
 
+.student-center-panel,
+.business-center-panel,
 .case-room-panel,
 .about-focusea-panel {
   margin-top: 18px;
@@ -5505,6 +5507,124 @@ main {
   background:
     linear-gradient(135deg, rgba(40, 240, 198, 0.1), transparent 34%),
     rgba(8, 14, 35, 0.72);
+}
+
+.student-center-panel {
+  background:
+    linear-gradient(135deg, rgba(100, 97, 255, 0.14), transparent 34%),
+    rgba(8, 14, 35, 0.72);
+}
+
+.business-center-panel {
+  background:
+    linear-gradient(135deg, rgba(255, 203, 114, 0.11), transparent 34%),
+    rgba(8, 14, 35, 0.72);
+}
+
+.split-center-form {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.split-center-form label {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+
+.split-center-form span {
+  color: #8dfbe8;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.split-center-form input,
+.split-center-form select {
+  width: 100%;
+  min-width: 0;
+  padding: 11px 12px;
+  border: 1px solid rgba(100, 97, 255, 0.34);
+  border-radius: 8px;
+  background: rgba(2, 13, 18, 0.56);
+  color: var(--text);
+  font: inherit;
+}
+
+.split-center-form button {
+  align-self: end;
+}
+
+.split-center-layout,
+.split-score-grid,
+.split-card-list {
+  display: grid;
+  gap: 12px;
+}
+
+.split-center-layout {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.split-center-layout > article,
+.business-search-panel,
+.split-card-list div,
+.split-score-grid div {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid rgba(100, 97, 255, 0.22);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.business-search-panel {
+  margin-top: 12px;
+}
+
+.split-score-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+}
+
+.split-card-list span,
+.split-score-grid span {
+  display: block;
+  color: #8dfbe8;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.split-card-list strong,
+.split-score-grid strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--text);
+  overflow-wrap: break-word;
+}
+
+.split-card-list p,
+.split-score-grid p {
+  margin: 7px 0 0;
+}
+
+.split-score-grid em {
+  display: block;
+  height: 8px;
+  margin-top: 9px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--cyan), var(--gold), var(--danger));
+}
+
+.split-center-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: 14px;
 }
 
 .case-room-form {
@@ -8527,6 +8647,9 @@ code,
   .top-account-bar,
   .panel-heading,
   .mini-heading,
+  .split-center-form,
+  .split-center-layout,
+  .split-score-grid,
   .case-room-form,
   .case-room-layout,
   .case-room-bottom,
