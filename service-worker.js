@@ -1,4 +1,4 @@
-const FOCUSEA_CACHE = "focusea-logo2-cache-1";
+const FOCUSEA_CACHE = "focusea-logo2-hard-refresh-2";
 const FOCUSEA_ASSETS = [
   "./",
   "./index.html",
@@ -47,6 +47,12 @@ self.addEventListener("activate", (event) => {
     caches.keys()
       .then((keys) => Promise.all(keys.filter((key) => key !== FOCUSEA_CACHE).map((key) => caches.delete(key))))
       .then(() => self.clients.claim())
+      .then(() => self.clients.matchAll({ type: "window", includeUncontrolled: true }))
+      .then((clients) => {
+        clients.forEach((client) => {
+          if (client.url && client.navigate) client.navigate(client.url);
+        });
+      })
   );
 });
 

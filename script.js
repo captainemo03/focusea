@@ -1,3 +1,25 @@
+const FOCUSEA_CLIENT_ASSET_VERSION = "20260720-logo2-hard-refresh";
+
+async function clearLegacyFocuseaCaches() {
+  try {
+    if ("caches" in window) {
+      const keys = await caches.keys();
+      await Promise.all(keys.filter((key) => key.startsWith("focusea-")).map((key) => caches.delete(key)));
+    }
+    if ("serviceWorker" in navigator) {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(registrations.map((registration) => registration.update()));
+    }
+  } catch (error) {
+    // Cache cleanup is best-effort; the site should keep working if a browser blocks it.
+  }
+}
+
+if (localStorage.getItem("focuseaAssetVersion") !== FOCUSEA_CLIENT_ASSET_VERSION) {
+  localStorage.setItem("focuseaAssetVersion", FOCUSEA_CLIENT_ASSET_VERSION);
+  clearLegacyFocuseaCaches();
+}
+
 const vessels = {
   orion: {
     name: "MV Orion",
