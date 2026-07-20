@@ -5397,6 +5397,41 @@ main {
   margin: 12px 0;
 }
 
+.glossary-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.glossary-stat-grid div {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid rgba(100, 97, 255, 0.22);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.glossary-stat-grid span {
+  display: block;
+  color: #8dfbe8;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.glossary-stat-grid strong,
+.glossary-stat-grid small {
+  display: block;
+  margin-top: 4px;
+  overflow-wrap: break-word;
+}
+
+.glossary-stat-grid small {
+  color: var(--muted);
+}
+
 .glossary-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
@@ -5439,9 +5474,16 @@ main {
   overflow-wrap: anywhere;
 }
 
+.glossary-grid em {
+  color: var(--cyan);
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 900;
+}
+
 .glossary-detail-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
   gap: 10px;
   margin-top: 12px;
 }
@@ -5452,6 +5494,62 @@ main {
   border: 1px solid rgba(100, 97, 255, 0.22);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.035);
+}
+
+.about-focusea-panel {
+  margin-top: 18px;
+  padding: clamp(18px, 3vw, 28px);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(40, 240, 198, 0.1), transparent 34%),
+    rgba(8, 14, 35, 0.72);
+}
+
+.about-grid,
+.about-proof-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.about-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.about-proof-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 12px;
+}
+
+.about-grid article,
+.about-proof-grid div {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid rgba(100, 97, 255, 0.22);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.about-grid span,
+.about-proof-grid span {
+  display: block;
+  color: #8dfbe8;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.about-grid strong,
+.about-proof-grid strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--text);
+  overflow-wrap: break-word;
+}
+
+.about-grid p {
+  margin: 8px 0 0;
 }
 
 .vessel-card span {
@@ -8315,6 +8413,9 @@ code,
   .top-account-bar,
   .panel-heading,
   .mini-heading,
+  .about-grid,
+  .about-proof-grid,
+  .glossary-stat-grid,
   .workbench-grid,
   .control-tower-grid,
   .enterprise-command-hero,
@@ -8354,6 +8455,10 @@ code,
 
   .enterprise-risk-grid {
     grid-template-columns: 1fr;
+  }
+
+  .glossary-panel {
+    grid-column: auto;
   }
 
   .app-shell,

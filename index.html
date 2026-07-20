@@ -27,7 +27,7 @@
     <link rel="manifest" href="manifest.webmanifest" />
     <script src="theme.js?v=theme-1"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="styles.css?v=front-news-rail-1" />
+    <link rel="stylesheet" href="styles.css?v=glossary-about-1" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -117,6 +117,7 @@
           <a href="#pythonEngine" data-page-link="pythonEngine">Python Engine</a>
           <a href="#market" data-page-link="market">Market & News</a>
           <a href="#tools" data-page-link="tools">Tools</a>
+          <a href="#aboutFocusea" data-page-link="aboutFocusea">Who We Are</a>
           <a class="side-site-link" href="stability.html" target="_blank" rel="noopener">Side Site: Load-Stability Lab</a>
           <a class="side-site-link" href="insurance.html" target="_blank" rel="noopener">Side Site: Insurance Desk</a>
           <a class="side-site-link" href="deal-surgeon.html" target="_blank" rel="noopener">Side Site: Deal Surgeon</a>
@@ -4575,8 +4576,17 @@ Subject: Firm offer
           <article class="wiki-panel glossary-panel">
             <p class="eyebrow">Maritime Dictionary</p>
             <h2>Broker & Chartering Glossary</h2>
+            <p class="muted-copy">
+              A working maritime dictionary for brokers, charterers, students, claims teams and insurance desks.
+              Every term includes definition, practical use, example wording, risk signal and the Focusea tool to open next.
+            </p>
+            <div class="glossary-stat-grid" aria-label="Dictionary coverage">
+              <div><span>Coverage</span><strong id="glossaryTermCount">-- terms</strong><small>chartering, claims, stability, insurance, compliance</small></div>
+              <div><span>Workflow</span><strong>term -> risk -> tool</strong><small>built for actual broker decisions</small></div>
+              <div><span>Export</span><strong>CSV ready</strong><small>use in study notes or client training</small></div>
+            </div>
             <form class="wiki-form" id="wikiForm">
-              <input id="wikiSearch" name="wikiSearch" placeholder="Search: demurrage, NOR, laycan, ballast, GZ..." value="Demurrage" />
+              <input id="wikiSearch" name="wikiSearch" placeholder="Search: demurrage, NOR, laycan, ballast, GZ, FDD, GA, subrogation..." value="Demurrage" />
               <select id="wikiCategory" name="wikiCategory" aria-label="Dictionary category">
                 <option value="all">All categories</option>
                 <option value="Chartering">Chartering</option>
@@ -4585,6 +4595,8 @@ Subject: Firm offer
                 <option value="Cargo & Stability">Cargo & Stability</option>
                 <option value="Market & Finance">Market & Finance</option>
                 <option value="Legal & Compliance">Legal & Compliance</option>
+                <option value="Insurance">Insurance</option>
+                <option value="Port Agency">Port Agency</option>
               </select>
               <button type="submit">Search</button>
             </form>
@@ -4593,6 +4605,10 @@ Subject: Firm offer
               <button type="button" class="ghost-button small" data-glossary-pick="nor">NOR</button>
               <button type="button" class="ghost-button small" data-glossary-pick="tce">TCE</button>
               <button type="button" class="ghost-button small" data-glossary-pick="gz curve">GZ Curve</button>
+              <button type="button" class="ghost-button small" data-glossary-pick="fdd">FDD</button>
+              <button type="button" class="ghost-button small" data-glossary-pick="general average">General Average</button>
+              <button type="button" class="ghost-button small" data-glossary-pick="sof">SOF</button>
+              <button type="button" class="ghost-button small" data-glossary-pick="sanctions">Sanctions</button>
               <button type="button" class="ghost-button small" id="downloadGlossaryCsv">Download CSV</button>
             </div>
             <div class="glossary-grid" id="glossaryGrid" aria-label="Maritime dictionary terms"></div>
@@ -4933,6 +4949,49 @@ Subject: Firm offer
                 </div>
               <div class="broker-output" id="insuranceExportStatus"></div>
             </article>
+          </div>
+        </section>
+
+        <section class="about-focusea-panel" id="aboutFocusea" aria-labelledby="aboutFocuseaTitle">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Who We Are</p>
+              <h2 id="aboutFocuseaTitle">Focusea is a maritime decision-support workspace, not a black-box promise machine.</h2>
+              <p>
+                Focusea is built for maritime students, brokers, chartering teams, port operators and insurance users
+                who need practical calculations, explainable risk checks and organized shipping workflows in one place.
+              </p>
+            </div>
+            <span class="source-pill">independent project</span>
+          </div>
+
+          <div class="about-grid">
+            <article>
+              <span>Mission</span>
+              <strong>Make maritime work easier to reason about.</strong>
+              <p>Fixture terms, voyage economics, laytime, demurrage, port risk, cargo risk and stability data should connect instead of living in separate notes.</p>
+            </article>
+            <article>
+              <span>For whom</span>
+              <strong>Brokers, charterers, students, operators and insurers.</strong>
+              <p>The interface is designed for learning, analysis, client summaries, quote preparation and faster day-to-day maritime decision support.</p>
+            </article>
+            <article>
+              <span>How we work</span>
+              <strong>Transparent labels before impressive numbers.</strong>
+              <p>Live, simulated, licensed-required and user-input data must be visibly separated so users know what is verified and what is a model assumption.</p>
+            </article>
+            <article>
+              <span>What we are not</span>
+              <strong>Not legal advice, not binding insurance, not official AIS.</strong>
+              <p>Focusea supports decisions. Final legal, commercial, compliance, insurance and operational actions need professional review and licensed data where required.</p>
+            </article>
+          </div>
+
+          <div class="about-proof-grid">
+            <div><span>Core stack</span><strong>Broker Desk, Deal Surgeon, Insurance Desk, Loadicator, Ports, Market Watch</strong></div>
+            <div><span>Trust rule</span><strong>No fake live data: every sensitive number should show source or status.</strong></div>
+            <div><span>Product direction</span><strong>Paste a fixture, SOF, clause or quote request; get risk, calculation, document and next action.</strong></div>
           </div>
         </section>
 

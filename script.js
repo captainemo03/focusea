@@ -2078,6 +2078,199 @@ Object.assign(wikiTerms, {
   }
 });
 
+Object.assign(wikiTerms, {
+  "fdd": {
+    title: "FDD / Freight, Demurrage and Defence",
+    category: "Insurance",
+    body: "Legal cost cover or club service for disputes involving freight, demurrage, hire, charter party wording and related shipping claims.",
+    brokerUse: "Use when a fixture has high dispute exposure or weak evidence around SOF, NOR, demurrage or unpaid freight.",
+    example: "FDD support requested for demurrage recovery and CP interpretation.",
+    action: "Open Marine Insurance Desk and Claim Center.",
+    risk: "Medium to High",
+    source: "Insurance / P&I practice note"
+  },
+  "general average": {
+    title: "General Average",
+    category: "Insurance",
+    body: "A maritime principle where parties sharing a voyage contribute to extraordinary sacrifice or expenditure made for common safety.",
+    brokerUse: "Relevant after casualty, salvage, fire, grounding, jettison or emergency port call.",
+    example: "Cargo interests to provide GA guarantee before release.",
+    action: "Use Insurance Desk claim risk panel.",
+    risk: "High",
+    source: "Marine insurance principle"
+  },
+  "subrogation": {
+    title: "Subrogation",
+    category: "Insurance",
+    body: "The insurer's right to pursue recovery from a responsible third party after paying a claim.",
+    brokerUse: "Important when cargo damage, collision, port damage or carrier liability may be recoverable.",
+    example: "Insurers reserve subrogation rights against carrier and terminal.",
+    action: "Use Claim Evidence Checklist.",
+    risk: "Medium",
+    source: "Insurance claim practice"
+  },
+  "constructive total loss": {
+    title: "Constructive Total Loss",
+    category: "Insurance",
+    body: "A loss where repair or recovery may be uneconomic compared with the insured value or policy threshold.",
+    brokerUse: "Relevant in major casualty and hull insurance discussions.",
+    example: "Owners notify possible CTL subject to survey and policy terms.",
+    action: "Use Insurance Desk report pack.",
+    risk: "High",
+    source: "Hull insurance wording concept"
+  },
+  "deductible": {
+    title: "Deductible",
+    category: "Insurance",
+    body: "The amount retained by the assured before insurance responds to a covered claim.",
+    brokerUse: "Changing deductible can materially change premium and quote appetite.",
+    example: "Deductible USD 150,000 each claim.",
+    action: "Use Marine Insurance quote comparison.",
+    risk: "Low to Medium",
+    source: "Insurance quote term"
+  },
+  "institute cargo clauses": {
+    title: "Institute Cargo Clauses",
+    category: "Insurance",
+    body: "Widely used cargo insurance wording families defining covered and excluded cargo risks.",
+    brokerUse: "Check whether the insured needs ICC(A), ICC(B), ICC(C), war or strikes extensions.",
+    example: "Cargo covered ICC(A), war and strikes subject to policy terms.",
+    action: "Use Marine Insurance Desk coverage notes.",
+    risk: "Medium",
+    source: "Cargo insurance wording"
+  },
+  "pda": {
+    title: "PDA / Proforma Disbursement Account",
+    category: "Port Agency",
+    body: "Estimated port call cost prepared before arrival, including agency, pilotage, towage, berth, dues and local charges.",
+    brokerUse: "Use PDA to test voyage estimate and avoid hidden port cost shocks.",
+    example: "PDA estimated USD 86,000 excluding waiting time.",
+    action: "Use Port Cost Estimator.",
+    risk: "Medium",
+    source: "Port agency workflow"
+  },
+  "free pratique": {
+    title: "Free Pratique",
+    category: "Port Agency",
+    body: "Health clearance allowing a vessel to enter port and interact with shore authorities.",
+    brokerUse: "Delays in free pratique can affect NOR validity and laytime start depending on wording.",
+    example: "Free pratique granted 14:20 LT before berthing.",
+    action: "Use Port Call Timeline and SOF Analyzer.",
+    risk: "Medium",
+    source: "Port operation term"
+  },
+  "pilotage": {
+    title: "Pilotage",
+    category: "Port Agency",
+    body: "Local pilot assistance for navigation in port, channel, river or restricted waters.",
+    brokerUse: "Pilot availability can create waiting risk and port cost exposure.",
+    example: "Pilot ordered for 0600 LT, delayed due traffic.",
+    action: "Use Port Intelligence Pro.",
+    risk: "Medium",
+    source: "Port operation term"
+  },
+  "towage": {
+    title: "Towage",
+    category: "Port Agency",
+    body: "Tug assistance used for berthing, unberthing, shifting or restricted maneuvering.",
+    brokerUse: "Towage requirements affect PDA and operational feasibility for large or high-windage vessels.",
+    example: "Two tugs compulsory for berthing.",
+    action: "Use Port Restriction Checker.",
+    risk: "Low to Medium",
+    source: "Port operation term"
+  },
+  "time bar": {
+    title: "Time Bar",
+    category: "Laytime & Claims",
+    body: "A contractual deadline after which a claim may be rejected if documents are not submitted in time.",
+    brokerUse: "Critical for demurrage, cargo claims, invoices and CP disputes.",
+    example: "Demurrage claim time-barred unless submitted within 90 days with supporting documents.",
+    action: "Use Time Bar Calendar.",
+    risk: "High",
+    source: "Charter party claim term"
+  },
+  "wcccon": {
+    title: "WCCON",
+    category: "Laytime & Claims",
+    body: "Whether customs cleared or not. Clause wording often connected to NOR and laytime commencement.",
+    brokerUse: "Can affect whether administrative clearance delays count against laytime.",
+    example: "NOR WIBON/WIPON/WCCON.",
+    action: "Use Clause Red Flag System.",
+    risk: "Medium",
+    source: "NOR clause abbreviation"
+  },
+  "shinc": {
+    title: "SHINC / SHEX",
+    category: "Laytime & Claims",
+    body: "Sundays and holidays included or excluded in laytime counting.",
+    brokerUse: "A single word can materially change demurrage exposure.",
+    example: "Laytime 72 hours SHINC, or 72 hours SHEX EIU.",
+    action: "Use Laytime Calculator.",
+    risk: "Medium",
+    source: "Laytime abbreviation"
+  },
+  "reversible laytime": {
+    title: "Reversible Laytime",
+    category: "Laytime & Claims",
+    body: "Laytime at load and discharge ports is combined so saved time at one port may offset used time at another.",
+    brokerUse: "Can reduce demurrage exposure but must be clearly worded.",
+    example: "Laytime reversible between load and discharge ports.",
+    action: "Use SOF -> Laytime engine.",
+    risk: "Medium",
+    source: "Laytime mechanism"
+  },
+  "clean on board": {
+    title: "Clean On Board",
+    category: "Operations",
+    body: "Bill of lading notation indicating cargo was loaded without apparent external damage or defects.",
+    brokerUse: "Important for cargo claims, letters of indemnity and document release.",
+    example: "Clean on board bills issued after loading completion.",
+    action: "Use Document Vault and Claim Evidence Checklist.",
+    risk: "Medium",
+    source: "Shipping document term"
+  },
+  "loi": {
+    title: "LOI / Letter of Indemnity",
+    category: "Legal & Compliance",
+    body: "A promise to indemnify another party for acting outside normal document or contract procedures.",
+    brokerUse: "High-risk if used for delivery without original bills, change of destination or clean bills.",
+    example: "Owners require club-approved LOI wording.",
+    action: "Use Document AI Room and Compliance Terminal.",
+    risk: "High",
+    source: "Shipping legal document"
+  },
+  "cii": {
+    title: "CII / Carbon Intensity Indicator",
+    category: "Market & Finance",
+    body: "An IMO carbon intensity rating concept for ships based on emissions and transport work.",
+    brokerUse: "Speed, route, waiting and fuel choices can affect commercial and compliance discussions.",
+    example: "Voyage may worsen annual CII rating if waiting and speed are high.",
+    action: "Use Carbon Desk.",
+    risk: "Medium",
+    source: "IMO decarbonisation framework"
+  },
+  "free surface effect": {
+    title: "Free Surface Effect",
+    category: "Cargo & Stability",
+    body: "Stability reduction caused by liquid moving in slack tanks or spaces.",
+    brokerUse: "Slack ballast or cargo tanks can reduce corrected GM and increase stability risk.",
+    example: "Corrected GM reduced due to slack double-bottom tank.",
+    action: "Use Loadicator free surface panel.",
+    risk: "High",
+    source: "Ship stability principle"
+  },
+  "tanktop stress": {
+    title: "Tanktop Stress",
+    category: "Cargo & Stability",
+    body: "Local structural loading on the tanktop or hold bottom caused by dense or concentrated cargo.",
+    brokerUse: "Iron ore, steel coils and project cargo require capacity checks.",
+    example: "H2 tanktop load exceeds allowable mt/m2.",
+    action: "Use Loadicator hold stress check.",
+    risk: "High",
+    source: "Cargo planning term"
+  }
+});
+
 const cargoProfiles = {
   grain: {
     label: "Tahıl / Grain",
@@ -3353,6 +3546,7 @@ const pageGroups = {
   pythonEngine: ["#pythonEngineSuite"],
   market: ["#intelligence", "#newsBulletin"],
   tools: ["#route", "#assistantCareer", "#vesselFinder"],
+  aboutFocusea: ["#aboutFocusea"],
   academyPage: ["#academyCenter", "#academicLibrary"],
   accountPage: ["#accountCenter"],
   portsPage: ["#academy"]
@@ -21376,7 +21570,9 @@ function glossaryEntries() {
     body: entry.body || "",
     brokerUse: entry.brokerUse || "Use this term when reviewing fixture wording and operational exposure.",
     example: entry.example || "Example not added yet.",
-    action: entry.action || "Search related Focusea tools."
+    action: entry.action || "Search related Focusea tools.",
+    risk: entry.risk || "Medium",
+    source: entry.source || "Focusea glossary note"
   })).sort((a, b) => a.title.localeCompare(b.title));
 }
 
@@ -21394,6 +21590,8 @@ function renderGlossary(selectedKey = "") {
   const category = wikiCategory?.value || "all";
   const entries = glossaryEntries();
   const matches = entries.filter((entry) => glossaryMatch(entry, query, category));
+  const termCount = document.querySelector("#glossaryTermCount");
+  if (termCount) termCount.textContent = `${entries.length} terms`;
   const selected = entries.find((entry) => entry.key === selectedKey)
     || matches.find((entry) => entry.key === query || entry.title.toLowerCase() === query)
     || matches[0];
@@ -21415,6 +21613,8 @@ function renderGlossary(selectedKey = "") {
       <div><span>Broker use</span><p>${escapeHtml(selected.brokerUse)}</p></div>
       <div><span>Example wording</span><p>${escapeHtml(selected.example)}</p></div>
       <div><span>Focusea action</span><p>${escapeHtml(selected.action)}</p></div>
+      <div><span>Risk signal</span><p>${escapeHtml(selected.risk)}</p></div>
+      <div><span>Source type</span><p>${escapeHtml(selected.source)}</p></div>
     </div>
   `;
 
@@ -21424,20 +21624,23 @@ function renderGlossary(selectedKey = "") {
         <span>${escapeHtml(entry.category)}</span>
         <strong>${escapeHtml(entry.title)}</strong>
         <small>${escapeHtml(entry.body)}</small>
+        <em>${escapeHtml(entry.risk)} risk signal</em>
       </button>
     `).join("");
   }
 }
 
 function glossaryCsvText() {
-  const header = ["Term", "Category", "Definition", "Broker use", "Example", "Focusea action"];
+  const header = ["Term", "Category", "Definition", "Broker use", "Example", "Focusea action", "Risk signal", "Source type"];
   const rows = glossaryEntries().map((entry) => [
     entry.title,
     entry.category,
     entry.body,
     entry.brokerUse,
     entry.example,
-    entry.action
+    entry.action,
+    entry.risk,
+    entry.source
   ]);
   return [header, ...rows].map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(",")).join("\n");
 }
