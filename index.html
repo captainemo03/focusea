@@ -28,7 +28,7 @@
     <link rel="manifest" href="manifest.webmanifest" />
     <script src="theme.js?v=theme-1"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="styles.css?v=signup-alerts-1" />
+    <link rel="stylesheet" href="styles.css?v=traffic-density-1" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -330,8 +330,8 @@
               <h2>Global AIS-style vessel traffic terminal.</h2>
             </div>
             <div class="sea-status-cluster">
-              <span>AIS demo layer</span>
-              <strong>Licensed API required for real live global traffic</strong>
+              <span>Dense AIS demo layer</span>
+              <strong>200+ vessel samples. Licensed API required for real live global traffic</strong>
             </div>
           </div>
 
@@ -355,7 +355,7 @@
             <aside class="sea-control-panel" aria-label="Sea traffic controls">
               <div class="mini-heading"><span>AIS Controls</span><strong>filter traffic</strong></div>
               <form class="broker-form single-column" id="seaTrafficFilterForm">
-                <label><span>Search vessel / IMO / route</span><input name="trafficQuery" value="" placeholder="Ever Globe, Singapore, Suez..." /></label>
+                <label><span>Search vessel / IMO / route</span><input name="trafficQuery" value="" placeholder="Singapore, Rotterdam, Suez, coal, IMO..." /></label>
                 <label><span>Vessel type</span><select name="trafficType"><option value="All">All types</option><option>Container</option><option>Tanker</option><option>Bulk Carrier</option><option>LNG</option><option>Ro-Ro</option></select></label>
                 <label><span>Region</span><select name="trafficRegion"><option value="All">All regions</option><option>Asia</option><option>Europe</option><option>Mediterranean</option><option>Americas</option><option>Middle East</option><option>Africa</option></select></label>
               </form>
@@ -367,7 +367,7 @@
                   <button type="submit">Load AIS Feed</button>
                   <button type="button" class="ghost-button small" id="seaTrafficUseDemo">Use Demo Fleet</button>
                 </form>
-                <div class="sea-provider-status" id="seaTrafficProviderStatus">Demo AIS shown. Real global live traffic requires a licensed AIS provider/API.</div>
+                <div class="sea-provider-status" id="seaTrafficProviderStatus">Dense demo AIS shown. Real global live traffic requires a licensed AIS provider/API.</div>
               </details>
               <div class="sea-layer-toolbar" aria-label="Sea traffic layers">
                 <label><input type="checkbox" data-sea-layer="vessels" checked /> Vessels</label>
@@ -5409,7 +5409,7 @@ Subject: Firm offer
 
     <script src="monetization-config.js?v=adsense-readiness-1"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="script.js?v=signup-alerts-1"></script>
+    <script src="script.js?v=traffic-density-1"></script>
     <script src="monetization.js?v=adsense-readiness-1"></script>
   </body>
 </html>

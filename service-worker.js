@@ -1,4 +1,4 @@
-const FOCUSEA_CACHE = "focusea-signup-alerts-cache-1";
+const FOCUSEA_CACHE = "focusea-traffic-density-cache-1";
 const FOCUSEA_ASSETS = [
   "./",
   "./index.html",

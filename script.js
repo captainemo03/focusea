@@ -7492,8 +7492,82 @@ const seaTrafficRoutes = [
   ["Rotterdam", 52, 4, "US Gulf", 29, -94],
   ["Qatar", 25, 52, "Suez", 30, 32],
   ["Indonesia", -3, 112, "India", 20, 86],
-  ["LA", 34, -118, "Yokohama", 35, 139]
+  ["LA", 34, -118, "Yokohama", 35, 139],
+  ["Brazil", -24, -46, "China", 31, 121],
+  ["Australia", -20, 118, "China", 36, 120],
+  ["US East Coast", 40, -73, "North Europe", 52, 4],
+  ["West Africa", 6, 3, "Mediterranean", 36, 14],
+  ["Black Sea", 43, 35, "East Med", 31, 30],
+  ["India", 18, 72, "Middle East", 25, 55],
+  ["Japan", 35, 140, "Panama", 9, -80]
 ];
+
+const seaTrafficDemoCorridors = [
+  { key: "asia-europe", from: [31.2, 121.5], to: [51.9, 4.1], region: "Asia", route: "Shanghai -> Rotterdam", count: 28, types: ["Container", "Container", "LNG", "Tanker"] },
+  { key: "malacca-box", from: [1.3, 103.8], to: [35.4, 139.7], region: "Asia", route: "Singapore -> Yokohama", count: 18, types: ["Container", "Ro-Ro", "LNG"] },
+  { key: "indo-india", from: [-3.2, 112.7], to: [20.3, 86.7], region: "Asia", route: "Indonesia -> India", count: 22, types: ["Bulk Carrier", "Bulk Carrier", "Tanker"] },
+  { key: "gulf-suez", from: [25.4, 52.7], to: [30.1, 32.5], region: "Middle East", route: "Qatar/Ras Tanura -> Suez", count: 18, types: ["Tanker", "LNG", "Tanker"] },
+  { key: "suez-med", from: [30.1, 32.5], to: [36.1, 14.5], region: "Mediterranean", route: "Suez -> Mediterranean", count: 20, types: ["Container", "Tanker", "Bulk Carrier"] },
+  { key: "blacksea-med", from: [43.1, 35.8], to: [31.2, 29.9], region: "Europe", route: "Black Sea -> East Med", count: 18, types: ["Bulk Carrier", "Bulk Carrier", "Ro-Ro"] },
+  { key: "north-europe", from: [53.6, 8.1], to: [51.9, 4.1], region: "Europe", route: "Hamburg -> Rotterdam", count: 16, types: ["Container", "Ro-Ro", "Tanker"] },
+  { key: "atlantic", from: [51.9, 4.1], to: [29.7, -94.8], region: "Americas", route: "Rotterdam -> US Gulf", count: 20, types: ["Tanker", "Container", "Bulk Carrier"] },
+  { key: "us-east-europe", from: [40.6, -73.8], to: [50.6, -1.2], region: "Americas", route: "US East Coast -> North Europe", count: 14, types: ["Container", "Tanker", "Ro-Ro"] },
+  { key: "pacific", from: [33.7, -118.2], to: [35.4, 139.7], region: "Americas", route: "Los Angeles -> Yokohama", count: 22, types: ["Container", "Container", "Ro-Ro"] },
+  { key: "australia-china", from: [-20.3, 118.6], to: [36.1, 120.4], region: "Asia", route: "Port Hedland -> Qingdao", count: 22, types: ["Bulk Carrier", "Bulk Carrier", "LNG"] },
+  { key: "brazil-china", from: [-24.0, -46.3], to: [31.2, 121.5], region: "Americas", route: "Santos/Tubarao -> China", count: 18, types: ["Bulk Carrier", "Bulk Carrier", "Container"] },
+  { key: "west-africa-med", from: [6.4, 3.4], to: [37.5, 15.1], region: "Africa", route: "West Africa -> Mediterranean", count: 14, types: ["Tanker", "Bulk Carrier", "Container"] },
+  { key: "south-africa-asia", from: [-29.9, 31.0], to: [1.3, 103.8], region: "Africa", route: "Durban -> Singapore", count: 14, types: ["Container", "Bulk Carrier", "Ro-Ro"] }
+];
+
+const seaTrafficDemoNames = {
+  Container: ["Box Horizon", "Ocean Stack", "Feeder Arrow", "Blue Terminal", "Ever Route", "Port Express"],
+  Tanker: ["Product Star", "Crude Pioneer", "Gulf Vector", "Atlantic Product", "Energy Trader", "Clean Sea"],
+  "Bulk Carrier": ["Cape Pioneer", "Grain Atlas", "Iron Voyager", "Coal Runner", "Bulk Meridian", "Ore Horizon"],
+  LNG: ["LNG Aurora", "Gas Meridian", "LNG Crest", "Cryo Trader", "Gas Horizon", "LNG Sentinel"],
+  "Ro-Ro": ["RoRo Bridge", "Auto Carrier", "Vehicle Star", "Ferry Meridian", "Cargo Wheels", "RoRo Horizon"]
+};
+
+const seaTrafficDemoFlags = ["Panama", "Liberia", "Marshall Islands", "Malta", "Singapore", "Hong Kong", "Greece", "Turkey", "Bahamas", "Norway", "Denmark"];
+const seaTrafficDemoRisks = ["Low", "Port lineup", "Weather watch", "Traffic density", "Bunker sensitivity", "Schedule pressure", "Security watch", "Canal queue"];
+
+function buildSeaTrafficDemoVessels() {
+  const generated = [];
+  seaTrafficDemoCorridors.forEach((corridor, corridorIndex) => {
+    for (let index = 0; index < corridor.count; index += 1) {
+      const type = corridor.types[index % corridor.types.length];
+      const progress = (index + 1) / (corridor.count + 1);
+      const wave = Math.sin((index + 1) * 1.73 + corridorIndex) * 1.45;
+      const cross = Math.cos((index + 1) * 1.31 + corridorIndex) * 0.75;
+      const lat = corridor.from[0] + (corridor.to[0] - corridor.from[0]) * progress + cross;
+      const lon = corridor.from[1] + (corridor.to[1] - corridor.from[1]) * progress + wave;
+      const course = ((Math.atan2(corridor.to[1] - corridor.from[1], corridor.to[0] - corridor.from[0]) * 180 / Math.PI) + 360) % 360;
+      const names = seaTrafficDemoNames[type] || ["AIS Demo Vessel"];
+      const serial = `${corridorIndex + 1}${String(index + 1).padStart(2, "0")}`;
+      generated.push({
+        id: `demo-${corridor.key}-${index + 1}`,
+        name: `MV ${names[index % names.length]} ${serial}`,
+        imo: `9${String(300000 + corridorIndex * 1000 + index * 17).slice(0, 6)}`,
+        mmsi: `${String(200000000 + corridorIndex * 100000 + index * 331).slice(0, 9)}`,
+        type,
+        flag: seaTrafficDemoFlags[(index + corridorIndex) % seaTrafficDemoFlags.length],
+        region: corridor.region,
+        route: corridor.route,
+        speed: 10.8 + ((index * 1.7 + corridorIndex) % 8.6),
+        course,
+        lat,
+        lon,
+        destination: corridor.route.split("->").pop().trim(),
+        eta: `${Math.max(8, Math.round((1 - progress) * 280 + 10))} h`,
+        risk: seaTrafficDemoRisks[(index + corridorIndex) % seaTrafficDemoRisks.length],
+        cargo: type === "Container" ? "Containers" : type === "Tanker" ? "Oil / products" : type === "LNG" ? "LNG" : type === "Ro-Ro" ? "Vehicles" : "Dry bulk",
+        status: progress > 0.84 ? "Approaching destination" : progress < 0.14 ? "Departed / outbound" : "At sea"
+      });
+    }
+  });
+  return [...seaTrafficVessels, ...generated];
+}
+
+const seaTrafficDemoFleet = buildSeaTrafficDemoVessels();
 
 let seaLeafletMap = null;
 let seaLeafletLayers = null;
@@ -7522,7 +7596,7 @@ function activeSeaLayers() {
 }
 
 function seaTrafficFleet() {
-  return seaTrafficSourceMode === "live" && seaExternalVessels.length ? seaExternalVessels : seaTrafficVessels;
+  return seaTrafficSourceMode === "live" && seaExternalVessels.length ? seaExternalVessels : seaTrafficDemoFleet;
 }
 
 function seaTrafficField(item, keys = [], fallback = "") {
@@ -7706,7 +7780,8 @@ function seaVesselPopup(vessel) {
       <strong>${escapeHtml(vessel.name)}</strong>
       <span>IMO ${escapeHtml(vessel.imo)} / ${escapeHtml(vessel.flag)}</span>
       <small>${escapeHtml(vessel.type)} | ${vessel.speed.toFixed(1)} kn</small>
-      <small>${escapeHtml(vessel.route)} -> ${escapeHtml(vessel.destination)}</small>
+      <small>${escapeHtml(vessel.route)} | ETA ${escapeHtml(vessel.eta)}</small>
+      <small>Course ${Math.round(Number(vessel.course || 0))}° | ${Number(vessel.lat).toFixed(2)}, ${Number(vessel.lon).toFixed(2)}</small>
       <em>${escapeHtml(vessel.risk)}</em>
     </div>
   `;
@@ -7721,7 +7796,7 @@ function addSeaLeafletVessels(layers, vesselsList, selectedId) {
     const selected = vessel.id === selectedId;
     const color = seaVesselColor(vessel.type);
     const marker = window.L.circleMarker([driftLat, driftLon], {
-      radius: selected ? 9 : 6,
+      radius: selected ? 8 : 4.5,
       color: selected ? "#ffffff" : color,
       weight: selected ? 3 : 2,
       fillColor: color,
@@ -7751,7 +7826,7 @@ function styleSeaTrafficMarkers() {
     const color = seaVesselColor(vessel?.type);
     const selected = id === seaSelectedVesselId;
     marker.setStyle({
-      radius: selected ? 9 : 6,
+      radius: selected ? 8 : 4.5,
       color: selected ? "#ffffff" : color,
       weight: selected ? 3 : 2,
       fillColor: color,
@@ -7826,7 +7901,9 @@ function renderSeaTraffic(selectedId = seaSelectedVesselId, options = {}) {
     seaTrafficSummary.innerHTML = `
       ${metricCards([
         { label: "Visible vessels", value: vesselsList.length },
+        { label: "Demo fleet", value: seaTrafficFleet().length },
         { label: "AIS source", value: seaTrafficSourceMode === "live" ? "Live feed" : "Demo" },
+        { label: "Route corridors", value: seaTrafficDemoCorridors.length },
         { label: "High-risk watches", value: seaTrafficRisks.length },
         { label: "Map base", value: "OpenStreetMap" }
       ])}
@@ -7837,7 +7914,7 @@ function renderSeaTraffic(selectedId = seaSelectedVesselId, options = {}) {
   if (seaTrafficTrust) {
     seaTrafficTrust.innerHTML = [
       ["AIS vessel positions", seaTrafficSourceMode === "live" ? "user input" : "licensed required", seaTrafficSourceMode === "live" ? seaTrafficSourceLabel : "Global live AIS needs a paid provider/API."],
-      ["Demo vessel movement", seaTrafficSourceMode === "live" ? "replaced" : "simulated", seaTrafficSourceMode === "live" ? "Demo fleet hidden while live/user AIS feed is active." : "Current dots are training/demo positions, not live AIS."],
+      ["Demo vessel movement", seaTrafficSourceMode === "live" ? "replaced" : "simulated", seaTrafficSourceMode === "live" ? "Demo fleet hidden while live/user AIS feed is active." : `${seaTrafficDemoFleet.length} training positions across major trade corridors, not live AIS.`],
       ["Ports and routes", "seed data", "Major ports and routes are hand-curated for product demo."],
       ["Weather/security layer", "api-ready", "Can be connected to weather, piracy/security and route-risk feeds."]
     ].map(([name, badge, note]) => `<div><strong>${escapeHtml(name)}</strong><em class="source-badge ${badge.includes("licensed") ? "licensed" : badge}">${escapeHtml(badge)}</em><small>${escapeHtml(note)}</small></div>`).join("");
@@ -7853,7 +7930,7 @@ function renderSeaTrafficTable(vesselsList = filteredSeaTraffic(), selectedId = 
   seaTrafficTable.innerHTML = `
     <table>
       <thead>
-        <tr><th>Vessel</th><th>Type</th><th>Route</th><th>Speed</th><th>ETA</th><th>Risk</th></tr>
+        <tr><th>Vessel</th><th>Type</th><th>Route</th><th>Speed</th><th>Course</th><th>ETA</th><th>Risk</th></tr>
       </thead>
       <tbody>
         ${vesselsList.map((vessel) => `
@@ -7862,6 +7939,7 @@ function renderSeaTrafficTable(vesselsList = filteredSeaTraffic(), selectedId = 
             <td><span class="sea-type-pill ${vessel.type.toLowerCase().replace(/\s+/g, "-")}">${escapeHtml(vessel.type)}</span></td>
             <td>${escapeHtml(vessel.route)}</td>
             <td>${vessel.speed.toFixed(1)} kn</td>
+            <td>${Math.round(Number(vessel.course || 0))}°</td>
             <td>${escapeHtml(vessel.eta)}</td>
             <td>${escapeHtml(vessel.risk)}</td>
           </tr>
@@ -7934,12 +8012,16 @@ function renderSeaVesselDetail(id = "") {
     <div class="metric-grid">
       <article><span>Type</span><strong>${escapeHtml(vessel.type)}</strong></article>
       <article><span>Speed</span><strong>${vessel.speed.toFixed(1)} kn</strong></article>
+      <article><span>Course</span><strong>${Math.round(Number(vessel.course || 0))}°</strong></article>
+      <article><span>Position</span><strong>${Number(vessel.lat).toFixed(2)}, ${Number(vessel.lon).toFixed(2)}</strong></article>
+      <article><span>Cargo</span><strong>${escapeHtml(vessel.cargo || "Not reported")}</strong></article>
+      <article><span>Status</span><strong>${escapeHtml(vessel.status || "Under way")}</strong></article>
       <article><span>Destination</span><strong>${escapeHtml(vessel.destination)}</strong></article>
       <article><span>ETA</span><strong>${escapeHtml(vessel.eta)}</strong></article>
     </div>
     <p><b>Route:</b> ${escapeHtml(vessel.route)}</p>
     <p><b>Risk:</b> ${escapeHtml(vessel.risk)}</p>
-    <small>Source label: simulated vessel sample. Connect licensed AIS for real-time global traffic.</small>
+    <small>Source label: ${seaTrafficSourceMode === "live" ? escapeHtml(seaTrafficSourceLabel) : "dense simulated AIS training fleet. Connect licensed AIS for real-time global traffic."}</small>
   `;
 }
 
