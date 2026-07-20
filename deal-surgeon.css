@@ -317,6 +317,10 @@ html[data-theme="light"] .surgeon-header {
   margin-top: 0;
 }
 
+.panel-grid > .timeline-panel {
+  grid-column: span 2;
+}
+
 .panel-heading {
   display: flex;
   align-items: flex-start;
@@ -442,7 +446,7 @@ html[data-theme="light"] .surgeon-form textarea {
 .timeline-step strong,
 .timeline-step small {
   min-width: 0;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .finding {
@@ -502,8 +506,8 @@ html[data-theme="light"] .surgeon-form textarea {
 
 .timeline-step {
   display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
   gap: 0.7rem;
 }
 
@@ -521,6 +525,23 @@ html[data-theme="light"] .surgeon-form textarea {
 .timeline-step small {
   color: var(--cyan);
   font-weight: 900;
+}
+
+.timeline-step em {
+  grid-column: 2;
+  color: var(--muted);
+  font-style: normal;
+  font-weight: 760;
+}
+
+.timeline-step strong {
+  color: var(--text);
+  word-break: keep-all;
+}
+
+.timeline-step small {
+  grid-column: 2;
+  justify-self: start;
 }
 
 .surgeon-footer {
@@ -581,11 +602,18 @@ html[data-theme="light"] .surgeon-form textarea {
     grid-template-columns: 1fr;
   }
 
+  .panel-grid > .timeline-panel {
+    grid-column: auto;
+  }
+
   .panel-heading,
-  .mini-heading,
-  .timeline-step {
+  .mini-heading {
     grid-template-columns: 1fr;
     display: grid;
+  }
+
+  .timeline-step {
+    grid-template-columns: auto minmax(0, 1fr);
   }
 
   .surgeon-hero h1 {

@@ -1,4 +1,4 @@
-const FOCUSEA_CACHE = "focusea-deal-surgeon-symmetry-1";
+const FOCUSEA_CACHE = "focusea-deal-surgeon-timeline-1";
 const FOCUSEA_ASSETS = [
   "./",
   "./index.html",
