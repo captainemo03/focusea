@@ -1,4 +1,4 @@
-const FOCUSEA_CACHE = "focusea-focus-1";
+const FOCUSEA_CACHE = "focusea-quality-1";
 const FOCUSEA_ASSETS = [
   "./",
   "./index.html",
@@ -37,6 +37,8 @@ const FOCUSEA_ASSETS = [
   "./deal-surgeon.js",
   "./decision-lab.js",
   "./decision-lab-pro.js",
+  "./decision-quality.js",
+  "./decision-quality.css",
   "./favicon-concept-b.png",
   "./stability-loadicator-basic.js",
   "./stability-3d.js",
