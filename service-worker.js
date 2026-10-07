@@ -1,10 +1,12 @@
-const FOCUSEA_CACHE = "focusea-decision-pro-2";
+const FOCUSEA_CACHE = "focusea-focus-1";
 const FOCUSEA_ASSETS = [
   "./",
   "./index.html",
   "./styles.css",
   "./site-shell.css",
   "./site-shell.js",
+  "./workspace-navigation.js",
+  "./workspace-navigation.css",
   "./landing.css",
   "./script.js",
   "./theme.js",

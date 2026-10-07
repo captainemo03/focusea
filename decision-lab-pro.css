@@ -1,5 +1,6 @@
 .hero{overflow:hidden;background:linear-gradient(125deg,var(--panel) 0 64%,color-mix(in srgb,var(--cyan) 8%,var(--panel)) 64%)}
 .top nav a{color:#f4f7f6}
+.advanced-analysis{margin:16px 0;border-top:1px solid var(--line)}.advanced-analysis>summary{cursor:pointer;padding:18px 0;font-weight:800;color:var(--cyan)}.advanced-analysis>div{display:grid;gap:12px}.hero h1{font-size:2.4rem;line-height:1.15}.hero{padding:28px}.hero-flags{display:none}
 .hero-flags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.hero-flags span{padding:7px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:.76rem;font-weight:800}
 .confidence{height:6px;margin-top:8px;overflow:hidden;border-radius:99px;background:var(--line)}.confidence i{display:block;width:0;height:100%;background:var(--cyan);transition:width .35s ease}
 .preset-bar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:12px 0}.preset-bar h2{margin:0}.preset-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px}

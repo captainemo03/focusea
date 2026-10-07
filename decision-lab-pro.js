@@ -1,4 +1,22 @@
 const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+document.addEventListener('DOMContentLoaded', () => {
+  const advanced = document.createElement('details');
+  advanced.className = 'advanced-analysis';
+  advanced.innerHTML = '<summary>Advanced analysis: stress tests, evidence and review</summary><div></div>';
+  const stress = document.querySelector('#stress');
+  stress.before(advanced);
+  const content = advanced.lastElementChild;
+  let section = advanced.nextElementSibling;
+  while (section && !section.classList.contains('export')) {
+    const next = section.nextElementSibling;
+    content.append(section);
+    section = next;
+  }
+  document.querySelectorAll('.top nav a[href^="#"]').forEach(a => a.addEventListener('click', () => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target && advanced.contains(target)) advanced.open = true;
+  }));
+});
 const N=v=>Number(v)||0,M=n=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0}).format(n||0);
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 let last=null,lastCounter="";
